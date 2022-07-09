@@ -8,6 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@imengyu/vue3-context-menu": "^1.0.9",
+    "axios": "^0.27.2",
+    "dayjs": "^1.11.3",
     "pinia": "^2.0.14",
     "vant": "^3.5.2",
     "vue": "^3.2.25",
