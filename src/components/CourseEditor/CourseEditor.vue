@@ -70,7 +70,7 @@ const weeks = ref<number[]>([]);
 
       <div aria-label="班级（小组）">
         <n-divider :dashed="true">班级 / 小组</n-divider>
-        <SituationEditor/>
+        <SituationEditor v-model:situations="courseLocal.situations"/>
       </div>
 
       <div aria-label="备注">

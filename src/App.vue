@@ -18,7 +18,7 @@ const course = ref<Course>({
     "bgc": "#FFFFFFFF",
   },
   "method": "实验课",
-  "situation": [
+  "situations": [
     {
       "teacher": "王老师",
       "room": "210教室",

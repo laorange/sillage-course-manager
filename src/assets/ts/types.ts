@@ -16,7 +16,7 @@ export interface CourseInfo {
 export interface Course {
     "_id": number,
     "info": CourseInfo,
-    "situation": Situation[]
+    "situations": Situation[]
     "grade": string,
 
     "dates": string[],
@@ -51,3 +51,5 @@ export interface Config {
 }
 
 //</editor-fold>
+
+
