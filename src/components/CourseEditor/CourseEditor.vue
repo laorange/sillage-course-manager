@@ -47,10 +47,6 @@ const weeks = ref<number[]>([]);
 
           <n-input v-model:value="courseLocal.info.code" placeholder="课程代码（选填）"/>
 
-          <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc">
-            <template #label>点此设置背景颜色</template>
-          </n-color-picker>
-
           <n-select v-model:value="courseLocal.method" placeholder="授课方式（选填）"
                     :filterable="true" :tag="true" :clearable="true" :options="methodOptions"/>
         </n-space>
@@ -73,6 +69,13 @@ const weeks = ref<number[]>([]);
         <SituationEditor v-model:situations="courseLocal.situations"/>
       </div>
 
+      <div aria-label="课程颜色">
+        <n-divider :dashed="true">课程颜色</n-divider>
+        <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc">
+          <template #label>点此设置背景颜色</template>
+        </n-color-picker>
+      </div>
+
       <div aria-label="备注">
         <n-divider :dashed="true">备注</n-divider>
         <n-input v-model:value="courseLocal.note" placeholder="请输入备注信息（选填）"/>
@@ -84,7 +87,7 @@ const weeks = ref<number[]>([]);
 <style scoped>
 .course-editor {
   display: flex;
-  margin: 0 30px;
+  margin: 10px 30px;
 }
 
 .course-editor-left, .course-editor-right {
