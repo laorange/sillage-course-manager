@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {Course} from "../../assets/ts/types";
+import {Course} from "../../../assets/ts/types";
 import {ref, watch} from "vue";
 import WeekSelector from "./WeekSelector.vue";
 import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption} from "naive-ui";
-import getWeeksString from "../../assets/ts/getWeeksString";
+import getWeeksString from "../../../assets/ts/getWeeksString";
 
 const props = defineProps<{ course: Course }>();
 const emits = defineEmits(["update:course"]);

@@ -7,7 +7,10 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    CourseEditor: typeof import('./src/components/CourseEditor/CourseEditor.vue')['default']
+    ConfigEditor: typeof import('./src/components/ConfigEditor/ConfigEditor.vue')['default']
+    CourseEditor: typeof import('./src/components/CourseTable/CourseEditor/CourseEditor.vue')['default']
+    CourseTable: typeof import('./src/components/CourseTable/CourseTable.vue')['default']
+    Docs: typeof import('./src/components/Docs/Docs.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NColorPicker: typeof import('naive-ui')['NColorPicker']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
@@ -20,7 +23,10 @@ declare module '@vue/runtime-core' {
     NTransfer: typeof import('naive-ui')['NTransfer']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SituationEditor: typeof import('./src/components/CourseEditor/SituationEditor.vue')['default']
-    WeekSelector: typeof import('./src/components/CourseEditor/WeekSelector.vue')['default']
+    SituationEditor: typeof import('./src/components/CourseTable/CourseEditor/SituationEditor.vue')['default']
+    TopTabBar: typeof import('./src/components/TopTabBar.vue')['default']
+    VanTab: typeof import('vant/es')['Tab']
+    VanTabs: typeof import('vant/es')['Tabs']
+    WeekSelector: typeof import('./src/components/CourseTable/CourseEditor/WeekSelector.vue')['default']
   }
 }

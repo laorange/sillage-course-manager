@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Situation} from "../../assets/ts/types";
+import {Situation} from "../../../assets/ts/types";
 import {computed} from "vue";
 import {SelectOption} from "naive-ui";
 
