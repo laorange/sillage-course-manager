@@ -58,9 +58,9 @@ const judgements = {
   },
   disableFilterHalf() {
     // 当前已选周的数量不足两个，无法折半
-    return weeksLocal.value.length < 2
-  }
-}
+    return weeksLocal.value.length < 2;
+  },
+};
 </script>
 
 <template>
@@ -69,8 +69,12 @@ const judgements = {
       <n-space align="center" justify="center">
         <n-button @click="handlers.selectAll()">全选</n-button>
         <n-button @click="handlers.selectOpposite()">反选</n-button>
-        <n-button @click="handlers.filterOdd()" :disabled="judgements.disableFilterOdd()">单周</n-button>
-        <n-button @click="handlers.filterEven()" :disabled="judgements.disableFilterEven()">双周</n-button>
+        <n-button @click="handlers.filterOdd()" :disabled="judgements.disableFilterOdd()">
+          {{ !judgements.disableFilterOdd() && judgements.disableFilterEven() ? `清空` : `单周` }}
+        </n-button>
+        <n-button @click="handlers.filterEven()" :disabled="judgements.disableFilterEven()">
+          {{ !judgements.disableFilterEven() && judgements.disableFilterOdd() ? `清空` : `双周` }}
+        </n-button>
         <n-button @click="handlers.filterFrontHalf()" :disabled="judgements.disableFilterHalf()">前半</n-button>
         <n-button @click="handlers.filterRearHalf()" :disabled="judgements.disableFilterHalf()">后半</n-button>
       </n-space>
