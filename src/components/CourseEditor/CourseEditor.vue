@@ -4,6 +4,7 @@ import {ref, watch} from "vue";
 import WeekSelector from "./WeekSelector.vue";
 import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption} from "naive-ui";
+import getWeeksString from "../../assets/ts/getWeeksString";
 
 const props = defineProps<{ course: Course }>();
 const emits = defineEmits(["update:course"]);
@@ -18,7 +19,7 @@ const handlers = {
   },
   restore() {
     whetherChange.value = false;
-    courseLocal.value = props.course;
+    courseLocal.value = JSON.parse(JSON.stringify(props.course));
   },
   update() {
     alert("提交后端");
@@ -66,7 +67,7 @@ const weeks = ref<number[]>([]);
         </n-space>
       </div>
 
-      <n-divider :dashed="true">选择上课周数</n-divider>
+      <n-divider :dashed="true">上课周数: {{ getWeeksString(weeks) }}</n-divider>
       <WeekSelector v-model:weeks="weeks"/>
     </div>
 
