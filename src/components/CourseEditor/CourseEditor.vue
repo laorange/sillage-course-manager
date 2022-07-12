@@ -1,18 +1,32 @@
 <script setup lang="ts">
 import {Course} from "../../assets/ts/types";
-import {computed, ref} from "vue";
+import {ref, watch} from "vue";
 import WeekSelector from "./WeekSelector.vue";
 import SituationEditor from "./SituationEditor.vue";
+import {zhCN, dateZhCN, SelectOption} from "naive-ui";
 
 const props = defineProps<{ course: Course }>();
 const emits = defineEmits(["update:course"]);
 
-const courseLocal = computed<Course>({
-  get: () => props.course,
-  set: (newValue) => emits("update:course", newValue),
-});
+const courseLocal = ref<Course>(JSON.parse(JSON.stringify(props.course)));
+const whetherChange = ref<boolean>(false);
+watch(() => courseLocal.value, () => !whetherChange.value ? whetherChange.value = true : undefined, {deep: true});
 
-const courseNameOptions = ref([
+const handlers = {
+  quit() {
+    alert("退出课程编辑页面");
+  },
+  restore() {
+    whetherChange.value = false;
+    courseLocal.value = props.course;
+  },
+  update() {
+    alert("提交后端");
+    emits("update:course", courseLocal.value);
+  },
+};
+
+const courseNameOptions = ref<SelectOption[]>([
   {
     label: "数据库设计",
     value: "数据库设计",
@@ -22,14 +36,14 @@ const courseNameOptions = ref([
     value: "确认与验证",
   }]);
 
-const gradeOptions = ref([{
+const gradeOptions = ref<SelectOption[]>([{
   label: "18级",
   value: "18级",
 }]);
 
-const methodOptions = ["理论课", "习题课", "实验课", "考试"].map(m => {
+const methodOptions = ref<SelectOption[]>(["理论课", "习题课", "实验课", "考试"].map(m => {
   return {label: m, value: m};
-});
+}));
 
 
 const weeks = ref<number[]>([]);
@@ -82,6 +96,30 @@ const weeks = ref<number[]>([]);
       </div>
     </div>
   </div>
+
+  <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
+    <n-space justify="center" align="center">
+      <template v-if="whetherChange">
+        <n-popconfirm @positive-click="handlers.update()">
+          <template #trigger>
+            <n-button type="success">保存更改</n-button>
+          </template>
+          将会把变更提交数据库，是否继续？
+        </n-popconfirm>
+
+        <n-popconfirm @positive-click="handlers.restore()">
+          <template #trigger>
+            <n-button type="warning">取消修改</n-button>
+          </template>
+          您在本页面所做的修改将会丢失，是否继续？
+        </n-popconfirm>
+      </template>
+
+      <template v-else>
+        <n-button @click="handlers.quit()">关闭本页面</n-button>
+      </template>
+    </n-space>
+  </n-config-provider>
 </template>
 
 <style scoped>
