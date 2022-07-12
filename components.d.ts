@@ -17,6 +17,7 @@ declare module '@vue/runtime-core' {
     NTransfer: typeof import('naive-ui')['NTransfer']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SituationEditor: typeof import('./src/components/CourseEditor/SituationEditor.vue')['default']
     WeekSelector: typeof import('./src/components/CourseEditor/WeekSelector.vue')['default']
   }
 }

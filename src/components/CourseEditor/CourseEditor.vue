@@ -2,6 +2,7 @@
 import {Course} from "../../assets/ts/types";
 import {computed, ref} from "vue";
 import WeekSelector from "./WeekSelector.vue";
+import SituationEditor from "./SituationEditor.vue";
 
 const props = defineProps<{ course: Course }>();
 const emits = defineEmits(["update:course"]);
@@ -47,7 +48,7 @@ const weeks = ref<number[]>([]);
           <n-input v-model:value="courseLocal.info.code" placeholder="课程代码（选填）"/>
 
           <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc">
-            <template #label>设置背景颜色: {{ courseLocal.info.bgc }}</template>
+            <template #label>点此设置背景颜色</template>
           </n-color-picker>
 
           <n-select v-model:value="courseLocal.method" placeholder="授课方式（选填）"
@@ -55,21 +56,27 @@ const weeks = ref<number[]>([]);
         </n-space>
       </div>
 
-      <div aria-label="年级（大组）">
-        <n-divider :dashed="true">年级 / 大组</n-divider>
-        <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :options="gradeOptions"/>
-      </div>
+      <n-divider :dashed="true">选择上课周数</n-divider>
+      <WeekSelector v-model:weeks="weeks"/>
     </div>
 
     <div class="course-editor-divider"/>
 
     <div class="course-editor-right">
-      <n-divider :dashed="true">选择上课周数</n-divider>
-      <WeekSelector v-model:weeks="weeks"></WeekSelector>
+      <div aria-label="年级（大组）">
+        <n-divider :dashed="true">年级 / 大组</n-divider>
+        <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :options="gradeOptions"/>
+      </div>
 
+      <div aria-label="班级（小组）">
+        <n-divider :dashed="true">班级 / 小组</n-divider>
+        <SituationEditor/>
+      </div>
 
-      <n-divider :dashed="true">备注</n-divider>
-      <n-input v-model:value="courseLocal.note" placeholder="请输入备注信息（选填）"/>
+      <div aria-label="备注">
+        <n-divider :dashed="true">备注</n-divider>
+        <n-input v-model:value="courseLocal.note" placeholder="请输入备注信息（选填）"/>
+      </div>
     </div>
   </div>
 </template>
