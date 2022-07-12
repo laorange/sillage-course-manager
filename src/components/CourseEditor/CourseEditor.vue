@@ -11,7 +11,7 @@ const courseLocal = computed<Course>({
   set: (newValue) => emits("update:course", newValue),
 });
 
-const options = ref([
+const courseNameOptions = ref([
   {
     label: "数据库设计",
     value: "数据库设计",
@@ -21,6 +21,15 @@ const options = ref([
     value: "确认与验证",
   }]);
 
+const gradeOptions = ref([{
+  label: "18级",
+  value: "18级",
+}]);
+
+const methodOptions = ["理论课", "习题课", "实验课", "考试"].map(m => {
+  return {label: m, value: m};
+});
+
 
 const weeks = ref<number[]>([]);
 </script>
@@ -29,21 +38,27 @@ const weeks = ref<number[]>([]);
   <h3>星期三 &nbsp; 第1节课</h3>
   <div class="course-editor">
     <div class="course-editor-left">
-      <n-divider :dashed="true">课程信息</n-divider>
-      <n-space :vertical="true">
-        <n-select
-            v-model:value="courseLocal.info.name"
-            :filterable="true"
-            :tag="true"
-            :options="options"
-        />
+      <div aria-label="课程信息">
+        <n-divider :dashed="true">课程信息</n-divider>
+        <n-space :vertical="true">
+          <n-select v-model:value="courseLocal.info.name" :status="courseLocal.info.name ? `success` : `error`"
+                    placeholder="课程名称（必填）" :filterable="true" :tag="true" :options="courseNameOptions"/>
 
-        <n-input v-model:value="courseLocal.info.code" placeholder="课程代码（选填）"/>
+          <n-input v-model:value="courseLocal.info.code" placeholder="课程代码（选填）"/>
 
-        <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc">
-          <template #label>设置背景颜色: {{ courseLocal.info.bgc }}</template>
-        </n-color-picker>
-      </n-space>
+          <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc">
+            <template #label>设置背景颜色: {{ courseLocal.info.bgc }}</template>
+          </n-color-picker>
+
+          <n-select v-model:value="courseLocal.method" placeholder="授课方式（选填）"
+                    :filterable="true" :tag="true" :clearable="true" :options="methodOptions"/>
+        </n-space>
+      </div>
+
+      <div aria-label="年级（大组）">
+        <n-divider :dashed="true">年级 / 大组</n-divider>
+        <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :options="gradeOptions"/>
+      </div>
     </div>
 
     <div class="course-editor-divider"/>
@@ -51,6 +66,7 @@ const weeks = ref<number[]>([]);
     <div class="course-editor-right">
       <n-divider :dashed="true">选择上课周数</n-divider>
       <WeekSelector v-model:weeks="weeks"></WeekSelector>
+
 
       <n-divider :dashed="true">备注</n-divider>
       <n-input v-model:value="courseLocal.note" placeholder="请输入备注信息（选填）"/>

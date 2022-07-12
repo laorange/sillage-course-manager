@@ -18,10 +18,12 @@ export interface Course {
     "info": CourseInfo,
     "situation": Situation[]
     "grade": string,
+
     "dates": string[],
     "lesson_num": number,
+
     "note": string,
-    "method": string,
+    "method": string | null,
 }
 
 //</editor-fold>
