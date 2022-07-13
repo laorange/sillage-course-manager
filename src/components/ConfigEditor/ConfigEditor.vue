@@ -7,7 +7,7 @@ const store = useStore();
 
 <template>
   <h1>config</h1>
-  <div class="course-editor">
+  <div class="config-editor">
     <div class="responsive-left-part">
       <div aria-label="课程信息">
         <n-divider :dashed="true">课表名称</n-divider>
@@ -23,6 +23,13 @@ const store = useStore();
                        value-format="yyyy-MM-dd"
                        type="date"/>
       </n-config-provider>
+
+      <n-divider :dashed="true">学期最大周数</n-divider>
+      <n-input-number v-model:value="store.config.maxWeekNum"
+                      :update-value-on-input="false" placeholder="n" :min="0">
+        <template #prefix>本学期共</template>
+        <template #suffix>周</template>
+      </n-input-number>
     </div>
 
     <div class="responsive-middle-divider"/>
@@ -49,7 +56,7 @@ const store = useStore();
 </template>
 
 <style scoped>
-.course-editor {
+.config-editor {
   display: flex;
   margin: 10px 30px;
 }

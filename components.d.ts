@@ -18,6 +18,7 @@ declare module '@vue/runtime-core' {
     NDivider: typeof import('naive-ui')['NDivider']
     NDynamicInput: typeof import('naive-ui')['NDynamicInput']
     NInput: typeof import('naive-ui')['NInput']
+    NInputNumber: typeof import('naive-ui')['NInputNumber']
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
     NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']
