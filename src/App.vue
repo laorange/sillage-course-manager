@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import TopTabBar from "./components/TopTabBar.vue";
+import {onMounted} from "vue";
+import {useStore} from "./pinia/useStore";
+
+const store = useStore();
+
+onMounted(() => {
+  document.title = store.config.tableName;
+});
 </script>
 
 <template>

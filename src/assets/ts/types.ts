@@ -36,8 +36,11 @@ export interface LessonConfig {
 }
 
 export interface Config {
+    // 课表名
+    tableName: string;
+
     // 学期开始时间
-    semesterStartDate: dayjs.Dayjs;
+    semesterStartDate: string;
 
     // 学期最大周数
     maxWeekNum: number;
