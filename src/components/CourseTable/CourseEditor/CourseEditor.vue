@@ -53,7 +53,7 @@ const weeks = ref<number[]>([]);
 <template>
   <h3>星期三 &nbsp; 第1节课</h3>
   <div class="course-editor">
-    <div class="course-editor-left">
+    <div class="responsive-left-part">
       <div aria-label="课程信息">
         <n-divider :dashed="true">课程信息</n-divider>
         <n-space :vertical="true">
@@ -71,9 +71,9 @@ const weeks = ref<number[]>([]);
       <WeekSelector v-model:weeks="weeks"/>
     </div>
 
-    <div class="course-editor-divider"/>
+    <div class="responsive-middle-divider"/>
 
-    <div class="course-editor-right">
+    <div class="responsive-right-part">
       <div aria-label="年级（大组）">
         <n-divider :dashed="true">年级 / 大组</n-divider>
         <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :options="gradeOptions"/>
@@ -127,27 +127,5 @@ const weeks = ref<number[]>([]);
 .course-editor {
   display: flex;
   margin: 10px 30px;
-}
-
-.course-editor-left, .course-editor-right {
-  flex: 0 50%;
-  display: flex;
-  flex-direction: column;
-}
-
-.course-editor-divider {
-  margin: 0 2vw;
-  width: 1px;
-  background-color: black;
-}
-
-@media screen and (max-width: 1200px) {
-  .course-editor-divider {
-    display: none;
-  }
-
-  .course-editor {
-    flex-direction: column;
-  }
 }
 </style>
