@@ -128,4 +128,26 @@ const weeks = ref<number[]>([]);
   display: flex;
   margin: 10px 30px;
 }
+
+.responsive-left-part, .responsive-right-part {
+  flex: 0 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.responsive-middle-divider {
+  margin: 0 2vw;
+  width: 1px;
+  background-color: black;
+}
+
+@media screen and (max-width: 1200px) {
+  .responsive-middle-divider {
+    display: none;
+  }
+
+  .course-editor {
+    flex-direction: column;
+  }
+}
 </style>

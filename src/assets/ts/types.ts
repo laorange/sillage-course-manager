@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 //<editor-fold desc="Course">
 export interface Situation {
     "teacher": string | null,

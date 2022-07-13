@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 type State = {
     config: Config
     courses: Course[]
+    grades: string[]
 }
 
 export const useStore = defineStore("counter", {
@@ -28,6 +29,7 @@ export const useStore = defineStore("counter", {
                 },
             },
             courses: [],
+            grades: ["18级", "19级", "20级"],
         };
     },
     getters: {
