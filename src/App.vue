@@ -23,4 +23,9 @@ onMounted(() => {
   text-align: center;
   color: #2c3e50;
 }
+
+:root{
+  --courseCardMinWidth: 150px;
+  --courseCardMinHeight: 150px;
+}
 </style>

@@ -53,4 +53,19 @@ export interface Config {
 
 //</editor-fold>
 
-
+export function getEmptyCourse(): Course {
+    return {
+        "id": NaN,
+        "grade": "",
+        "dates": [],
+        "lessonNum": 1,
+        "note": "",
+        "info": {
+            "name": "",
+            "code": "",
+            "bgc": "#FFFFFF",
+        },
+        "method": "",
+        "situations": [],
+    };
+}

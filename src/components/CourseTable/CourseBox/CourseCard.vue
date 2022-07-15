@@ -6,6 +6,7 @@ import {getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
 import {useStore} from "../../../pinia/useStore";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {parseFontColor} from "../../../assets/ts/useColorParser";
+import ContextMenu from "@imengyu/vue3-context-menu";
 
 const props = defineProps<{ course: Course }>();
 
@@ -16,10 +17,45 @@ const weeks = computed<number[]>(() => props.course.dates.map(d => getWeekAmount
 function getSituationStr(situation: Situation) {
   return [situation.groups.join("&"), situation.teacher, situation.room].filter(s => !!s).join(" ");
 }
+
+function onContextMenu(e: MouseEvent, cSelected: Course) {
+  e.preventDefault();
+  ContextMenu.showContextMenu({
+    x: e.x,
+    y: e.y,
+    items: [
+      {
+        label: "编辑",
+        onClick: () => {
+          alert("编辑" + JSON.stringify(cSelected));
+        },
+      },
+      {
+        label: "复制",
+        onClick: () => {
+          alert("复制" + JSON.stringify(cSelected));
+        },
+      },
+      {
+        label: "剪切",
+        onClick: () => {
+          alert("剪切" + JSON.stringify(cSelected));
+        },
+      },
+      {
+        label: "删除",
+        onClick: () => {
+          alert("删除" + JSON.stringify(cSelected));
+        },
+      },
+    ],
+  });
+}
 </script>
 
 <template>
-  <div class="course-card" :style="{backgroundColor: course.info.bgc, color: parseFontColor(course.info.bgc)}">
+  <div class="course-card" @contextmenu="onContextMenu($event, course)"
+       :style="{backgroundColor: course.info.bgc, color: parseFontColor(course.info.bgc)}">
     <div v-if="course.info.code">{{ course.info.code }}</div>
     <div>{{ course.info.name }}</div>
     <div v-if="course.method">{{ course.method }}</div>
@@ -50,7 +86,8 @@ function getSituationStr(situation: Situation) {
   justify-content: center;
   font-size: 12px;
   user-select: none;
-  min-height: 150px;
+  min-width: var(--courseCardMinWidth);
+  min-height: var(--courseCardMinHeight);
 }
 
 .course-card-situations {

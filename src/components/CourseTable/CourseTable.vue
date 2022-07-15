@@ -34,7 +34,7 @@ const whatDayStrList = Array.from("一二三四五六天");
         <div>{{ lessonConfig.end }}</div>
       </div>
       <div class="course-table-block">
-        <CourseBox :courses="store.courses.concat(store.courses).concat(store.courses)"/>
+        <CourseBox :courses="store.courses"/>
       </div>
     </div>
   </div>
