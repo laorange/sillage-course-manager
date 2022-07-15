@@ -12,13 +12,13 @@ export interface CourseInfo {
 }
 
 export interface Course {
-    "_id": number,
+    "id": number,
     "info": CourseInfo,
     "situations": Situation[]
     "grade": string,
 
     "dates": string[],
-    "lesson_num": number,
+    "lessonNum": number,
 
     "note": string,
     "method": string | null,
