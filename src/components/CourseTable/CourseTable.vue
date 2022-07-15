@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {onBeforeRouteUpdate, useRoute} from "vue-router";
 import {useStore} from "../../pinia/useStore";
+import CourseBox from "./CourseBox/CourseBox.vue";
+import {ref} from "vue";
 
 onBeforeRouteUpdate((to) => {
   if (!(to.query.grade)) {
@@ -11,28 +13,38 @@ onBeforeRouteUpdate((to) => {
 const route = useRoute();
 const store = useStore();
 
+const whatDay = ref<number>(1);
+const whatDayStrList = Array.from("一二三四五六天");
 </script>
 
 <template>
-    <h1>{{store.config.tableName}}</h1>
+  <h1>{{ store.config.tableName }}</h1>
   <h2>{{ route.query.grade }}</h2>
 
+  <div class="what-day-selector">
+    <van-tabs type="card" color="#27a05a" v-model:active="whatDay">
+      <van-tab :title="`星期${whatDayStr}`" v-for="(whatDayStr, wdi) in whatDayStrList" :key="`星期${whatDayStr}`" @click="whatDay=wdi+1"/>
+    </van-tabs>
+  </div>
+
   <div class="course-table-body">
-    <div class="course-table-row" v-for="(lessonConfig, row0) in store.config.lessonConfigs" :key="`lessonNum${lessonNum}`">
+    <div class="course-table-row" v-for="(lessonConfig, row0) in store.config.lessonConfigs" :key="`lessonNum${row0}`">
       <div class="lesson-start-end-time">
         <div>{{ lessonConfig.start }}</div>
         <div>{{ lessonConfig.end }}</div>
       </div>
-      <div class="course-table-block" v-for="whatDay in 7" :key="`whatDay${whatDay}`">
-        <div class="course-card">
-          {{ row0 + 1 }} - {{ whatDay }}
-        </div>
+      <div class="course-table-block">
+        <CourseBox :courses="store.courses.concat(store.courses).concat(store.courses)"/>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.what-day-selector {
+  margin-bottom: 10px;
+}
+
 .course-table-body {
   display: flex;
   flex-direction: column;
@@ -43,15 +55,15 @@ const store = useStore();
 .course-table-row {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  min-height: 10vh;
+  justify-content: flex-start;
+  min-height: 50px;
   border-bottom: black 1px solid;
 }
 
 .lesson-start-end-time {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   border-right: black 1px solid;
 }
 
