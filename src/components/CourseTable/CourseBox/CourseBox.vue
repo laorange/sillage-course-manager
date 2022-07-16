@@ -3,7 +3,7 @@ import {Course} from "../../../assets/ts/types";
 import CourseCard from "./CourseCard.vue";
 import EmptyCourseCard from "./EmptyCourseCard.vue";
 
-withDefaults(defineProps<{ courses: Course[], columnThreshold?: number }>(), {columnThreshold: 3});
+withDefaults(defineProps<{ courses: Course[], whatDay: number, lessonNum: number, columnThreshold?: number }>(), {columnThreshold: 3});
 
 </script>
 
@@ -11,15 +11,15 @@ withDefaults(defineProps<{ courses: Course[], columnThreshold?: number }>(), {co
   <div class="course-box">
     <!-- 如果此处没有课 -->
     <div class="box-no-more-than-three" v-if="courses.length===0">
-      <EmptyCourseCard/>
+      <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
     </div>
 
     <!-- 3节课以内 -->
     <div class="box-no-more-than-three" v-if="courses.length>0 && courses.length<=columnThreshold">
       <div class="card-no-more-than-three" v-for="course in courses" :key="course.id">
-        <course-card :course="course"/>
+        <CourseCard :what-day="whatDay" :lesson-num="lessonNum" :course="course" :courses-existing="courses"/>
       </div>
-      <EmptyCourseCard/>
+      <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
     </div>
 
     <!-- 4节及以上的课 -->
@@ -27,9 +27,9 @@ withDefaults(defineProps<{ courses: Course[], columnThreshold?: number }>(), {co
       <div class="card-more-than-three"
            :style="{flex: `0 0 ${Math.round(100/courses.length)}`}"
            v-for="cLoop in courses" :key="cLoop.id">
-        <course-card :course="cLoop"/>
+        <CourseCard :what-day="whatDay" :lesson-num="lessonNum" :course="cLoop" :courses-existing="courses"/>
       </div>
-      <EmptyCourseCard/>
+      <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
     </div>
   </div>
 </template>

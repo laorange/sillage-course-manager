@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import {useStore} from "../../../pinia/useStore";
 import useContextMenu from "../../../assets/ts/useContextMenu";
+import {Course} from "../../../assets/ts/types";
 
 const {$contextmenu} = useContextMenu();
 
-const props = defineProps<{ whatDay: number, lessonNum: number }>();
+const props = defineProps<{ whatDay: number, lessonNum: number, coursesExisting: Course[] }>();
 
 const store = useStore();
+
+function addInfoInThisBlockIntoStore() {
+  store.editor.coursesExisting = props.coursesExisting;
+  store.editor.whatDay = props.whatDay;
+  store.editor.lessonNum = props.lessonNum;
+}
 
 function onContextMenu(e: MouseEvent) {
   e.preventDefault();
@@ -18,17 +25,18 @@ function onContextMenu(e: MouseEvent) {
       {
         label: "新增课程",
         onClick: () => {
-          store.editor.show = true;
           store.editor.mode = "add";
-          store.editor.whatDay = props.whatDay;
-          store.editor.lessonNum = props.lessonNum;
+          store.editor.show = true;
+          store.editor.courseEditing = null;
+          addInfoInThisBlockIntoStore();
         },
       },
       {
         label: "粘贴",
-        disabled: true,
+        disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
         onClick: () => {
-          alert("粘贴");
+          store.editor.show = true;
+          addInfoInThisBlockIntoStore();
         },
       },
     ],

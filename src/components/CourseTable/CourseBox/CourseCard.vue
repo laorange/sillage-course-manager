@@ -8,7 +8,7 @@ import getWeeksString from "../../../assets/ts/getWeeksString";
 import {parseFontColor} from "../../../assets/ts/useColorParser";
 import useContextMenu from "../../../assets/ts/useContextMenu";
 
-const props = defineProps<{ course: Course }>();
+const props = defineProps<{ course: Course, coursesExisting: Course[], whatDay: number, lessonNum: number }>();
 
 const store = useStore();
 const {$contextmenu} = useContextMenu();
@@ -19,7 +19,7 @@ function getSituationStr(situation: Situation) {
   return [situation.groups.join("&"), situation.teacher, situation.room].filter(s => !!s).join(" ");
 }
 
-function onContextMenu(e: MouseEvent, cSelected: Course) {
+function onContextMenu(e: MouseEvent) {
   e.preventDefault();
   $contextmenu({
     x: e.pageX,
@@ -28,25 +28,35 @@ function onContextMenu(e: MouseEvent, cSelected: Course) {
       {
         label: "编辑",
         onClick: () => {
-          alert("编辑" + JSON.stringify(cSelected));
+          store.editor.show = true;
+          store.editor.mode = "edit";
+          store.editor.whatDay = props.whatDay;
+          store.editor.lessonNum = props.lessonNum;
+          store.editor.courseEditing = props.course;
+          store.editor.coursesExisting = props.coursesExisting;
         },
       },
       {
         label: "复制",
         onClick: () => {
-          alert("复制" + JSON.stringify(cSelected));
+          store.editor.mode = "copy";
+          store.editor.courseEditing = props.course;
         },
       },
       {
         label: "剪切",
         onClick: () => {
-          alert("剪切" + JSON.stringify(cSelected));
+          store.editor.mode = "cut";
+          store.editor.courseEditing = props.course;
         },
       },
       {
         label: "删除",
         onClick: () => {
-          alert("删除" + JSON.stringify(cSelected));
+          if (confirm("是否删除？")) {
+            store.courses = store.courses.filter(c => c.id !== props.course.id);
+            alert("提交后端");
+          }
         },
       },
     ],

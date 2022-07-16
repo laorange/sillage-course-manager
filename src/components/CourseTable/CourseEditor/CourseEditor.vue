@@ -6,17 +6,16 @@ import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption} from "naive-ui";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 
-const props = defineProps<{ course: Course }>();
+const props = defineProps<{ course: Course, whatDay: number, lessonNum: number }>();
 const emits = defineEmits(["update:course"]);
 
 const courseLocal = ref<Course>(JSON.parse(JSON.stringify(props.course)));
 const whetherChange = ref<boolean>(false);
 watch(() => courseLocal.value, () => !whetherChange.value ? whetherChange.value = true : undefined, {deep: true});
 
+const whatDayStrList = Array.from("一二三四五六天");
+
 const handlers = {
-  quit() {
-    alert("退出课程编辑页面");
-  },
   restore() {
     whetherChange.value = false;
     courseLocal.value = JSON.parse(JSON.stringify(props.course));
@@ -51,7 +50,7 @@ const weeks = ref<number[]>([]);
 </script>
 
 <template>
-  <h3>星期三 &nbsp; 第1节课</h3>
+  <h3>星期{{ whatDayStrList[whatDay - 1] }} &nbsp; 第{{ lessonNum }}节课</h3>
   <div class="course-editor">
     <div class="responsive-left-part">
       <div aria-label="课程信息">
@@ -114,10 +113,6 @@ const weeks = ref<number[]>([]);
           </template>
           您在本页面所做的修改将会丢失，是否继续？
         </n-popconfirm>
-      </template>
-
-      <template v-else>
-        <n-button @click="handlers.quit()">关闭本页面</n-button>
       </template>
     </n-space>
   </n-config-provider>

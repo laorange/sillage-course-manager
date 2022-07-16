@@ -4,6 +4,7 @@ import {useStore} from "../../pinia/useStore";
 import CourseBox from "./CourseBox/CourseBox.vue";
 import {computed, ref} from "vue";
 import {CourseFilter} from "../../assets/ts/courseFilter";
+import CourseEditDialog from "./CourseEditDialog.vue";
 
 onBeforeRouteUpdate((to) => {
   if (!(to.query.grade)) {
@@ -14,20 +15,22 @@ onBeforeRouteUpdate((to) => {
 const route = useRoute();
 const store = useStore();
 
-const whatDay = ref<number>(1);
+const whatDayFrom0 = ref<number>(0);
 const whatDayStrList = Array.from("一二三四五六天");
 
 const courseGradeFilter = computed<CourseFilter>(() => (new CourseFilter(store.courses)).filterByGrade(route.query.grade as string));
-const courseGradeWhatDayFilter = computed<CourseFilter>(() => (new CourseFilter(courseGradeFilter.value)).filterByWhatDay(whatDay.value));
+const courseGradeWhatDayFilter = computed<CourseFilter>(() => (new CourseFilter(courseGradeFilter.value)).filterByWhatDay(whatDayFrom0.value + 1));
 </script>
 
 <template>
+  <CourseEditDialog/>
+
   <h1>{{ store.config.tableName }}</h1>
   <h2>{{ route.query.grade }}</h2>
 
   <div class="what-day-selector">
-    <van-tabs type="card" color="#27a05a" v-model:active="whatDay">
-      <van-tab :title="`星期${whatDayStr}`" v-for="(whatDayStr, wdi) in whatDayStrList" :key="`星期${whatDayStr}`" @click="whatDay=wdi+1"/>
+    <van-tabs type="card" color="#27a05a" v-model:active="whatDayFrom0">
+      <van-tab :title="`星期${whatDayStr}`" v-for="whatDayStr in whatDayStrList" :key="`星期${whatDayStr}`"/>
     </van-tabs>
   </div>
 
@@ -38,7 +41,8 @@ const courseGradeWhatDayFilter = computed<CourseFilter>(() => (new CourseFilter(
         <div>{{ lessonConfig.end }}</div>
       </div>
       <div class="course-table-block">
-        <CourseBox :courses="courseGradeWhatDayFilter.filterByLessonNum(row0+1).value"/>
+        <CourseBox :what-day="whatDayFrom0 + 1" :lesson-num="row0+1"
+                   :courses="courseGradeWhatDayFilter.filterByLessonNum(row0+1).value"/>
       </div>
     </div>
   </div>
