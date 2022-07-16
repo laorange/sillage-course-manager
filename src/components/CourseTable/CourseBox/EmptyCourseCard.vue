@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useStore} from "../../../pinia/useStore";
 import useContextMenu from "../../../assets/ts/useContextMenu";
-import {Course} from "../../../assets/ts/types";
+import {Course, getEmptyCourse} from "../../../assets/ts/types";
 
 const {$contextmenu} = useContextMenu();
 
@@ -27,7 +27,7 @@ function onContextMenu(e: MouseEvent) {
         onClick: () => {
           store.editor.mode = "add";
           store.editor.show = true;
-          store.editor.courseEditing = null;
+          store.editor.courseEditing = getEmptyCourse();
           addInfoInThisBlockIntoStore();
         },
       },

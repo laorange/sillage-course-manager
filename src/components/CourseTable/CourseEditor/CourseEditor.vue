@@ -5,6 +5,11 @@ import WeekSelector from "./WeekSelector.vue";
 import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption} from "naive-ui";
 import getWeeksString from "../../../assets/ts/getWeeksString";
+import {useStore} from "../../../pinia/useStore";
+import {getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
+import dayjs from "dayjs";
+
+const store = useStore();
 
 const props = defineProps<{ course: Course, whatDay: number, lessonNum: number }>();
 const emits = defineEmits(["update:course"]);
@@ -45,8 +50,7 @@ const methodOptions = ref<SelectOption[]>(["理论课", "习题课", "实验课"
   return {label: m, value: m};
 }));
 
-
-const weeks = ref<number[]>([]);
+const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
 </script>
 
 <template>

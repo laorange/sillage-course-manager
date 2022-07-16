@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {Config, Course} from "../assets/ts/types";
+import {Config, Course, getEmptyCourse} from "../assets/ts/types";
 import dayjs from "dayjs";
 
 type State = {
@@ -11,7 +11,7 @@ type State = {
         mode: "none" | "add" | "copy" | "cut" | "edit"
         whatDay: number
         lessonNum: number
-        courseEditing: Course | null
+        courseEditing: Course
         coursesExisting: Course[]
     }
 }
@@ -110,7 +110,7 @@ export const useStore = defineStore("counter", {
                 mode: "add",
                 whatDay: 1,
                 lessonNum: 1,
-                courseEditing: null,
+                courseEditing: getEmptyCourse(),
                 coursesExisting: [],
             },
         };

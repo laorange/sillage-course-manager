@@ -5,6 +5,10 @@ import LessonConfigEditor from "./LessonConfigEditor.vue";
 import GradeEditor from "./GradeEditor.vue";
 
 const store = useStore();
+
+function isNotMonday(d: string) {
+  return (new Date(d)).getDay() !== 1;
+}
 </script>
 
 <template>
@@ -21,14 +25,15 @@ const store = useStore();
         <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
           <n-date-picker v-model:formatted-value="store.config.semesterStartDate"
                          placement="bottom"
-                         :is-date-disabled="d => (new Date(d)).getDay() !== 1"
+                         :is-date-disabled="isNotMonday"
+                         :actions="[]"
                          value-format="yyyy-MM-dd"
                          type="date"/>
         </n-config-provider>
 
         <n-divider :dashed="true">学期最大周数</n-divider>
         <n-input-number v-model:value="store.config.maxWeekNum"
-                        :update-value-on-input="false" placeholder="n" :min="0">
+                        :update-value-on-input="false" placeholder="n" :min="1">
           <template #prefix>本学期共</template>
           <template #suffix>周</template>
         </n-input-number>
