@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import ContextMenu from "@imengyu/vue3-context-menu";
+import {useStore} from "../../../pinia/useStore";
+import useContextMenu from "../../../assets/ts/useContextMenu";
+
+const {$contextmenu} = useContextMenu();
+
+const props = defineProps<{ whatDay: number, lessonNum: number }>();
+
+const store = useStore();
 
 function onContextMenu(e: MouseEvent) {
   e.preventDefault();
-  ContextMenu.showContextMenu({
-    x: e.x,
-    y: e.y,
+  console.log(e);
+  $contextmenu({
+    x: e.pageX,
+    y: e.pageY,
     items: [
       {
         label: "新增课程",
         onClick: () => {
-          alert("新增课程");
+          store.editor.show = true;
+          store.editor.mode = "add";
+          store.editor.whatDay = props.whatDay;
+          store.editor.lessonNum = props.lessonNum;
         },
       },
       {

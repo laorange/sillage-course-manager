@@ -6,11 +6,12 @@ import {getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
 import {useStore} from "../../../pinia/useStore";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {parseFontColor} from "../../../assets/ts/useColorParser";
-import ContextMenu from "@imengyu/vue3-context-menu";
+import useContextMenu from "../../../assets/ts/useContextMenu";
 
 const props = defineProps<{ course: Course }>();
 
 const store = useStore();
+const {$contextmenu} = useContextMenu();
 
 const weeks = computed<number[]>(() => props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
 
@@ -20,9 +21,9 @@ function getSituationStr(situation: Situation) {
 
 function onContextMenu(e: MouseEvent, cSelected: Course) {
   e.preventDefault();
-  ContextMenu.showContextMenu({
-    x: e.x,
-    y: e.y,
+  $contextmenu({
+    x: e.pageX,
+    y: e.pageY,
     items: [
       {
         label: "编辑",
