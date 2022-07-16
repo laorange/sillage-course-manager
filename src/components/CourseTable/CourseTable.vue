@@ -2,7 +2,8 @@
 import {onBeforeRouteUpdate, useRoute} from "vue-router";
 import {useStore} from "../../pinia/useStore";
 import CourseBox from "./CourseBox/CourseBox.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import {CourseFilter} from "../../assets/ts/courseFilter";
 
 onBeforeRouteUpdate((to) => {
   if (!(to.query.grade)) {
@@ -15,6 +16,9 @@ const store = useStore();
 
 const whatDay = ref<number>(1);
 const whatDayStrList = Array.from("一二三四五六天");
+
+const courseGradeFilter = computed<CourseFilter>(() => (new CourseFilter(store.courses)).filterByGrade(route.query.grade as string));
+const courseGradeWhatDayFilter = computed<CourseFilter>(() => (new CourseFilter(courseGradeFilter.value)).filterByWhatDay(whatDay.value));
 </script>
 
 <template>
@@ -34,7 +38,7 @@ const whatDayStrList = Array.from("一二三四五六天");
         <div>{{ lessonConfig.end }}</div>
       </div>
       <div class="course-table-block">
-        <CourseBox :courses="store.courses"/>
+        <CourseBox :courses="courseGradeWhatDayFilter.filterByLessonNum(row0+1).value"/>
       </div>
     </div>
   </div>
