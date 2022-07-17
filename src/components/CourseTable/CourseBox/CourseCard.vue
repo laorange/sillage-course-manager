@@ -7,10 +7,12 @@ import {useStore} from "../../../pinia/useStore";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {parseFontColor} from "../../../assets/ts/useColorParser";
 import useContextMenu from "../../../assets/ts/useContextMenu";
+import {useMessage} from "naive-ui";
 
 const props = defineProps<{ course: Course, coursesExisting: Course[], whatDay: number, lessonNum: number }>();
 
 const store = useStore();
+const message = useMessage();
 const {$contextmenu} = useContextMenu();
 
 const weeks = computed<number[]>(() => props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
@@ -41,6 +43,7 @@ function onContextMenu(e: MouseEvent) {
         onClick: () => {
           store.editor.mode = "copy";
           store.editor.courseEditing = props.course;
+          message.success("已复制");
         },
       },
       {
@@ -48,6 +51,7 @@ function onContextMenu(e: MouseEvent) {
         onClick: () => {
           store.editor.mode = "cut";
           store.editor.courseEditing = props.course;
+          message.success("已剪切");
         },
       },
       {
@@ -65,27 +69,28 @@ function onContextMenu(e: MouseEvent) {
 </script>
 
 <template>
-  <div class="course-card" @contextmenu="onContextMenu($event, course)"
+
+  <div class="course-card" @contextmenu="onContextMenu($event)"
        :style="{backgroundColor: course.info.bgc, color: parseFontColor(course.info.bgc)}">
-    <div v-if="course.info.code">{{ course.info.code }}</div>
-    <div>{{ course.info.name }}</div>
-    <div v-if="course.method">{{ course.method }}</div>
-    <div>{{ getWeeksString(weeks) }}</div>
+      <div v-if="course.info.code">{{ course.info.code }}</div>
+      <div>{{ course.info.name }}</div>
+      <div v-if="course.method">{{ course.method }}</div>
+      <div>{{ getWeeksString(weeks) }}</div>
 
-    <!--  situations  -->
-    <template v-if="course.situations.length===1">
-      <div v-if="course.situations[0].groups.length">{{ course.situations[0].groups.join("&") }}</div>
-      <div v-if="course.situations[0].teacher">{{ course.situations[0].teacher }}</div>
-      <div v-if="course.situations[0].room">{{ course.situations[0].room }}</div>
-    </template>
-    <template v-if="course.situations.length>=2">
-      <div class="course-card-situations" v-for="(situation, index) in course.situations"
-           :key="`c${course.id}s${index}${getSituationStr(situation)}`">
-        {{ getSituationStr(situation) }}
-      </div>
-    </template>
+      <!--  situations  -->
+      <template v-if="course.situations.length===1">
+        <div v-if="course.situations[0].groups.length">{{ course.situations[0].groups.join("&") }}</div>
+        <div v-if="course.situations[0].teacher">{{ course.situations[0].teacher }}</div>
+        <div v-if="course.situations[0].room">{{ course.situations[0].room }}</div>
+      </template>
+      <template v-if="course.situations.length>=2">
+        <div class="course-card-situations" v-for="(situation, index) in course.situations"
+             :key="`c${course.id}s${index}${getSituationStr(situation)}`">
+          {{ getSituationStr(situation) }}
+        </div>
+      </template>
 
-    <div v-if="course.note">{{ course.note }}</div>
+      <div v-if="course.note">{{ course.note }}</div>
   </div>
 </template>
 

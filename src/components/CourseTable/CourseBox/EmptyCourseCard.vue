@@ -2,12 +2,23 @@
 import {useStore} from "../../../pinia/useStore";
 import useContextMenu from "../../../assets/ts/useContextMenu";
 import {Course, getEmptyCourse} from "../../../assets/ts/types";
+import {useMessage} from "naive-ui";
+import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
+import dayjs from "dayjs";
+import {computed} from "vue";
 
 const {$contextmenu} = useContextMenu();
 
 const props = defineProps<{ whatDay: number, lessonNum: number, coursesExisting: Course[] }>();
 
 const store = useStore();
+const message = useMessage();
+
+const newDates = computed<string[]>(() => store.editor.courseEditing.dates.map(
+    (d: string) => {
+      const preDate = dayjs(d);
+      return formatDate(preDate.add(props.whatDay - getIsoWeekDay(preDate), "day"));
+    }));
 
 function addInfoInThisBlockIntoStore() {
   store.editor.coursesExisting = props.coursesExisting;
@@ -17,7 +28,6 @@ function addInfoInThisBlockIntoStore() {
 
 function onContextMenu(e: MouseEvent) {
   e.preventDefault();
-  console.log(e);
   $contextmenu({
     x: e.pageX,
     y: e.pageY,
@@ -35,7 +45,20 @@ function onContextMenu(e: MouseEvent) {
         label: "粘贴",
         disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
         onClick: () => {
-          store.editor.show = true;
+          if (store.editor.mode === "cut") {
+            store.editor.mode = "none";
+            alert("提交后端");
+            store.editor.courseEditing.lessonNum = props.lessonNum;
+            store.editor.courseEditing.dates = newDates.value;
+          } else if (store.editor.mode === "copy") {
+            // store.editor.mode = "none";  // 是否清空复制状态
+            alert("提交后端");
+            store.courses.push({
+              ...store.editor.courseEditing,
+              lessonNum: props.lessonNum,
+              dates: newDates.value,
+            });
+          }
           addInfoInThisBlockIntoStore();
         },
       },

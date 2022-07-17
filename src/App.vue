@@ -12,7 +12,9 @@ onMounted(() => {
 
 <template>
   <TopTabBar/>
-  <router-view/>
+  <n-message-provider>
+    <router-view/>
+  </n-message-provider>
 </template>
 
 <style>
@@ -24,7 +26,7 @@ onMounted(() => {
   color: #2c3e50;
 }
 
-:root{
+:root {
   --courseCardMinWidth: 150px;
   --courseCardMinHeight: 150px;
 }
