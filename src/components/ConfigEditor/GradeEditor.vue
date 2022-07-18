@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {useStore} from "../../pinia/useStore";
+import {useRouter} from "vue-router";
 
 const store = useStore();
+const router = useRouter();
 
 const newGrade = ref<string>("");
 const existingGradeNewName = ref<string>("");
-const selectedGradeIndex = ref<number | null>(null);
-watch(() => selectedGradeIndex.value, (i) => existingGradeNewName.value = (store.grades[i ?? -1]) ?? "");
+const selectedGrade = ref<string | null>(null);
 
-const gradeOptions = computed(() => store.grades.map((g, index) => {
-  return {label: g, value: index};
+const gradeOptions = computed(() => store.grades.map(g => {
+  return {label: g, value: g};
 }));
 
 const validators = {
@@ -28,8 +29,9 @@ const validators = {
 const handlers = {
   addNewGrade() {
     if (validators.whetherNewGradeIsValid()) {
-      store.grades.push(newGrade.value);
+      let query = {grade: newGrade.value};
       newGrade.value = "";
+      router.push({name: "course", query});
     }
   },
   keyUpHandler(event: KeyboardEvent) {
@@ -39,22 +41,24 @@ const handlers = {
     }
   },
   cancelSelectionOfGrade() {
-    selectedGradeIndex.value = null;
+    selectedGrade.value = null;
   },
   renameSelectedGrade() {
-    if ((store.grades[selectedGradeIndex.value ?? -1]) ?? false) {
+    if (selectedGrade.value) {
       alert("提交后端");
       for (const course of store.courses) {
-        if (course.grade === store.grades[selectedGradeIndex.value ?? -1]) {
+        if (course.grade === selectedGrade.value) {
           course.grade = existingGradeNewName.value;
         }
       }
+      handlers.cancelSelectionOfGrade();
     }
   },
   deleteSelectedGrade() {
-    if ((store.grades[selectedGradeIndex.value ?? -1]) ?? false) {
+    if (selectedGrade.value) {
       alert("提交后端");
-      store.courses = store.courses.filter(c => c.grade !== store.grades[selectedGradeIndex.value ?? -1]);
+      store.courses = store.courses.filter(c => c.grade !== selectedGrade.value);
+      handlers.cancelSelectionOfGrade();
     }
   },
 };
@@ -65,30 +69,33 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
 
 <template>
   <div class="grade-editor">
-    <n-divider>新增课表</n-divider>
+    <n-divider>新增 年级/大组</n-divider>
     <n-input-group>
       <n-input v-model:value="newGrade"
                type="text" :clearable="true"
-               placeholder="请输入将要添加的课表名称"/>
+               placeholder="请输入将要添加的年级/大组的名称"/>
       <n-button type="primary" :disabled="!validators.whetherNewGradeIsValid()" @click="handlers.addNewGrade()">确定新增</n-button>
     </n-input-group>
 
     <h3 v-show="!validators.whetherNewGradeIsUnique()" style="color: red">该课表名称已存在！</h3>
 
     <template v-if="store.grades.length>=1">
-      <n-divider>现有课表</n-divider>
+      <n-divider>已有年级/大组</n-divider>
       <n-space justify="center" :vertical="true">
-        <n-select v-model:value="selectedGradeIndex" :options="gradeOptions"
+        <n-select v-model:value="selectedGrade" :options="gradeOptions" :clearable="true"
                   :placeholder="`请选择 [当前共有${store.grades.length}张表]`" style="text-align: center"/>
 
-        <n-space v-if="!!selectedGradeIndex || selectedGradeIndex===0" justify="center">
+        <n-space v-if="selectedGrade" justify="center">
           <n-popconfirm @positive-click="handlers.renameSelectedGrade" positive-text="确定" negative-text="取消">
             <template #trigger>
               <n-button type="warning">重命名</n-button>
             </template>
             <n-space :vertical="true">
-              <div>警告：该课表所属的所有课程的信息均会随之改变</div>
-              <n-input v-model:value="existingGradeNewName"/>
+              <div>
+                警告：所有<strong>{{ selectedGrade }}</strong>的课程都变为<strong>{{ existingGradeNewName ? existingGradeNewName : `重命名后的年级` }}</strong>的课程
+              </div>
+              <div>该操作不可撤销，是否继续？</div>
+              <n-input v-model:value="existingGradeNewName" placeholder="请在此处输入新的名称"/>
             </n-space>
           </n-popconfirm>
 
@@ -96,10 +103,10 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
             <template #trigger>
               <n-button type="error">删除</n-button>
             </template>
-            警告：该课表所属的所有课程的信息均会被删除，该操作不可撤销，是否继续？
+            警告：所有<strong>{{ selectedGrade }}</strong>的课程都将被删除，该操作不可撤销，是否继续？
           </n-popconfirm>
 
-          <n-button type="primary" @click="handlers.cancelSelectionOfGrade">取消选择</n-button>
+          <n-button type="info" @click="handlers.cancelSelectionOfGrade">取消选择</n-button>
         </n-space>
       </n-space>
     </template>
