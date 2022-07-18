@@ -48,7 +48,7 @@ function onContextMenu(e: MouseEvent) {
         onClick: () => {
           dialog.info({
             title: "提示",
-            content: `“${store.editor.courseEditing.info.name}”将会被${store.editor.mode === "cut" ? "剪切" : "复制"}到此处，是否继续？`,
+            content: `“${store.editor.courseEditing.info.name}”将会被${store.editor.mode === "cut" ? "剪切" : "复制"}到 ${store.editorWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
             positiveText: "确定",
             negativeText: "取消",
             onPositiveClick: () => {

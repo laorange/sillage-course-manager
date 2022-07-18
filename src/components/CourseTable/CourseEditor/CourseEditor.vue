@@ -15,15 +15,13 @@ const store = useStore();
 const message = useMessage();
 const route = useRoute();
 
-const props = defineProps<{ course: Course, whatDay: number, lessonNum: number }>();
+const props = defineProps<{ course: Course }>();
 
 const courseLocal = ref<Course>({
   ...JSON.parse(JSON.stringify(props.course)),
-  lessonNum: props.lessonNum,
+  lessonNum: store.editor.lessonNum,
   grade: route.query.grade ?? "",
 });
-
-const whatDayStrList = Array.from("一二三四五六天");
 
 const handlers = {
   restore() {
@@ -74,14 +72,14 @@ watch(() => courseLocal.value.info.name, (name) => {
 
 const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
 watch(() => weeks.value, (ws) => {
-  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(props.whatDay - 1, "day")));
+  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editor.whatDay - 1, "day")));
 }, {deep: true});
 
 const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));
 </script>
 
 <template>
-  <h3>星期{{ whatDayStrList[whatDay - 1] }} &nbsp; 第{{ lessonNum }}节课</h3>
+  <h3>{{ store.editorWhatDayStr }} &nbsp; 第{{ store.editor.lessonNum }}节课</h3>
   <div class="course-editor">
     <div class="responsive-left-part">
       <div aria-label="课程信息">

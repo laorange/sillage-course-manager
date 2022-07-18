@@ -30,9 +30,7 @@ const title = computed(() => {
 <template>
   <n-drawer v-model:show="store.editor.show" height="100%" placement="top" :close-on-esc="true">
     <n-drawer-content :title="title" :closable="true">
-      <CourseEditor :course="store.editor.courseEditing"
-                    :what-day="store.editor.whatDay"
-                    :lesson-num="store.editor.lessonNum"/>
+      <CourseEditor :course="store.editor.courseEditing"/>
     </n-drawer-content>
   </n-drawer>
 </template>

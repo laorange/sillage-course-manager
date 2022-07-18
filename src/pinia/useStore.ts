@@ -118,6 +118,10 @@ export const useStore = defineStore("counter", {
         semesterStartDay(): dayjs.Dayjs {
             return dayjs(this.config.semesterStartDate);
         },
+        editorWhatDayStr(): string {
+            const whatDayStrList = Array.from("一二三四五六天");
+            return `星期${whatDayStrList[this.editor.whatDay - 1]}`;
+        },
         grades(): string[] {
             let _grades: string[] = [];
             for (const courses of this.courses) {
