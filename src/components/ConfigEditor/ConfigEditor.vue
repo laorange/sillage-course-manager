@@ -9,6 +9,15 @@ const store = useStore();
 function isNotMonday(d: string) {
   return (new Date(d)).getDay() !== 1;
 }
+
+const handlers = {
+  upload() {
+    alert("提交后端");
+  },
+  reset() {
+    alert("重新请求后端");
+  },
+};
 </script>
 
 <template>
@@ -48,9 +57,27 @@ function isNotMonday(d: string) {
       </div>
     </div>
 
-
     <div class="responsive-single-column">
       <GradeEditor/>
+
+      <n-divider/>
+
+      <n-space justify="center" align="center">
+        <n-popconfirm @positive-click="handlers.upload()" positive-text="确定" negative-text="取消">
+          <template #trigger>
+            <n-button type="success" size="large">保存</n-button>
+          </template>
+          即将把当前数据提交到服务器，是否继续？
+        </n-popconfirm>
+
+        <n-popconfirm @positive-click="handlers.reset()" positive-text="确定" negative-text="取消">
+          <template #trigger>
+            <n-button type="default" size="large">取消</n-button>
+          </template>
+          当前未保存的信息将会丢失，是否继续？
+        </n-popconfirm>
+
+      </n-space>
     </div>
   </div>
 </template>
