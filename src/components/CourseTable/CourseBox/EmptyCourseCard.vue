@@ -2,7 +2,7 @@
 import {useStore} from "../../../pinia/useStore";
 import useContextMenu from "../../../assets/ts/useContextMenu";
 import {Course, getEmptyCourse} from "../../../assets/ts/types";
-import {useMessage} from "naive-ui";
+import {useDialog, useMessage} from "naive-ui";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import {computed} from "vue";
@@ -13,6 +13,7 @@ const props = defineProps<{ whatDay: number, lessonNum: number, coursesExisting:
 
 const store = useStore();
 const message = useMessage();
+const dialog = useDialog();
 
 const newDates = computed<string[]>(() => store.editor.courseEditing.dates.map(
     (d: string) => {
@@ -45,21 +46,29 @@ function onContextMenu(e: MouseEvent) {
         label: "粘贴",
         disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
         onClick: () => {
-          if (store.editor.mode === "cut") {
-            store.editor.mode = "none";
-            alert("提交后端");
-            store.editor.courseEditing.lessonNum = props.lessonNum;
-            store.editor.courseEditing.dates = newDates.value;
-          } else if (store.editor.mode === "copy") {
-            // store.editor.mode = "none";  // 是否清空复制状态
-            alert("提交后端");
-            store.courses.push({
-              ...store.editor.courseEditing,
-              lessonNum: props.lessonNum,
-              dates: newDates.value,
-            });
-          }
-          addInfoInThisBlockIntoStore();
+          dialog.info({
+            title: "提示",
+            content: `“${store.editor.courseEditing.info.name}”将会被${store.editor.mode === "cut" ? "剪切" : "复制"}到此处，是否继续？`,
+            positiveText: "确定",
+            negativeText: "取消",
+            onPositiveClick: () => {
+              if (store.editor.mode === "cut") {
+                store.editor.mode = "none";
+                alert("提交后端");
+                store.editor.courseEditing.lessonNum = props.lessonNum;
+                store.editor.courseEditing.dates = newDates.value;
+              } else if (store.editor.mode === "copy") {
+                // store.editor.mode = "none";  // 是否清空复制状态
+                alert("提交后端");
+                store.courses.push({
+                  ...store.editor.courseEditing,
+                  lessonNum: props.lessonNum,
+                  dates: newDates.value,
+                });
+              }
+              addInfoInThisBlockIntoStore();
+            },
+          });
         },
       },
     ],
