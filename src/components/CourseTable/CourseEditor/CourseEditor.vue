@@ -79,7 +79,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
 </script>
 
 <template>
-  <h3>{{ store.editorWhatDayStr }} &nbsp; 第{{ store.editor.lessonNum }}节课</h3>
+  <h2 style="text-align: center">{{ store.editorWhatDayStr }} &nbsp; 第{{ store.editor.lessonNum }}节课</h2>
   <div class="course-editor">
     <div class="responsive-left-part">
       <div aria-label="课程信息">
@@ -111,7 +111,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
       </div>
 
       <div aria-label="班级（小组）">
-        <n-divider :dashed="true">班级 / 小组
+        <n-divider :dashed="true">教学计划
           <span style="color: red" v-show="courseLocal.situations.length===0">(需要至少添加一个)</span>
         </n-divider>
         <SituationEditor v-model:situations="courseLocal.situations"/>
@@ -157,6 +157,8 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
           将会把变更提交数据库，是否继续？
         </n-popconfirm>
       </template>
+
+      <div v-show="!whetherCourseIsValid">（无法提交：因为有未填必填项，已用<span style="color: red">红色</span>标注）</div>
     </n-space>
   </n-config-provider>
 </template>
