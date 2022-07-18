@@ -1,11 +1,10 @@
 import {defineStore} from "pinia";
-import {Config, Course, getEmptyCourse} from "../assets/ts/types";
+import {Config, Course, CourseInfo, getEmptyCourse} from "../assets/ts/types";
 import dayjs from "dayjs";
 
 type State = {
     config: Config
     courses: Course[]
-    grades: string[]
     editor: {
         show: boolean,
         mode: "none" | "add" | "copy" | "cut" | "edit"
@@ -41,73 +40,73 @@ export const useStore = defineStore("counter", {
                 "grade": "19级",
                 "dates": [
                     "2022-09-23",
-                    "2022-09-30"
+                    "2022-09-30",
                 ],
                 "lessonNum": 3,
                 "note": "这是一条备注信息",
                 "info": {
                     "name": "数据库设计",
                     "code": "CS21",
-                    "bgc": "#9934CD"
+                    "bgc": "#9934CD",
                 },
                 "method": "实验课",
                 "situations": [
                     {
                         "teacher": "王老师",
-                        "room": "210教室",
+                        "room": "120教室",
                         "groups": [
                             "A班",
-                            "B班"
-                        ]
+                            "B班",
+                        ],
                     },
                     {
                         "teacher": "李老师",
-                        "room": "210教室",
+                        "room": "122教室",
                         "groups": [
                             "C班",
-                            "D班"
-                        ]
-                    }
-                ]
+                            "D班",
+                        ],
+                    },
+                ],
             },
                 {
                     "id": 2,
                     "grade": "18级",
                     "dates": [
                         "2022-10-10",
-                        "2022-10-17"
+                        "2022-10-17",
                     ],
                     "lessonNum": 3,
                     "note": "这是一条备注信息",
                     "info": {
                         "name": "确认与验证",
                         "code": "CS41",
-                        "bgc": "#00B050"
+                        "bgc": "#00B050",
                     },
                     "method": "理论课",
                     "situations": [
                         {
                             "teacher": "王老师",
-                            "room": "210教室",
+                            "room": "212教室",
                             "groups": [
                                 "A班",
-                                "B班"
-                            ]
+                                "B班",
+                            ],
                         },
                         {
                             "teacher": "李老师",
                             "room": "210教室",
                             "groups": [
                                 "C班",
-                                "D班"
-                            ]
-                        }
-                    ]
+                                "D班",
+                            ],
+                        },
+                    ],
                 }],
-            grades: ["18级", "19级", "20级"],
+
             editor: {
                 show: false,
-                mode: "add",
+                mode: "none",
                 whatDay: 1,
                 lessonNum: 1,
                 courseEditing: getEmptyCourse(),
@@ -118,6 +117,84 @@ export const useStore = defineStore("counter", {
     getters: {
         semesterStartDay(): dayjs.Dayjs {
             return dayjs(this.config.semesterStartDate);
+        },
+        grades(): string[] {
+            let _grades: string[] = [];
+            for (const courses of this.courses) {
+                if (!!courses.grade && _grades.indexOf(courses.grade) === -1) {
+                    _grades.push(courses.grade);
+                }
+            }
+            return _grades.sort();
+        },
+        groupDict(): { [grade: string]: string[] } {
+            const _groupDict: { [grade: string]: string[] } = {};
+            for (const courses of this.courses) {
+                for (const situation of courses.situations) {
+                    if (!(_groupDict[courses.grade] instanceof Array)) {
+                        _groupDict[courses.grade] = [];
+                    }
+                    for (const group of situation.groups) {
+                        if (_groupDict[courses.grade].indexOf(group) === -1) {
+                            _groupDict[courses.grade].push(group);
+                        }
+                    }
+                }
+            }
+            for (const groups of Object.values(_groupDict)) {
+                groups.sort();
+            }
+            return _groupDict;
+        },
+        rooms(): string[] {
+            const _rooms: string[] = [];
+            for (const courses of this.courses) {
+                for (const situation of courses.situations) {
+                    if (!!situation.room && _rooms.indexOf(situation.room) === -1) {
+                        _rooms.push(situation.room);
+                    }
+                }
+            }
+            return _rooms.sort();
+        },
+        teachers(): string[] {
+            const _teachers: string[] = [];
+            for (const courses of this.courses) {
+                for (const situation of courses.situations) {
+                    if (!!situation.teacher && _teachers.indexOf(situation.teacher) === -1) {
+                        _teachers.push(situation.teacher);
+                    }
+                }
+            }
+            return _teachers.sort();
+        },
+        methods(): string[] {
+            let _methods: string[] = [];
+            for (const courses of this.courses) {
+                if (!!courses.method && _methods.indexOf(courses.method) === -1) {
+                    _methods.push(courses.method);
+                }
+            }
+            return _methods.sort();
+        },
+        courseNames(): string[] {
+            const _courseNames: string[] = [];
+            for (const courses of this.courses) {
+                if (!!courses.info.name && _courseNames.indexOf(courses.info.name) === -1) {
+                    _courseNames.push(courses.info.name);
+                }
+            }
+            return _courseNames.sort();
+        },
+        courseInfoDict(): { [key: string]: CourseInfo } {
+            // 提取现有课程的课程信息，(若有多个同名课程，只会记录首次出现的课程信息)
+            const courseInfoDict: { [key: string]: CourseInfo } = {};
+            for (const courses of this.courses) {
+                if (!courseInfoDict[courses.info.name]) {
+                    courseInfoDict[courses.info.name] = courses.info;
+                }
+            }
+            return courseInfoDict;
         },
     },
     actions: {},

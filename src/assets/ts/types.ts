@@ -61,7 +61,7 @@ export function getEmptyCourse(): Course {
         "lessonNum": 1,
         "note": "",
         "info": {
-            "name": "",
+            "name": "请输入课程名称",
             "code": "",
             "bgc": "#FFFFFF",
         },

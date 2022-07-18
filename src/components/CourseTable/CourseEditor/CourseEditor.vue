@@ -16,7 +16,6 @@ const message = useMessage();
 const route = useRoute();
 
 const props = defineProps<{ course: Course, whatDay: number, lessonNum: number }>();
-const emits = defineEmits(["update:course"]);
 
 const courseLocal = ref<Course>({
   ...JSON.parse(JSON.stringify(props.course)),
@@ -29,6 +28,7 @@ const whatDayStrList = Array.from("一二三四五六天");
 const handlers = {
   restore() {
     courseLocal.value = JSON.parse(JSON.stringify(props.course));
+    store.editor.show = false;
   },
   update() {
     if (!whetherCourseIsValid) {
@@ -37,7 +37,7 @@ const handlers = {
       message.warning("没有发现任何更改~");
     } else {
       alert("提交后端");
-      emits("update:course", courseLocal.value);
+      store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
       store.editor.show = false;
     }
   },
@@ -52,24 +52,25 @@ const handlers = {
   },
 };
 
-const courseNameOptions = ref<SelectOption[]>([
-  {
-    label: "数据库设计",
-    value: "数据库设计",
-  },
-  {
-    label: "确认与验证",
-    value: "确认与验证",
-  }]);
+const courseNameOptions = computed<SelectOption[]>(() => store.courseNames.map(n => {
+  return {label: n, value: n};
+}));
 
-const gradeOptions = ref<SelectOption[]>([{
-  label: "18级",
-  value: "18级",
-}]);
+const gradeOptions = computed<SelectOption[]>(() => store.grades.map(g => {
+  return {label: g, value: g};
+}));
 
-const methodOptions = ref<SelectOption[]>(["理论课", "习题课", "实验课", "考试"].map(m => {
+const methodOptions = computed<SelectOption[]>(() => store.methods.map(m => {
   return {label: m, value: m};
 }));
+
+// 监视课程信息，如果重新选择，则检索当前已有课程信息，帮助用户填写课程代码、背景颜色
+watch(() => courseLocal.value.info.name, (name) => {
+  if (!!store.courseInfoDict[name]) {
+    courseLocal.value.info.code = store.courseInfoDict[name].code;
+    courseLocal.value.info.bgc = store.courseInfoDict[name].bgc;
+  }
+});
 
 const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
 watch(() => weeks.value, (ws) => {
@@ -108,12 +109,12 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
     <div class="responsive-right-part">
       <div aria-label="年级（大组）">
         <n-divider :dashed="true">年级 / 大组</n-divider>
-        <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :options="gradeOptions"/>
+        <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :disabled="store.editor.mode==='add'" :options="gradeOptions"/>
       </div>
 
       <div aria-label="班级（小组）">
         <n-divider :dashed="true">班级 / 小组
-        <span style="color: red" v-show="courseLocal.situations.length===0">(需要至少添加一个)</span>
+          <span style="color: red" v-show="courseLocal.situations.length===0">(需要至少添加一个)</span>
         </n-divider>
         <SituationEditor v-model:situations="courseLocal.situations"/>
       </div>

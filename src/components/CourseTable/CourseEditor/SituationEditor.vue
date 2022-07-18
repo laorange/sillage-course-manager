@@ -2,9 +2,14 @@
 import {Situation} from "../../../assets/ts/types";
 import {computed} from "vue";
 import {SelectOption} from "naive-ui";
+import {useStore} from "../../../pinia/useStore";
+import {useRoute} from "vue-router";
 
 const props = defineProps<{ situations: Situation[] }>();
 const emits = defineEmits(["update:situations"]);
+
+const store = useStore();
+const route = useRoute();
 
 const situationsLocal = computed<Situation[]>({
   get: () => props.situations,
@@ -19,24 +24,17 @@ function createSituation(): Situation {
   };
 }
 
-const teacherOptions: SelectOption[] = [
-  {label: "张三", value: "张三"},
-  {label: "李四", value: "李四"},
-];
+const teacherOptions = computed<SelectOption[]>(() => store.teachers.map(t => {
+  return {label: t, value: t};
+}));
 
-const groupOptions: SelectOption[] = [
-  {label: "A班", value: "A班"},
-  {label: "B班", value: "B班"},
-  {label: "C班", value: "C班"},
-  {label: "D班", value: "D班"},
-];
+const groupOptions = computed<SelectOption[]>(() => (store.groupDict[route.query.grade as string] ?? []).map(g => {
+  return {label: g, value: g};
+}));
 
-const roomOptions: SelectOption[] = [
-  {label: "101", value: "101"},
-  {label: "120", value: "120"},
-  {label: "210", value: "210"},
-  {label: "220", value: "220"},
-];
+const roomOptions = computed<SelectOption[]>(() => store.rooms.map(r => {
+  return {label: r, value: r};
+}));
 </script>
 
 <template>

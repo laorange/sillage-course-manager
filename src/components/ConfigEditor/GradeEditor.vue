@@ -43,12 +43,18 @@ const handlers = {
   },
   renameSelectedGrade() {
     if ((store.grades[selectedGradeIndex.value ?? -1]) ?? false) {
-      store.grades[selectedGradeIndex.value ?? -1] = existingGradeNewName.value;
+      alert("提交后端");
+      for (const course of store.courses) {
+        if (course.grade === store.grades[selectedGradeIndex.value ?? -1]) {
+          course.grade = existingGradeNewName.value;
+        }
+      }
     }
   },
   deleteSelectedGrade() {
     if ((store.grades[selectedGradeIndex.value ?? -1]) ?? false) {
-      store.grades = store.grades.filter((_, index) => index != selectedGradeIndex.value ?? -1);
+      alert("提交后端");
+      store.courses = store.courses.filter(c => c.grade !== store.grades[selectedGradeIndex.value ?? -1]);
     }
   },
 };
