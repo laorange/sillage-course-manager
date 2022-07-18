@@ -1,33 +1,54 @@
 <script setup lang="ts">
 import {Course} from "../../../assets/ts/types";
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import WeekSelector from "./WeekSelector.vue";
 import SituationEditor from "./SituationEditor.vue";
-import {zhCN, dateZhCN, SelectOption} from "naive-ui";
+import {zhCN, dateZhCN, SelectOption, useMessage} from "naive-ui";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {useStore} from "../../../pinia/useStore";
-import {getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
+import {formatDate, getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
+import {isValidCourse} from "../../../assets/ts/courseFilter";
+import {useRoute} from "vue-router";
 
 const store = useStore();
+const message = useMessage();
+const route = useRoute();
 
 const props = defineProps<{ course: Course, whatDay: number, lessonNum: number }>();
 const emits = defineEmits(["update:course"]);
 
-const courseLocal = ref<Course>(JSON.parse(JSON.stringify(props.course)));
-const whetherChange = ref<boolean>(false);
-watch(() => courseLocal.value, () => !whetherChange.value ? whetherChange.value = true : undefined, {deep: true});
+const courseLocal = ref<Course>({
+  ...JSON.parse(JSON.stringify(props.course)),
+  lessonNum: props.lessonNum,
+  grade: route.query.grade ?? "",
+});
 
 const whatDayStrList = Array.from("一二三四五六天");
 
 const handlers = {
   restore() {
-    whetherChange.value = false;
     courseLocal.value = JSON.parse(JSON.stringify(props.course));
   },
   update() {
-    alert("提交后端");
-    emits("update:course", courseLocal.value);
+    if (!whetherCourseIsValid) {
+      message.error("请将数据补充完整(红色边框代表必填项)");
+    } else if (JSON.stringify(props.course) === JSON.stringify(courseLocal.value)) {
+      message.warning("没有发现任何更改~");
+    } else {
+      alert("提交后端");
+      emits("update:course", courseLocal.value);
+      store.editor.show = false;
+    }
+  },
+  add() {
+    if (!whetherCourseIsValid) {
+      message.error("请将数据补充完整(红色边框代表必填项)");
+    } else {
+      alert("提交后端，并获取后端返回的新id");
+      store.courses.push(courseLocal.value);
+      store.editor.show = false;
+    }
   },
 };
 
@@ -51,6 +72,11 @@ const methodOptions = ref<SelectOption[]>(["理论课", "习题课", "实验课"
 }));
 
 const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
+watch(() => weeks.value, (ws) => {
+  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(props.whatDay - 1, "day")));
+}, {deep: true});
+
+const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));
 </script>
 
 <template>
@@ -70,7 +96,10 @@ const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoD
         </n-space>
       </div>
 
-      <n-divider :dashed="true">上课周数: {{ getWeeksString(weeks) }}</n-divider>
+      <n-divider :dashed="true">上课周数:
+        <span v-if="weeks.length">{{ getWeeksString(weeks) }}</span>
+        <span v-else style="color: red">请在下方的穿梭框中选择</span>
+      </n-divider>
       <WeekSelector v-model:weeks="weeks"/>
     </div>
 
@@ -83,14 +112,16 @@ const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoD
       </div>
 
       <div aria-label="班级（小组）">
-        <n-divider :dashed="true">班级 / 小组</n-divider>
+        <n-divider :dashed="true">班级 / 小组
+        <span style="color: red" v-show="courseLocal.situations.length===0">(需要至少添加一个)</span>
+        </n-divider>
         <SituationEditor v-model:situations="courseLocal.situations"/>
       </div>
 
       <div aria-label="课程颜色">
         <n-divider :dashed="true">课程颜色</n-divider>
         <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc">
-          <template #label>点此设置背景颜色</template>
+          <template #label>点此设置背景颜色：{{ courseLocal.info.bgc }}</template>
         </n-color-picker>
       </div>
 
@@ -103,10 +134,10 @@ const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoD
 
   <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
     <n-space justify="center" align="center">
-      <template v-if="whetherChange">
+      <template v-if="store.editor.mode==='edit'">
         <n-popconfirm @positive-click="handlers.update()">
           <template #trigger>
-            <n-button type="success">保存更改</n-button>
+            <n-button type="success" :disabled="!whetherCourseIsValid">保存更改</n-button>
           </template>
           将会把变更提交数据库，是否继续？
         </n-popconfirm>
@@ -116,6 +147,15 @@ const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoD
             <n-button type="warning">取消修改</n-button>
           </template>
           您在本页面所做的修改将会丢失，是否继续？
+        </n-popconfirm>
+      </template>
+
+      <template v-if="store.editor.mode==='add'">
+        <n-popconfirm @positive-click="handlers.add()">
+          <template #trigger>
+            <n-button type="success" :disabled="!whetherCourseIsValid">确认新增</n-button>
+          </template>
+          将会把变更提交数据库，是否继续？
         </n-popconfirm>
       </template>
     </n-space>

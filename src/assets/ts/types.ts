@@ -65,7 +65,7 @@ export function getEmptyCourse(): Course {
             "code": "",
             "bgc": "#FFFFFF",
         },
-        "method": "",
+        "method": null,
         "situations": [],
     };
 }

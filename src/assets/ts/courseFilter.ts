@@ -37,3 +37,17 @@ export class CourseFilter {
         return new CourseFilter(this.value.filter(filter));
     }
 }
+
+export function isValidCourse(course: Course): boolean {
+    for (const situation of course.situations) {
+        if (situation?.groups.length === 0) {
+            return false
+        }
+    }
+    return !!course.grade
+        && !!course.dates.length
+        && !!course.lessonNum
+        && !!course.info.name
+        && !!course.info.bgc
+        && !!course.situations.length;
+}
