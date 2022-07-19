@@ -69,3 +69,24 @@ export function getEmptyCourse(): Course {
         "situations": [],
     };
 }
+
+export interface SpreadsheetRow {
+    "cells": { [cell: number]: { "text": string, editable?: boolean } };
+}
+
+export interface SpreadsheetRows {
+    len?: number,
+
+    [row: number]: SpreadsheetRow,
+}
+
+export interface SpreadsheetData {
+    "name": string
+    "rows": SpreadsheetRows[],
+    "cols": { "len": number },
+    "freeze"?: string,
+    "styles"?: any[],
+    "merges"?: any[],
+    "validations"?: any[],
+    "autofilter"?: {},
+}

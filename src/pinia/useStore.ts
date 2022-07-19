@@ -29,11 +29,8 @@ export const useStore = defineStore("counter", {
                     {"start": "15:35", "end": "17:10"},
                     {"start": "18:30", "end": "20:05"},
                 ],
-                "languages": ["English"],
-                "dictionary": {
-                    "高等数学": ["Advanced mathematics"],
-                    "大学物理": ["College Physics"],
-                },
+                "languages": ["English", "Français"],
+                "dictionary": {},
             },
             courses: [{
                 "id": 1,
@@ -146,6 +143,7 @@ export const useStore = defineStore("counter", {
                 }
             }
             for (const groups of Object.values(_groupDict)) {
+                // 对每个年级的分组们 按字符(编码)排序
                 groups.sort();
             }
             return _groupDict;
@@ -199,6 +197,17 @@ export const useStore = defineStore("counter", {
                 }
             }
             return courseInfoDict;
+        },
+        dictionaryItems(): string[] {
+            return [this.config.tableName]
+                .concat(this.grades)
+                .concat((Array.from(new Set(Object.values(this.groupDict).reduce(
+                    (out, groups) => out.concat(groups), [])),
+                ).sort()))
+                .concat(this.courseNames)
+                .concat(this.teachers)
+                .concat(this.rooms)
+                .concat(Array.from("一二三四五六日").map(w => `星期${w}`));
         },
     },
     actions: {},

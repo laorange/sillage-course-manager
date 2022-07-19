@@ -11,10 +11,13 @@
     "@imengyu/vue3-context-menu": "^1.0.9",
     "axios": "^0.27.2",
     "dayjs": "^1.11.3",
+    "less": "^4.1.3",
+    "less-loader": "^11.0.0",
     "pinia": "^2.0.14",
     "vant": "^3.5.2",
     "vue": "^3.2.25",
-    "vue-router": "^4.1.1"
+    "vue-router": "^4.1.1",
+    "x-data-spreadsheet": "^1.1.9"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",

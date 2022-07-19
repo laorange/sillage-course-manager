@@ -3,6 +3,7 @@ import {zhCN, dateZhCN} from "naive-ui";
 import {useStore} from "../../pinia/useStore";
 import LessonConfigEditor from "./LessonConfigEditor.vue";
 import GradeEditor from "./GradeEditor.vue";
+import DictionaryEditor from "./DictionaryEditor.vue";
 
 const store = useStore();
 
@@ -59,6 +60,10 @@ const handlers = {
 
     <div class="responsive-single-column">
       <GradeEditor/>
+
+      <n-divider/>
+
+      <DictionaryEditor/>
 
       <n-divider/>
 
