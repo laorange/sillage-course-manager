@@ -8,7 +8,7 @@ const route = useRoute();
 
 const activeTabName = computed<string>(() => {
   let routeName = (route.name ?? "") as string;
-  if (["docs", "config"].indexOf(routeName) !== -1) {
+  if (["home", "config"].indexOf(routeName) !== -1) {
     return routeName;
   }
   return `grade${route.query.grade}`;
@@ -25,7 +25,7 @@ const gradeTabList = computed<string[]>(() => {
 
 <template>
   <van-tabs type="card" color="#27a05a" :active="activeTabName" :key="`tabs${gradeTabList.join(',')}`">
-    <van-tab title="使用说明" name="docs" :to="{name:'docs'}"/>
+    <van-tab title="首页" name="home" :to="{name:'home'}"/>
     <van-tab v-for="grade in gradeTabList" :name="`grade${grade}`" :key="`grade${grade}`" :title="grade" :to="{name: 'course', query:{grade}}"/>
     <van-tab title="系统设置" name="config" :to="{name:'config'}"/>
   </van-tabs>

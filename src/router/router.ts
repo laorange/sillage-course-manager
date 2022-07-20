@@ -1,5 +1,5 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
-import Docs from "../components/Docs/Docs.vue";
+import HomePage from "../components/Home/HomePage.vue";
 import ConfigEditor from "../components/ConfigEditor/ConfigEditor.vue";
 import CourseTable from "../components/CourseTable/CourseTable.vue";
 
@@ -7,9 +7,9 @@ import CourseTable from "../components/CourseTable/CourseTable.vue";
 const routes: RouteRecordRaw[] = [
     {
         path: "/",
-        name: "docs",
-        component: Docs,
-        alias: "/docs/",
+        name: "home",
+        component: HomePage,
+        alias: "/home/",
     },
     {
         path: "/config/",

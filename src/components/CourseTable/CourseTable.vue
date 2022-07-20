@@ -8,7 +8,7 @@ import CourseEditDialog from "./CourseEditDialog.vue";
 
 onBeforeRouteUpdate((to) => {
   if (!(to.query.grade)) {
-    return {name: "docs"};
+    return {name: "home"};
   }
 });
 
