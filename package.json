@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@datagridxl/datagridxl2": "^2.0.10",
     "@imengyu/vue3-context-menu": "^1.0.9",
     "axios": "^0.27.2",
     "dayjs": "^1.11.3",

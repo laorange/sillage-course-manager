@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
 import {computed} from "vue";
+import DictionaryEditor from "./DictionaryEditor.vue";
 
 const props = defineProps<{ show: boolean }>();
 const emits = defineEmits(["update:show"]);
@@ -25,12 +26,16 @@ const languageOptions = [
   return {label: l, value: l};
 });
 
+function onCancel() {
+  showLocal.value = false;
+}
+
 </script>
 
 <template>
   <n-drawer v-model:show="showLocal" height="100%" placement="top">
-    <n-drawer-content title="外语词典配置" :closable="true">
-      外语词典
+    <n-drawer-content title="外语词典配置">
+      <DictionaryEditor :on-cancel="onCancel"/>
     </n-drawer-content>
   </n-drawer>
 
