@@ -6,14 +6,17 @@ import {useDialog, useMessage} from "naive-ui";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import {computed} from "vue";
+import {useRoute} from "vue-router";
 
 const {$contextmenu} = useContextMenu();
 
 const props = defineProps<{ whatDay: number, lessonNum: number, coursesExisting: Course[] }>();
 
 const store = useStore();
+const route = useRoute();
 const message = useMessage();
 const dialog = useDialog();
+const grade = computed<string>(() => (route.query.grade ?? "无效年级") as string);
 
 const newDates = computed<string[]>(() => store.editor.courseEditing.dates.map(
     (d: string) => {
@@ -57,11 +60,13 @@ function onContextMenu(e: MouseEvent) {
                 alert("提交后端");
                 store.editor.courseEditing.lessonNum = props.lessonNum;
                 store.editor.courseEditing.dates = newDates.value;
+                store.editor.courseEditing.grade = grade.value;
               } else if (store.editor.mode === "copy") {
                 // store.editor.mode = "none";  // 是否清空复制状态
                 alert("提交后端");
                 store.courses.push({
                   ...store.editor.courseEditing,
+                  grade: grade.value,
                   lessonNum: props.lessonNum,
                   dates: newDates.value,
                 });
