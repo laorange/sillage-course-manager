@@ -29,7 +29,7 @@ export const useStore = defineStore("counter", {
                     {"start": "15:35", "end": "17:10"},
                     {"start": "18:30", "end": "20:05"},
                 ],
-                "languages": ["English", "Français"],
+                "languages": ["英语", "法语"],
                 "dictionary": {},
             },
             courses: [{

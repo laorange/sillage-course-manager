@@ -3,9 +3,12 @@ import {zhCN, dateZhCN} from "naive-ui";
 import {useStore} from "../../pinia/useStore";
 import LessonConfigEditor from "./LessonConfigEditor.vue";
 import GradeEditor from "./GradeEditor.vue";
-import DictionaryEditor from "./DictionaryEditor.vue";
+import LanguageEditor from "./LanguageEditor.vue";
+import {ref} from "vue";
 
 const store = useStore();
+
+const showDictionaryEditor = ref<boolean>(false);
 
 function isNotMonday(d: string) {
   return (new Date(d)).getDay() !== 1;
@@ -61,9 +64,9 @@ const handlers = {
     <div class="responsive-single-column">
       <GradeEditor/>
 
-      <n-divider/>
+      <n-divider>国际化设置</n-divider>
 
-      <DictionaryEditor/>
+      <LanguageEditor v-model:show="showDictionaryEditor"/>
 
       <n-divider/>
 
