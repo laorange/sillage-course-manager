@@ -85,7 +85,8 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
       <div aria-label="课程信息">
         <n-divider :dashed="true">课程信息</n-divider>
         <n-space :vertical="true">
-          <n-select v-model:value="courseLocal.info.name" :status="courseLocal.info.name ? `success` : `error`"
+          <n-select v-model:value="courseLocal.info.name"
+                    :status="(!!courseLocal.info.name && courseLocal.info.name!==`请输入课程名称`) ? `success` : `error`"
                     placeholder="课程名称（必填）" :filterable="true" :tag="true" :options="courseNameOptions"/>
 
           <n-input v-model:value="courseLocal.info.code" placeholder="课程代码（选填）"/>
@@ -111,9 +112,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
       </div>
 
       <div aria-label="班级（小组）">
-        <n-divider :dashed="true">教学计划
-          <span style="color: red" v-show="courseLocal.situations.length===0">(需要至少添加一个)</span>
-        </n-divider>
+        <n-divider :dashed="true">教学计划</n-divider>
         <SituationEditor v-model:situations="courseLocal.situations"/>
       </div>
 
@@ -136,16 +135,9 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
       <template v-if="store.editor.mode==='edit'">
         <n-popconfirm @positive-click="handlers.update()">
           <template #trigger>
-            <n-button type="success" :disabled="!whetherCourseIsValid">保存更改</n-button>
+            <n-button type="success" :disabled="!whetherCourseIsValid">提交更改</n-button>
           </template>
           将会把变更提交数据库，是否继续？
-        </n-popconfirm>
-
-        <n-popconfirm @positive-click="handlers.restore()">
-          <template #trigger>
-            <n-button type="warning">取消修改</n-button>
-          </template>
-          您在本页面所做的修改将会丢失，是否继续？
         </n-popconfirm>
       </template>
 
@@ -158,7 +150,14 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
         </n-popconfirm>
       </template>
 
-      <div v-show="!whetherCourseIsValid">（无法提交：因为有未填必填项，已用<span style="color: red">红色</span>标注）</div>
+      <div v-show="!whetherCourseIsValid">（已用<span style="color: red">红色</span>标注了<strong>未完成</strong>的必填项）</div>
+
+      <n-popconfirm @positive-click="handlers.restore()">
+        <template #trigger>
+          <n-button type="warning">取消修改</n-button>
+        </template>
+        您在本页面所做的修改将会丢失，是否继续？
+      </n-popconfirm>
     </n-space>
   </n-config-provider>
 </template>
