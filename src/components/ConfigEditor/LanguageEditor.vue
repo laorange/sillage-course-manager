@@ -34,16 +34,19 @@ const languageOptions = [
     </n-drawer-content>
   </n-drawer>
 
-  <n-space justify="center" align="center">
-    <n-select
-        v-model:value="store.config.languages"
-        :filterable="true"
-        :multiple="true"
-        :tag="true"
-        :options="languageOptions"
-    />
-    <n-button type="info" @click="showLocal=true">配置词典</n-button>
-  </n-space>
+  <div>
+    <div style="margin-bottom: 10px">
+      <n-select
+          v-model:value="store.config.languages"
+          placeholder="点击此处可选择外语。若预设中无您所需，可直接输入"
+          :filterable="true"
+          :multiple="true"
+          :tag="true"
+          :options="languageOptions"
+      />
+    </div>
+    <n-button type="info" @click="showLocal=true" v-show="store.config.languages.length!==0">配置词典</n-button>
+  </div>
 </template>
 
 <style scoped>
