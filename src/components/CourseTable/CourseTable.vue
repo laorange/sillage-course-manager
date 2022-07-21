@@ -4,6 +4,8 @@ import {useStore} from "../../pinia/useStore";
 import {computed} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
+import dayjs from "dayjs";
+import {getIsoWeekDay} from "../../assets/ts/datetimeUtils";
 
 const route = useRoute();
 const store = useStore();
@@ -19,7 +21,7 @@ const coursesOfThisGrade = computed(() => store.courseOfCurrentSemester.ofGrade(
   <h1>{{ store.config.tableName }}</h1>
   <h2>{{ route.query.grade }}</h2>
 
-  <WeeklyCourseTable :courses="coursesOfThisGrade.value" :editable="store.authenticated"/>
+  <WeeklyCourseTable :what-day="getIsoWeekDay(dayjs())" :courses="coursesOfThisGrade.value" :editable="store.authenticated"/>
 </template>
 
 <style scoped>
