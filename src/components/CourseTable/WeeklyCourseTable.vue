@@ -6,7 +6,7 @@ import CourseBox from "./CourseBox/CourseBox.vue";
 import {CourseDecorator} from "../../assets/ts/courseDecorator";
 
 const props = withDefaults(defineProps<{ courses: Course[], whatDay?: number, editable?: boolean }>(),
-    {whatDay: 1, editable: false});
+    {whatDay: 1});
 
 const store = useStore();
 
@@ -17,9 +17,18 @@ const whatDay = computed<number>({
 });
 
 const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(whatDay.value)));
+
+const editable = ref<boolean>(false);
 </script>
 
 <template>
+  <div style="margin-bottom: 10px">
+    <n-switch v-model:value="editable">
+      <template #checked>编辑权限：开</template>
+      <template #unchecked>编辑权限：关</template>
+    </n-switch>
+  </div>
+
   <div class="what-day-selector">
     <van-tabs type="card" color="#32647d" :background="`transparent`" v-model:active="whatDayFrom0">
       <van-tab :title="`星期${whatDayStr}`" v-for="whatDayStr in Array.from(`一二三四五六天`)" :key="`星期${whatDayStr}`"/>

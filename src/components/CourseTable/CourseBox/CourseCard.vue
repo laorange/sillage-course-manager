@@ -9,7 +9,7 @@ import {parseFontColor} from "../../../assets/ts/useColorParser";
 import useContextMenu from "../../../assets/ts/useContextMenu";
 import {useDialog, useMessage} from "naive-ui";
 
-const props = defineProps<{ course: Course, coursesExisting: Course[], whatDay: number, lessonNum: number }>();
+const props = defineProps<{ course: Course, coursesExisting: Course[], whatDay: number, lessonNum: number, editable?: boolean }>();
 
 const store = useStore();
 const message = useMessage();
@@ -23,61 +23,62 @@ function getSituationStr(situation: Situation) {
 }
 
 function onContextMenu(e: MouseEvent) {
-  e.preventDefault();
-  $contextmenu({
-    x: e.pageX,
-    y: e.pageY,
-    items: [
-      {
-        label: "编辑",
-        onClick: () => {
-          store.editor.show = true;
-          store.editor.mode = "edit";
-          store.editor.whatDay = props.whatDay;
-          store.editor.lessonNum = props.lessonNum;
-          store.editor.courseEditing = props.course;
-          store.editor.coursesExisting = props.coursesExisting;
+  if (props.editable) {
+    e.preventDefault();
+    $contextmenu({
+      x: e.pageX,
+      y: e.pageY,
+      items: [
+        {
+          label: "编辑",
+          onClick: () => {
+            store.editor.show = true;
+            store.editor.mode = "edit";
+            store.editor.whatDay = props.whatDay;
+            store.editor.lessonNum = props.lessonNum;
+            store.editor.courseEditing = props.course;
+            store.editor.coursesExisting = props.coursesExisting;
+          },
         },
-      },
-      {
-        label: "复制",
-        onClick: () => {
-          store.editor.mode = "copy";
-          store.editor.courseEditing = props.course;
-          message.success("已复制");
+        {
+          label: "复制",
+          onClick: () => {
+            store.editor.mode = "copy";
+            store.editor.courseEditing = props.course;
+            message.success("已复制");
+          },
         },
-      },
-      {
-        label: "剪切",
-        onClick: () => {
-          store.editor.mode = "cut";
-          store.editor.courseEditing = props.course;
-          message.success("已剪切");
+        {
+          label: "剪切",
+          onClick: () => {
+            store.editor.mode = "cut";
+            store.editor.courseEditing = props.course;
+            message.success("已剪切");
+          },
         },
-      },
-      {
-        label: "删除",
-        onClick: () => {
-          dialog.warning({
-            title: "请注意",
-            content: `这节“${props.course.info.name}”将会被删除，是否继续？`,
-            positiveText: "确定",
-            negativeText: "取消",
-            onPositiveClick: () => {
-              alert("提交后端");
-              message.success("删除成功");
-              store.courses = store.courses.filter(c => c.id !== props.course.id);
-            },
-          });
+        {
+          label: "删除",
+          onClick: () => {
+            dialog.warning({
+              title: "请注意",
+              content: `这节“${props.course.info.name}”将会被删除，是否继续？`,
+              positiveText: "确定",
+              negativeText: "取消",
+              onPositiveClick: () => {
+                alert("提交后端");
+                message.success("删除成功");
+                store.courses = store.courses.filter(c => c.id !== props.course.id);
+              },
+            });
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
+  }
 }
 </script>
 
 <template>
-
   <div class="course-card" @contextmenu="onContextMenu($event)"
        :style="{backgroundColor: course.info.bgc, color: parseFontColor(course.info.bgc)}">
     <div v-if="course.info.code">{{ course.info.code }}</div>
@@ -109,7 +110,6 @@ function onContextMenu(e: MouseEvent) {
   height: 100%;
   justify-content: center;
   font-size: 12px;
-  user-select: none;
   min-width: var(--courseCardMinWidth);
   min-height: var(--courseCardMinHeight);
 }

@@ -3,21 +3,23 @@ import {Course} from "../../../assets/ts/types";
 import CourseCard from "./CourseCard.vue";
 import EmptyCourseCard from "./EmptyCourseCard.vue";
 
-withDefaults(defineProps<{ courses: Course[], whatDay: number, lessonNum: number, editable?: boolean }>(), {editable: false});
+defineProps<{ courses: Course[], whatDay: number, lessonNum: number, editable?: boolean }>();
 
 </script>
 
 <template>
   <!-- 如果此处没有课 -->
   <div class="course-box" v-if="courses.length===0">
-    <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
+    <template v-if="editable">
+      <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
+    </template>
   </div>
 
   <div class="course-box" v-else>
     <div class="course-card-container" v-for="course in courses" :key="course.id">
-      <CourseCard :what-day="whatDay" :lesson-num="lessonNum" :course="course" :courses-existing="courses"/>
+      <CourseCard :what-day="whatDay" :lesson-num="lessonNum" :course="course" :courses-existing="courses" :editable="editable"/>
     </div>
-    <div class="empty-course-card">
+    <div class="empty-course-card" v-if="editable">
       <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
     </div>
   </div>
@@ -35,6 +37,7 @@ withDefaults(defineProps<{ courses: Course[], whatDay: number, lessonNum: number
   width: 100%;
   height: 100%;
   overflow-x: auto;
+  min-height: 150px;
 }
 
 .course-card-container {

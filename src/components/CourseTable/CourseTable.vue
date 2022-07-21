@@ -19,7 +19,7 @@ const coursesOfThisGrade = computed(() => store.courseOfCurrentSemester.ofGrade(
   <h1>{{ store.config.tableName }}</h1>
   <h2>{{ route.query.grade }}</h2>
 
-  <WeeklyCourseTable :courses="coursesOfThisGrade.value"/>
+  <WeeklyCourseTable :courses="coursesOfThisGrade.value" :editable="store.authenticated"/>
 </template>
 
 <style scoped>
