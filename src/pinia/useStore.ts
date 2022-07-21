@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {Config, Course, CourseInfo, getEmptyCourse} from "../assets/ts/types";
 import dayjs from "dayjs";
+import {CourseDecorator} from "../assets/ts/courseDecorator";
 
 type State = {
     config: Config
@@ -15,7 +16,7 @@ type State = {
     }
 }
 
-export const useStore = defineStore("counter", {
+export const useStore = defineStore("store", {
     state: (): State => {
         return {
             config: {
@@ -208,6 +209,18 @@ export const useStore = defineStore("counter", {
                 .concat(this.teachers)
                 .concat(this.rooms)
                 .concat(Array.from("一二三四五六日").map(w => `星期${w}`));
+        },
+        courseOfCurrentSemester(): CourseDecorator {
+            return (new CourseDecorator(this.courses))
+                .isSameOrAfter(this.semesterStartDay)
+                .before(this.semesterStartDay.add(this.config.maxWeekNum, "week"));
+        },
+        gradeCourseDictOfCurrentSemester(): { [grade: string]: Course[] } {
+            const _dict: { [grade: string]: Course[] } = {};
+            for (const grade of this.grades) {
+                _dict[grade] = this.courseOfCurrentSemester.ofGrade(grade).value;
+            }
+            return _dict;
         },
     },
     actions: {},

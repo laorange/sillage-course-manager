@@ -3,7 +3,7 @@ import {onBeforeRouteUpdate, useRoute} from "vue-router";
 import {useStore} from "../../pinia/useStore";
 import CourseBox from "./CourseBox/CourseBox.vue";
 import {computed, ref} from "vue";
-import {CourseFilter} from "../../assets/ts/courseFilter";
+import {CourseDecorator} from "../../assets/ts/courseDecorator";
 import CourseEditDialog from "./CourseEditDialog.vue";
 
 onBeforeRouteUpdate((to) => {
@@ -18,8 +18,8 @@ const store = useStore();
 const whatDayFrom0 = ref<number>(0);
 const whatDayStrList = Array.from("一二三四五六天");
 
-const courseGradeFilter = computed<CourseFilter>(() => (new CourseFilter(store.courses)).filterByGrade(route.query.grade as string));
-const courseGradeWhatDayFilter = computed<CourseFilter>(() => (new CourseFilter(courseGradeFilter.value)).filterByWhatDay(whatDayFrom0.value + 1));
+const courseGradeFilter = computed<CourseDecorator>(() => (new CourseDecorator(store.courses)).ofGrade(route.query.grade as string));
+const courseGradeWhatDayFilter = computed<CourseDecorator>(() => (new CourseDecorator(courseGradeFilter.value)).ofWhatDay(whatDayFrom0.value + 1));
 </script>
 
 <template>
@@ -42,7 +42,7 @@ const courseGradeWhatDayFilter = computed<CourseFilter>(() => (new CourseFilter(
       </div>
       <div class="course-table-block">
         <CourseBox :what-day="whatDayFrom0 + 1" :lesson-num="row0+1"
-                   :courses="courseGradeWhatDayFilter.filterByLessonNum(row0+1).value"/>
+                   :courses="courseGradeWhatDayFilter.ofLessonNum(row0+1).value"/>
       </div>
     </div>
   </div>

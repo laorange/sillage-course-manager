@@ -8,7 +8,7 @@ import getWeeksString from "../../../assets/ts/getWeeksString";
 import {useStore} from "../../../pinia/useStore";
 import {formatDate, getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
-import {isValidCourse} from "../../../assets/ts/courseFilter";
+import {isValidCourse} from "../../../assets/ts/courseDecorator";
 import {useRoute} from "vue-router";
 
 const store = useStore();
