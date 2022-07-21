@@ -15,6 +15,8 @@ const whatDay = computed<number>({
   get: () => whatDayFrom0.value + 1,
   set: (nwd) => whatDayFrom0.value = nwd - 1,
 });
+
+const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(whatDay.value)));
 </script>
 
 <template>
@@ -33,7 +35,7 @@ const whatDay = computed<number>({
       <div class="course-table-block">
         <CourseBox :what-day="whatDayFrom0 + 1" :lesson-num="row0+1"
                    :editable="editable"
-                   :courses="(new CourseDecorator(courses)).ofLessonNum(row0+1).value"/>
+                   :courses="coursesOfWhatDay.ofLessonNum(row0+1).value"/>
       </div>
     </div>
   </div>
