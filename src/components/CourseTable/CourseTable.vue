@@ -6,12 +6,6 @@ import {computed, ref} from "vue";
 import {CourseDecorator} from "../../assets/ts/courseDecorator";
 import CourseEditDialog from "./CourseEditDialog.vue";
 
-onBeforeRouteUpdate((to) => {
-  if (!(to.query.grade)) {
-    return {name: "home"};
-  }
-});
-
 const route = useRoute();
 const store = useStore();
 

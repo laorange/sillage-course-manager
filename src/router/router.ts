@@ -20,6 +20,11 @@ const routes: RouteRecordRaw[] = [
         path: "/course/",
         name: "course",
         component: CourseTable,
+        beforeEnter(to) {
+            if (!(to.query.grade)) {
+                return {name: "home"};
+            }
+        },
     },
 ];
 
