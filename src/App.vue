@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import TopTabBar from "./components/TopTabBar.vue";
 import {onMounted} from "vue";
 import {useStore} from "./pinia/useStore";
 
@@ -11,7 +10,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <TopTabBar/>
   <n-dialog-provider>
     <n-message-provider>
       <router-view/>
@@ -28,6 +26,11 @@ onMounted(() => {
   color: #2c3e50;
   background-image: linear-gradient(rgba(100, 200, 250, 30%) 10%, rgba(100, 200, 250, 10%), rgba(100, 200, 250, 30%));
   min-height: 100vh;
+}
+
+h1 {
+  margin-block-start: 0;
+  padding-block-start: 0.67em;
 }
 
 :root {
