@@ -24,7 +24,7 @@ const gradeTabList = computed<string[]>(() => {
 </script>
 
 <template>
-  <van-tabs type="card" color="#27a05a" :active="activeTabName" :key="`tabs${gradeTabList.join(',')}`">
+  <van-tabs type="card" color="#178848" :background="`transparent`" :active="activeTabName" :key="`tabs${gradeTabList.join(',')}`">
     <van-tab title="首页" name="home" :to="{name:'home'}"/>
     <van-tab v-for="grade in gradeTabList" :name="`grade${grade}`" :key="`grade${grade}`" :title="grade" :to="{name: 'course', query:{grade}}"/>
     <van-tab title="系统设置" name="config" :to="{name:'config'}"/>

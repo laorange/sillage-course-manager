@@ -14,8 +14,6 @@ declare module '@vue/runtime-core' {
     CourseEditor: typeof import('./src/components/CourseTable/CourseEditor/CourseEditor.vue')['default']
     CourseTable: typeof import('./src/components/CourseTable/CourseTable.vue')['default']
     DictionaryEditor: typeof import('./src/components/ConfigEditor/DictionaryEditor.vue')['default']
-    Docs: typeof import('./src/components/Home/Docs.vue')['default']
-    DraggableToolButton: typeof import('./src/components/DraggableToolButton.vue')['default']
     EmptyCourseCard: typeof import('./src/components/CourseTable/CourseBox/EmptyCourseCard.vue')['default']
     GradeEditor: typeof import('./src/components/ConfigEditor/GradeEditor.vue')['default']
     HomePage: typeof import('./src/components/Home/HomePage.vue')['default']

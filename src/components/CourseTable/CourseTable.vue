@@ -29,7 +29,7 @@ const courseGradeWhatDayFilter = computed<CourseFilter>(() => (new CourseFilter(
   <h2>{{ route.query.grade }}</h2>
 
   <div class="what-day-selector">
-    <van-tabs type="card" color="#27a05a" v-model:active="whatDayFrom0">
+    <van-tabs type="card" color="#178848" :background="`transparent`" v-model:active="whatDayFrom0">
       <van-tab :title="`星期${whatDayStr}`" v-for="whatDayStr in whatDayStrList" :key="`星期${whatDayStr}`"/>
     </van-tabs>
   </div>
