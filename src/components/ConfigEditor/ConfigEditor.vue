@@ -26,6 +26,8 @@ const handlers = {
 
 <template>
   <div class="config-editor">
+    <h1 style="margin-bottom: 5px">系统配置</h1>
+
     <div class="two-column-editor">
       <div class="responsive-left-part">
         <div aria-label="课程信息">
@@ -92,7 +94,7 @@ const handlers = {
 
 <style scoped>
 .config-editor {
-  margin: 30px;
+  padding: 30px;
 }
 
 .two-column-editor {

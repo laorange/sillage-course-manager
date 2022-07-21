@@ -18,7 +18,7 @@ const languageOptions = computed(() => ["简体中文"].concat(store.config.lang
 
 const handlers = {
   toDocs() {
-    window.open("https://laorange.github.io/sillage-docs");
+    location.href = "https://laorange.github.io/sillage-docs";
   },
   toConfig() {
     router.push({name: "config"});
