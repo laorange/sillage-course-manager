@@ -39,7 +39,10 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SituationEditor: typeof import('./src/components/CourseTable/CourseEditor/SituationEditor.vue')['default']
+    TabBar: typeof import('./src/components/TabBar.vue')['default']
     VanTab: typeof import('vant/es')['Tab']
+    VanTabbar: typeof import('vant/es')['Tabbar']
+    VanTabbarItem: typeof import('vant/es')['TabbarItem']
     VanTabs: typeof import('vant/es')['Tabs']
     WeekSelector: typeof import('./src/components/CourseTable/CourseEditor/WeekSelector.vue')['default']
   }

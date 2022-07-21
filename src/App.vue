@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted} from "vue";
 import {useStore} from "./pinia/useStore";
+import TabBar from "./components/TabBar.vue";
 
 const store = useStore();
 
@@ -15,6 +16,8 @@ onMounted(() => {
       <router-view/>
     </n-message-provider>
   </n-dialog-provider>
+
+  <TabBar/>
 </template>
 
 <style>
@@ -36,5 +39,7 @@ h1 {
 :root {
   --courseCardMinWidth: 150px;
   --courseCardMinHeight: 150px;
+  --van-tabbar-background-color: rgb(100, 200, 255, 15%);
+  --van-tabbar-item-active-background-color: transparent;
 }
 </style>
