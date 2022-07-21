@@ -3,7 +3,7 @@ import {Course} from "../../../assets/ts/types";
 import CourseCard from "./CourseCard.vue";
 import EmptyCourseCard from "./EmptyCourseCard.vue";
 
-defineProps<{ courses: Course[], whatDay: number, lessonNum: number }>();
+withDefaults(defineProps<{ courses: Course[], whatDay: number, lessonNum: number, editable?: boolean }>(), {editable: false});
 
 </script>
 
@@ -25,7 +25,7 @@ defineProps<{ courses: Course[], whatDay: number, lessonNum: number }>();
 
 <style scoped>
 .course-card-container + .course-card-container, .course-card-container + .empty-course-card {
-  border-left: black 1px solid;
+  border-left: var(--border-color) 1px solid;
 }
 
 .course-box {

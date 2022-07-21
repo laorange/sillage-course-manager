@@ -39,6 +39,7 @@ h1 {
 :root {
   --courseCardMinWidth: 150px;
   --courseCardMinHeight: 150px;
+  --border-color: #32647d;
   --van-tabbar-background-color: rgb(100, 200, 255, 15%);
   --van-tabbar-item-active-background-color: transparent;
 }
