@@ -5,6 +5,9 @@ import {CourseDecorator} from "../assets/ts/courseDecorator";
 
 type State = {
     config: Config
+    userConfig: {
+        language: string
+    }
     courses: Course[]
     editor: {
         show: boolean,
@@ -31,7 +34,38 @@ export const useStore = defineStore("store", {
                     {"start": "18:30", "end": "20:05"},
                 ],
                 "languages": ["英语", "法语"],
-                "dictionary": {},
+                "dictionary": {
+                    "迹云课表": ["Sillage", "Sillage"],
+                    "18级": ["Grade 18", "Année 18"],
+                    "19级": ["Grade 19", "Année 19"],
+                    "A班": ["Class A", "Classe A"],
+                    "B班": ["Class B", "Classe B"],
+                    "C班": ["Class C", "Classe C"],
+                    "D班": ["Class D", "Classe D"],
+                    "数据库设计": ["Database design", "Conception de la base de données"],
+                    "确认与验证": ["Confirmation and verification", "Validation et vérification"],
+                    "实验课": ["Experimental class", "Cours de laboratoire"],
+                    "理论课": ["Theory Course", "Cours de théorie"],
+                    "李老师": ["Miss Li", "Mlle Li."],
+                    "王老师": ["Miss Wang", "M. Wang."],
+                    "120教室": ["Classroom 120", "Salle de classe 120"],
+                    "122教室": ["122 classroom", "Salle de classe 122"],
+                    "210教室": ["Classroom 210", "Salle de classe 210"],
+                    "212教室": ["Classroom 212", "Salle de classe 212"],
+                    "星期": ["week", "Semaine"],
+                    "星期一": ["Monday", "Lundi"],
+                    "星期二": ["Tuesday", "Mardi"],
+                    "星期三": ["Wednesday", "Mercredi"],
+                    "星期四": ["Thursday", "Jeudi"],
+                    "星期五": ["Friday", "Vendredi"],
+                    "星期六": ["Saturday", "Samedi"],
+                    "星期天": ["Sunday", "Dimanche"],
+                    "使用说明": ["Introduction", "Introduction"],
+                    "系统配置": ["Settings", "Configurations"],
+                },
+            },
+            userConfig: {
+                language: "中文",
             },
             courses: [{
                 "id": 1,
@@ -209,9 +243,11 @@ export const useStore = defineStore("store", {
                     (out, groups) => out.concat(groups), [])),
                 ).sort()))
                 .concat(this.courseNames)
+                .concat(this.methods)
                 .concat(this.teachers)
                 .concat(this.rooms)
-                .concat(Array.from("一二三四五六日").map(w => `星期${w}`));
+                .concat(["星期"])
+                .concat(Array.from("一二三四五六天").map(w => `星期${w}`));
         },
         courseOfCurrentSemester(): CourseDecorator {
             return (new CourseDecorator(this.courses))
@@ -226,5 +262,17 @@ export const useStore = defineStore("store", {
             return _dict;
         },
     },
-    actions: {},
+    actions: {
+        translate(word: string | null | undefined): string {
+            if (!word) {
+                return "";
+            }
+            let result = word;
+            let languageIndex = this.config.languages.indexOf(this.userConfig.language);
+            if (word in this.config.dictionary && languageIndex !== -1) {
+                result = this.config.dictionary[word][languageIndex];
+            }
+            return result ? result : word;
+        },
+    },
 });

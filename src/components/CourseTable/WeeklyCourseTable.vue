@@ -31,7 +31,7 @@ const editable = ref<boolean>(false);
 
   <div class="what-day-selector">
     <van-tabs type="card" color="#32647d" :background="`transparent`" v-model:active="whatDayFrom0">
-      <van-tab :title="`星期${whatDayStr}`" v-for="whatDayStr in Array.from(`一二三四五六天`)" :key="`星期${whatDayStr}`"/>
+      <van-tab :title="store.translate(`星期${whatDayStr}`)" v-for="whatDayStr in Array.from(`一二三四五六天`)" :key="`星期${whatDayStr}`"/>
     </van-tabs>
   </div>
 

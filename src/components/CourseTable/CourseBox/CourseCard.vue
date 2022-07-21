@@ -19,7 +19,7 @@ const {$contextmenu} = useContextMenu();
 const weeks = computed<number[]>(() => props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
 
 function getSituationStr(situation: Situation) {
-  return [situation.groups.join("&"), situation.teacher, situation.room].filter(s => !!s).join(" ");
+  return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join("  ");
 }
 
 function onContextMenu(e: MouseEvent) {
@@ -76,21 +76,27 @@ function onContextMenu(e: MouseEvent) {
     });
   }
 }
+
+const getWeekStrWithUnit = computed<string>(() => {
+  let weekStr = getWeeksString(weeks.value);
+  let _weekUnitStr = store.translate("星期");
+  return _weekUnitStr === "星期" ? `第${weekStr}周` : `${_weekUnitStr} ${weekStr}`;
+});
 </script>
 
 <template>
   <div class="course-card" @contextmenu="onContextMenu($event)"
        :style="{backgroundColor: course.info.bgc, color: parseFontColor(course.info.bgc)}">
-    <div v-if="course.info.code">{{ course.info.code }}</div>
-    <div>{{ course.info.name }}</div>
-    <div v-if="course.method">{{ course.method }}</div>
-    <div>{{ getWeeksString(weeks) }}</div>
+    <div v-if="course.info.code">{{ store.translate(course.info.code) }}</div>
+    <div>{{ store.translate(course.info.name) }}</div>
+    <div v-if="course.method">{{ store.translate(course.method) }}</div>
+    <div>{{ getWeekStrWithUnit }}</div>
 
     <!--  situations  -->
     <template v-if="course.situations.length===1">
-      <div v-if="course.situations[0].groups.length">{{ course.situations[0].groups.join("&") }}</div>
-      <div v-if="course.situations[0].teacher">{{ course.situations[0].teacher }}</div>
-      <div v-if="course.situations[0].room">{{ course.situations[0].room }}</div>
+      <div v-if="course.situations[0].groups.length">{{ course.situations[0].groups.map(g => store.translate(g)).join("&") }}</div>
+      <div v-if="course.situations[0].teacher">{{ store.translate(course.situations[0].teacher) }}</div>
+      <div v-if="course.situations[0].room">{{ store.translate(course.situations[0].room) }}</div>
     </template>
     <template v-if="course.situations.length>=2">
       <div class="course-card-situations" v-for="(situation, index) in course.situations"

@@ -27,9 +27,9 @@ function parseWeekNeighbors(weekNeighbor: number[]): string {
 }
 
 function getWeeksString(weeks: number[]): string {
-    if (weeks.length === 0) return "未选择";
-    else if (weeks.length === 1) return `第${weeks[0]}周`;
-    else return `第${splitWeekNeighbors(weeks).map(parseWeekNeighbors).join("、")}周`;
+    if (weeks.length === 0) return "";
+    else if (weeks.length === 1) return `${weeks[0]}`;
+    else return `${splitWeekNeighbors(weeks).map(parseWeekNeighbors).join("、")}`;
 }
 
 export default getWeeksString;

@@ -18,8 +18,8 @@ const coursesOfThisGrade = computed(() => store.courseOfCurrentSemester.ofGrade(
 <template>
   <CourseEditDialog/>
 
-  <h1>{{ store.config.tableName }}</h1>
-  <h2>{{ route.query.grade }}</h2>
+  <h1>{{ store.translate(store.config.tableName) }}</h1>
+  <h2>{{ store.translate(grade) }}</h2>
 
   <WeeklyCourseTable :what-day="getIsoWeekDay(dayjs())" :courses="coursesOfThisGrade.value" :editable="store.authenticated"/>
 </template>

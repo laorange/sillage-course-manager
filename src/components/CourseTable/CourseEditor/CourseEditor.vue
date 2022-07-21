@@ -97,7 +97,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
       </div>
 
       <n-divider :dashed="true">上课周数:
-        <span v-if="weeks.length">{{ getWeeksString(weeks) }}</span>
+        <span v-if="weeks.length">第{{ getWeeksString(weeks) }}周</span>
         <span v-else style="color: red">请在下方的穿梭框中选择</span>
       </n-divider>
       <WeekSelector v-model:weeks="weeks"/>

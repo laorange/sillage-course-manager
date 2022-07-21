@@ -33,6 +33,10 @@ export interface LessonConfig {
     end: string
 }
 
+export interface Dictionary {
+    [word: string]: string[];
+}
+
 export interface Config {
     // 课表名
     tableName: string;
@@ -48,7 +52,7 @@ export interface Config {
 
     // 语言与翻译(i18n)
     languages: string[];
-    dictionary: { [key: string]: string[] };
+    dictionary: Dictionary;
 }
 
 //</editor-fold>
@@ -68,25 +72,4 @@ export function getEmptyCourse(): Course {
         "method": null,
         "situations": [],
     };
-}
-
-export interface SpreadsheetRow {
-    "cells": { [cell: number]: { "text": string, editable?: boolean } };
-}
-
-export interface SpreadsheetRows {
-    len?: number,
-
-    [row: number]: SpreadsheetRow,
-}
-
-export interface SpreadsheetData {
-    "name": string
-    "rows": SpreadsheetRows[],
-    "cols": { "len": number },
-    "freeze"?: string,
-    "styles"?: any[],
-    "merges"?: any[],
-    "validations"?: any[],
-    "autofilter"?: {},
 }

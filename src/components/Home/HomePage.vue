@@ -2,16 +2,14 @@
 import {useStore} from "../../pinia/useStore";
 import {useRouter} from "vue-router";
 import config from "../../../package.json";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 
 const store = useStore();
 const router = useRouter();
 
-const languageIndex = ref(0);
-
-const languageOptions = computed(() => ["简体中文"].concat(store.config.languages).map((language, index) => {
+const languageOptions = computed(() => ["中文"].concat(store.config.languages).map(language => {
   return {
-    value: index,
+    value: language,
     label: language,
   };
 }));
@@ -29,23 +27,23 @@ const handlers = {
 <template>
   <main>
     <n-space :vertical="true" justify="center" align="center" size="large">
-      <h1>{{ store.config.tableName }}</h1>
+      <h1>{{ store.translate(store.config.tableName) }}</h1>
       <div class="version">v{{ config.version }}</div>
 
       <div class="language-selector">
-        <n-select v-model:value="languageIndex" :options="languageOptions"/>
+        <n-select v-model:value="store.userConfig.language" :options="languageOptions"/>
       </div>
 
       <n-button v-for="grade in store.grades"
                 :key="`grade${grade}`"
                 type="success" size="large"
                 @click="router.push({name:`course`, query:{grade}})">
-        {{ grade }}
+        {{ store.translate(grade) }}
       </n-button>
 
-      <n-button type="info" @click="handlers.toDocs">使用说明</n-button>
+      <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
-      <n-button type="warning" @click="handlers.toConfig">系统配置</n-button>
+      <n-button type="warning" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
     </n-space>
   </main>
 </template>
