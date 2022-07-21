@@ -19,7 +19,7 @@ const {$contextmenu} = useContextMenu();
 const weeks = computed<number[]>(() => props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
 
 function getSituationStr(situation: Situation) {
-  return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join("  ");
+  return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join(" | ");
 }
 
 function onContextMenu(e: MouseEvent) {
