@@ -14,14 +14,14 @@ const showLocal = computed<boolean>({
 });
 
 const languageOptions = [
-  "英语",
-  "法语",
-  "德语",
-  "俄语",
-  "日语",
-  "阿拉伯语",
-  "西班牙语",
-  "葡萄牙语",
+  "English",
+  "Français",
+  "русский язык",
+  "Deutsch",
+  "Español",
+  "Português",
+  "日本語",
+  "بالعربية",
 ].map(l => {
   return {label: l, value: l};
 });
