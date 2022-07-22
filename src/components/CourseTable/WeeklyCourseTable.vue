@@ -18,14 +18,14 @@ const whatDay = computed<number>({
 
 const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(whatDay.value)));
 
-const editable = ref<boolean>(false);
+const inDevelopMode: boolean = import.meta.env.MODE === "development";
 </script>
 
 <template>
-  <div style="margin-bottom: 10px">
-    <n-switch v-model:value="editable">
-      <template #checked>编辑权限：开</template>
-      <template #unchecked>编辑权限：关</template>
+  <div style="margin-bottom: 10px" v-if="inDevelopMode">
+    <n-switch v-model:value="store.editor.authenticated">
+      <template #checked>编辑权限：开（用于测试）</template>
+      <template #unchecked>编辑权限：关（用于测试）</template>
     </n-switch>
   </div>
 
@@ -43,7 +43,7 @@ const editable = ref<boolean>(false);
       </div>
       <div class="course-table-block">
         <CourseBox :what-day="whatDayFrom0 + 1" :lesson-num="row0+1"
-                   :editable="editable"
+                   :editable="store.editor.authenticated"
                    :courses="coursesOfWhatDay.ofLessonNum(row0+1).value"/>
       </div>
     </div>

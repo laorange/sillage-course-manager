@@ -3,8 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build --base=./",
+    "dev": "vite serve --mode development",
+    "production": "vite serve --mode production",
+    "build:dev": "vue-tsc --noEmit && vite build --base=./ --mode development",
+    "build:production": "vue-tsc --noEmit && vite build --base=./ --mode development",
     "preview": "vite preview"
   },
   "dependencies": {

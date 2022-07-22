@@ -7,6 +7,8 @@ import {computed} from "vue";
 const store = useStore();
 const router = useRouter();
 
+const inDevelopMode: boolean = import.meta.env.MODE === "development";
+
 const languageOptions = computed(() => ["中文"].concat(store.config.languages).map(language => {
   return {
     value: language,
@@ -31,7 +33,7 @@ const handlers = {
   <main>
     <n-space :vertical="true" justify="center" align="center" size="large">
       <h1>{{ store.translate(store.config.tableName) }}</h1>
-      <div class="version">v{{ config.version }}</div>
+      <div class="version">v{{ config.version }}<span v-if="inDevelopMode">-alpha</span></div>
 
       <div class="language-selector">
         <n-select v-model:value="store.userConfig.language" :options="languageOptions"/>
@@ -46,9 +48,11 @@ const handlers = {
 
       <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
-      <n-button type="warning" @click="handlers.toLogin">{{ store.translate(`登录`) }}(调试)</n-button>
+      <n-button type="warning" @click="handlers.toLogin" v-if="inDevelopMode">登录 (该按钮用于调试)</n-button>
 
-      <n-button type="error" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}(调试)</n-button>
+      <template v-if="store.editor.authenticated">
+        <n-button type="error" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
+      </template>
     </n-space>
   </main>
 </template>
