@@ -32,6 +32,7 @@ function addInfoInThisBlockIntoStore() {
 
 function onContextMenu(e: MouseEvent) {
   e.preventDefault();
+  addInfoInThisBlockIntoStore();
   $contextmenu({
     x: e.pageX,
     y: e.pageY,
@@ -42,13 +43,19 @@ function onContextMenu(e: MouseEvent) {
           store.editor.mode = "add";
           store.editor.show = true;
           store.editor.courseEditing = getEmptyCourse();
-          addInfoInThisBlockIntoStore();
         },
       },
       {
         label: "粘贴",
         disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
         onClick: () => {
+          let courseLocal = {
+            ...store.editor.courseEditing,
+            lessonNum: props.lessonNum,
+            dates: newDates.value,
+            grade: grade.value,
+          };
+
           dialog.info({
             title: "提示",
             content: `“${store.editor.courseEditing.info.name}”将会被${store.editor.mode === "cut" ? "剪切" : "复制"}到 ${store.editorWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
@@ -57,21 +64,24 @@ function onContextMenu(e: MouseEvent) {
             onPositiveClick: () => {
               if (store.editor.mode === "cut") {
                 store.editor.mode = "none";
-                alert("提交后端");
                 store.editor.courseEditing.lessonNum = props.lessonNum;
                 store.editor.courseEditing.dates = newDates.value;
                 store.editor.courseEditing.grade = grade.value;
+
+                store.client.Records.update("course", store.editor.courseEditing.id, courseLocal).then(() => {
+                  store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal);
+                  store.editor.show = false;
+                  message.success(`剪切成功`);
+                }).catch(() => message.error("提交失败，请检查网络连接"));
+
               } else if (store.editor.mode === "copy") {
                 // store.editor.mode = "none";  // 是否清空复制状态
-                alert("提交后端");
-                store.courses.push({
-                  ...store.editor.courseEditing,
-                  grade: grade.value,
-                  lessonNum: props.lessonNum,
-                  dates: newDates.value,
-                });
+                store.client.Records.create("course", courseLocal).then((record) => {
+                  store.courses.push(record as unknown as Course);
+                  store.editor.show = false;
+                  message.success(`复制成功`);
+                }).catch(() => message.error("提交失败，请检查网络连接"));
               }
-              addInfoInThisBlockIntoStore();
             },
           });
         },
