@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import {useStore} from "../../../pinia/useStore";
 import useContextMenu from "../../../assets/ts/useContextMenu";
-import {Course, getEmptyCourse} from "../../../assets/ts/types";
+import {Course} from "../../../assets/ts/types";
 import {useDialog, useMessage} from "naive-ui";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import {computed} from "vue";
 import {useRoute} from "vue-router";
+import {getEmptyCourse} from "../../../assets/ts/courseToolkit";
 
 const {$contextmenu} = useContextMenu();
 

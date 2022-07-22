@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
 import {computed, watch} from "vue";
-import {getEmptyCourse} from "../../assets/ts/types";
 import CourseEditor from "./CourseEditor/CourseEditor.vue";
+import {getEmptyCourse} from "../../assets/ts/courseToolkit";
 
 const store = useStore();
 watch(() => store.editor.courseEditing, (newCourse) => {

@@ -3,7 +3,7 @@ import {Course} from "../../assets/ts/types";
 import {useStore} from "../../pinia/useStore";
 import {computed, ref} from "vue";
 import CourseBox from "./CourseBox/CourseBox.vue";
-import {CourseDecorator} from "../../assets/ts/courseDecorator";
+import {CourseDecorator} from "../../assets/ts/courseToolkit";
 
 const props = withDefaults(defineProps<{ courses: Course[], whatDay?: number, editable?: boolean }>(),
     {whatDay: 1});

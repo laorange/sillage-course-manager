@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
-import {Config, Course, CourseInfo, getEmptyCourse} from "../assets/ts/types";
+import {Config, Course, CourseInfo} from "../assets/ts/types";
 import dayjs from "dayjs";
-import {CourseDecorator} from "../assets/ts/courseDecorator";
+import {CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
 
 type State = {

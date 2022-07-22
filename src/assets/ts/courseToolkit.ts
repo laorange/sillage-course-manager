@@ -96,3 +96,21 @@ export function isValidCourse(course: Course): boolean {
         && !!course.info.bgc
         && !!course.situations.length;
 }
+
+export function getEmptyCourse(): Course {
+    return {
+        "id": "",
+        "grade": "",
+        "dates": [],
+        "lessonNum": 1,
+        "note": "",
+        "info": {
+            "name": "请输入课程名称",
+            "code": "",
+            "bgc": "#FFFFFF",
+        },
+        "method": null,
+        "situations": [],
+    };
+}
+
