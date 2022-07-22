@@ -24,28 +24,38 @@ const courseLocal = ref<Course>({
 });
 
 const handlers = {
+  submitSuccess() {
+    message.success("提交成功");
+  },
+  submitFail() {
+    message.error("提交失败，请检查网络连接");
+  },
   restore() {
     courseLocal.value = JSON.parse(JSON.stringify(props.course));
     store.editor.show = false;
   },
-  update() {
+  async update() {
     if (!whetherCourseIsValid) {
       message.error("请将数据补充完整(红色边框代表必填项)");
     } else if (JSON.stringify(props.course) === JSON.stringify(courseLocal.value)) {
       message.warning("没有发现任何更改~");
     } else {
-      alert("提交后端");
-      store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
-      store.editor.show = false;
+      store.client.Records.update("course", "RECORD_ID", courseLocal.value).then(() => {
+        store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
+        store.editor.show = false;
+        handlers.submitSuccess();
+      }).catch(handlers.submitFail);
     }
   },
   add() {
     if (!whetherCourseIsValid) {
       message.error("请将数据补充完整(红色边框代表必填项)");
     } else {
-      alert("提交后端，并获取后端返回的新id");
-      store.courses.push(courseLocal.value);
-      store.editor.show = false;
+      store.client.Records.create("course", courseLocal.value).then((record) => {
+        store.courses.push(record as unknown as Course);
+        store.editor.show = false;
+        handlers.submitSuccess();
+      }).catch(handlers.submitFail);
     }
   },
 };
