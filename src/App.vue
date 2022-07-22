@@ -7,6 +7,8 @@ const store = useStore();
 
 onMounted(() => {
   document.title = store.config.tableName;
+
+  store.fetchData();
 });
 </script>
 

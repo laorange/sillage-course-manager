@@ -1,3 +1,12 @@
+interface PocketBaseModel {
+    id: string;
+    created?: string;
+    updated?: string;
+    "@collectionName"?: string;
+    "@collectionId"?: string;
+}
+
+
 //<editor-fold desc="Course">
 export interface Situation {
     "teacher": string | null,
@@ -11,17 +20,34 @@ export interface CourseInfo {
     "bgc": string
 }
 
-export interface Course {
-    "id": number,
-    "info": CourseInfo,
-    "situations": Situation[]
-    "grade": string,
+export interface Course extends PocketBaseModel {
+    "id": string;
+    "info": CourseInfo;
+    "situations": Situation[];
+    "grade": string;
 
-    "dates": string[],
-    "lessonNum": number,
+    "dates": string[];
+    "lessonNum": number;
 
-    "note": string,
-    "method": string | null,
+    "note": string;
+    "method": string | null;
+}
+
+export function getEmptyCourse(): Course {
+    return {
+        "id": "",
+        "grade": "",
+        "dates": [],
+        "lessonNum": 1,
+        "note": "",
+        "info": {
+            "name": "请输入课程名称",
+            "code": "",
+            "bgc": "#FFFFFF",
+        },
+        "method": null,
+        "situations": [],
+    };
 }
 
 //</editor-fold>
@@ -37,7 +63,7 @@ export interface Dictionary {
     [word: string]: string[];
 }
 
-export interface Config {
+export interface Config extends PocketBaseModel {
     // 课表名
     tableName: string;
 
@@ -56,20 +82,3 @@ export interface Config {
 }
 
 //</editor-fold>
-
-export function getEmptyCourse(): Course {
-    return {
-        "id": NaN,
-        "grade": "",
-        "dates": [],
-        "lessonNum": 1,
-        "note": "",
-        "info": {
-            "name": "请输入课程名称",
-            "code": "",
-            "bgc": "#FFFFFF",
-        },
-        "method": null,
-        "situations": [],
-    };
-}

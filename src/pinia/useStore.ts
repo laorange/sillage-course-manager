@@ -27,6 +27,7 @@ export const useStore = defineStore("store", {
         return {
             client: new PocketBase(import.meta.env.VITE_BACKEND_URL),
             config: {
+                id: "",
                 tableName: "迹云课表",
                 semesterStartDate: "2022-08-29",
                 maxWeekNum: 20,
@@ -71,74 +72,7 @@ export const useStore = defineStore("store", {
             userConfig: {
                 language: "中文",
             },
-            courses: [{
-                "id": 1,
-                "grade": "19级",
-                "dates": [
-                    "2022-09-23",
-                    "2022-09-30",
-                ],
-                "lessonNum": 3,
-                "note": "这是一条备注信息",
-                "info": {
-                    "name": "数据库设计",
-                    "code": "CS21",
-                    "bgc": "#9934CD",
-                },
-                "method": "实验课",
-                "situations": [
-                    {
-                        "teacher": "王老师",
-                        "room": "120教室",
-                        "groups": [
-                            "A班",
-                            "B班",
-                        ],
-                    },
-                    {
-                        "teacher": "李老师",
-                        "room": "122教室",
-                        "groups": [
-                            "C班",
-                            "D班",
-                        ],
-                    },
-                ],
-            },
-                {
-                    "id": 2,
-                    "grade": "18级",
-                    "dates": [
-                        "2022-10-10",
-                        "2022-10-17",
-                    ],
-                    "lessonNum": 3,
-                    "note": "这是一条备注信息",
-                    "info": {
-                        "name": "确认与验证",
-                        "code": "CS41",
-                        "bgc": "#00B050",
-                    },
-                    "method": "理论课",
-                    "situations": [
-                        {
-                            "teacher": "王老师",
-                            "room": "212教室",
-                            "groups": [
-                                "A班",
-                                "B班",
-                            ],
-                        },
-                        {
-                            "teacher": "李老师",
-                            "room": "210教室",
-                            "groups": [
-                                "C班",
-                                "D班",
-                            ],
-                        },
-                    ],
-                }],
+            courses: [],
 
             editor: {
                 show: false,
@@ -278,6 +212,17 @@ export const useStore = defineStore("store", {
                 result = this.config.dictionary[word][languageIndex];
             }
             return result ? result : word;
+        },
+        fetchData() {
+            // config
+            this.client.Records.getFullList("config").then((response) => {
+                if (response[0]?.content) this.config = response[0]?.content;
+            }).catch(() => alert("在获取课程信息时出错了，请检查网络连接"));
+
+            // courses  -  潜在问题: batchSize 设为 1e8，希望能一次性请求全部的课程
+            this.client.Records.getFullList("course", 1e8, {sort: "-updated"}).then((response) => {
+                this.courses = response as unknown as Course[];
+            }).catch(() => alert("在获取系统设置时出错了，请检查网络连接"));
         },
     },
 });
