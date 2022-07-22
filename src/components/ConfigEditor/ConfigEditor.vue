@@ -1,23 +1,39 @@
 <script setup lang="ts">
-import {zhCN, dateZhCN, useMessage} from "naive-ui";
+import {zhCN, dateZhCN, useMessage, useDialog} from "naive-ui";
 import {useStore} from "../../pinia/useStore";
 import LessonConfigEditor from "./LessonConfigEditor.vue";
 import GradeEditor from "./GradeEditor.vue";
 import LanguageEditor from "./LanguageEditor.vue";
 import {ref} from "vue";
-import {useRouter} from "vue-router";
+import {onBeforeRouteLeave, useRouter} from "vue-router";
 
 const store = useStore();
 const message = useMessage();
+const dialog = useDialog();
 const router = useRouter();
 
-const configBackUp = JSON.parse(JSON.stringify(store.config));
+let configBackUp = JSON.parse(JSON.stringify(store.config));
 
 const showDictionaryEditor = ref<boolean>(false);
 
 function isNotMonday(d: string) {
   return (new Date(d)).getDay() !== 1;
 }
+
+onBeforeRouteLeave((to) => {
+  if (!to.params.force) {
+    dialog.info({
+      title: "提示",
+      content: `当前页面未保存的信息将会丢失，是否继续？`,
+      positiveText: "确定",
+      negativeText: "取消",
+      onPositiveClick: () => {
+        handlers.resetAndLeave();
+      },
+    });
+    return false;
+  }
+});
 
 const handlers = {
   upload() {
@@ -29,12 +45,16 @@ const handlers = {
     }
     configPromise.then(() => {
       message.success("提交成功");
-      router.push({name: "home"});
+      configBackUp = JSON.parse(JSON.stringify(store.config));
+      handlers.backToHomeWithForce();
     }).catch(() => message.error("提交失败，请检查网络连接"));
   },
-  reset() {
-    store.config = configBackUp;
-    router.push({name: "home"});
+  resetAndLeave() {
+    store.config = JSON.parse(JSON.stringify(configBackUp));
+    handlers.backToHomeWithForce();
+  },
+  backToHomeWithForce() {
+    router.push({name: "home", params: {force: "true"}});
   },
 };
 </script>
@@ -95,7 +115,7 @@ const handlers = {
           即将把当前数据提交到服务器，是否继续？
         </n-popconfirm>
 
-        <n-popconfirm @positive-click="handlers.reset()" positive-text="确定" negative-text="取消">
+        <n-popconfirm @positive-click="handlers.resetAndLeave()" positive-text="确定" negative-text="取消">
           <template #trigger>
             <n-button type="default" size="large">取消</n-button>
           </template>
