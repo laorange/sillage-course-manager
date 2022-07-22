@@ -28,7 +28,8 @@ onBeforeRouteLeave((to) => {
       positiveText: "确定",
       negativeText: "取消",
       onPositiveClick: () => {
-        handlers.resetAndLeave();
+        handlers.restoreData();
+        router.push({...to, params: {...to.params, force: "true"}});
       },
     });
     return false;
@@ -49,8 +50,11 @@ const handlers = {
       handlers.backToHomeWithForce();
     }).catch(() => message.error("提交失败，请检查网络连接"));
   },
-  resetAndLeave() {
+  restoreData() {
     store.config = JSON.parse(JSON.stringify(configBackUp));
+  },
+  resetAndLeave() {
+    handlers.restoreData();
     handlers.backToHomeWithForce();
   },
   backToHomeWithForce() {
