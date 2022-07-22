@@ -30,6 +30,7 @@ const handlers = {
       email: null,
       password: null,
     };
+    formRef.value?.restoreValidation();
   },
   tryToRefresh() {
     store.client.Admins.refresh().then(() => {
@@ -38,15 +39,22 @@ const handlers = {
     }).catch(() => undefined);
   },
   login() {
-    store.client.Admins.authViaEmail(model.value.email ?? "", model.value.password ?? "", {}, {})
-        .then(() => {
-          store.editor.authenticated = true;
-          handlers.loginSuccess();
-        }).catch(() => handlers.loginFail());
+    console.log(formRef.value);
+    formRef.value?.validate().then(
+        () => {
+          store.client.Admins.authViaEmail(model.value.email ?? "", model.value.password ?? "", {}, {})
+              .then(() => {
+                store.editor.authenticated = true;
+                handlers.loginSuccess();
+              }).catch(() => handlers.loginFail());
+        },
+    ).catch(() => {
+      message.error("请先完成填写");
+    });
   },
 };
 
-const form = ref<FormInst | null>(null);
+const formRef = ref<FormInst | null>(null);
 const model = ref({
   email: null,
   password: null,
