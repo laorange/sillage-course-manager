@@ -114,3 +114,54 @@ export function getEmptyCourse(): Course {
     };
 }
 
+export function getConflictBetweenCourseAndExistingCourses(targetCourse: Course, existingCourses: Course[]): string {
+    /**
+     * 判断"目标课程"是否与"现有课程"冲突。以下情况会产生冲突：
+     * 1. 若某位老师有别的课，视为冲突
+     * 2. 若某个小组有别的课，视为冲突
+     * 3. 若有课程是以大组(年级)为单位，且该年级有别的课，视为冲突
+     * 4. 若包含相同的教室，视为冲突
+     * 如果有冲突，返回 冲突的文字描述，否则返回 空字符串
+     * */
+
+    for (const existingCourse of existingCourses) {
+        // 有某位老师在本时段是否有别的课
+        let teachersOfTarget = targetCourse.situations.map(ts => ts.teacher).filter(teacher => !!teacher) as string[];
+        let teachersOfExisting = existingCourse.situations.map(ts => ts.teacher).filter(teacher => !!teacher) as string[];
+        let intersectionTeachers = teachersOfTarget.filter(teacher => teachersOfExisting.indexOf(teacher) > -1);
+        if (intersectionTeachers.length > 0) {
+            return `${intersectionTeachers.join("&")}在本时段已有一节${existingCourse.info.name}`;
+        }
+
+        // 有某教室0在本时段是否有别的课
+        let roomsOfTarget = targetCourse.situations.map(ts => ts.room).filter(room => !!room) as string[];
+        let roomsOfExisting = existingCourse.situations.map(ts => ts.room).filter(room => !!room) as string[];
+        let intersectionRooms = roomsOfTarget.filter(room => roomsOfExisting.indexOf(room) > -1);
+        if (intersectionRooms.length > 0) {
+            return `${intersectionRooms.join("&")}在本时段已有一节${existingCourse.info.name}`;
+        }
+
+        // 如果年级相同
+        if (existingCourse.grade === targetCourse.grade) {
+            let groupsOfExisting: string[] = existingCourse.situations.map(s => s.groups)
+                .reduce((result, item) => result.concat(item), []);
+            let groupsOfTarget: string[] = targetCourse.situations.map(s => s.groups)
+                .reduce((result, item) => result.concat(item), []);
+
+            if (groupsOfExisting.length !== groupsOfExisting.filter(g => !!g).length
+                && groupsOfTarget.length !== groupsOfTarget.filter(g => !!g).length) {
+                //    有某个 Situation 没有设置 Group，因此“只要此处有相同年级，则视为冲突”
+                return `${existingCourse.grade}在本时段已有一节${existingCourse.info.name}`;
+            }
+
+            // 如果分组有交集
+            let intersectionGroups: string[] = groupsOfExisting.filter(ge => groupsOfTarget.indexOf(ge) > -1);
+            if (intersectionGroups.length > 0) {
+                return `${intersectionGroups.sort().join("&")}在本时段已有一节${existingCourse.info.name}`;
+            }
+        }
+    }
+
+    // "happy path :)"
+    return "";
+}

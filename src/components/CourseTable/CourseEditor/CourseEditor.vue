@@ -40,7 +40,13 @@ const handlers = {
     } else if (JSON.stringify(props.course) === JSON.stringify(courseLocal.value)) {
       message.warning("没有发现任何更改~");
     } else {
-      store.client.Records.update("course", "RECORD_ID", courseLocal.value).then(() => {
+      // 如有冲突，阻止 并弹出警告
+      let conflict = store.getConflictOfCourse(courseLocal.value);
+      if (conflict) {
+        return message.error(conflict);
+      }
+
+      store.client.Records.update("course", courseLocal.value.id, courseLocal.value).then(() => {
         store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
         store.editor.show = false;
         handlers.submitSuccess();
@@ -51,6 +57,12 @@ const handlers = {
     if (!whetherCourseIsValid) {
       message.error("请将数据补充完整(红色边框代表必填项)");
     } else {
+      // 如有冲突，阻止 并弹出警告
+      let conflict = store.getConflictOfCourse(courseLocal.value);
+      if (conflict) {
+        return message.error(conflict);
+      }
+
       store.client.Records.create("course", courseLocal.value).then((record) => {
         store.courses.push(record as unknown as Course);
         store.editor.show = false;

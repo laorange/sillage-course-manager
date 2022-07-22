@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {Config, Course, CourseInfo} from "../assets/ts/types";
 import dayjs from "dayjs";
-import {CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
+import {CourseDecorator, getConflictBetweenCourseAndExistingCourses, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
 
 type State = {
@@ -212,6 +212,17 @@ export const useStore = defineStore("store", {
                 result = this.config.dictionary[word][languageIndex];
             }
             return result ? result : word;
+        },
+        getConflictOfCourse(targetCourse: Course): string {
+            let existingCourses: Course[];
+            if (this.editor.mode === "copy" || this.editor.mode === "cut" || this.editor.mode === "add") {
+                // 复制、剪切 的时候 需要考虑 当前正在编辑课程带来的影响。新增时，id为空，无影响
+                existingCourses = this.editor.coursesExisting;
+            } else {
+                // 编辑(更新) 时 不需要考虑 当前正在编辑课程带来的影响
+                existingCourses = this.editor.coursesExisting.filter((c: Course) => c.id !== targetCourse.id);
+            }
+            return getConflictBetweenCourseAndExistingCourses(targetCourse, existingCourses);
         },
         fetchData() {
             // config

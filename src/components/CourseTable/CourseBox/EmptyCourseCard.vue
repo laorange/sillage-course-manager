@@ -57,6 +57,12 @@ function onContextMenu(e: MouseEvent) {
             grade: grade.value,
           };
 
+          // 如有冲突，阻止 并弹出警告
+          let conflict = store.getConflictOfCourse(courseLocal);
+          if (conflict) {
+            return message.error(conflict);
+          }
+
           dialog.info({
             title: "提示",
             content: `“${store.editor.courseEditing.info.name}”将会被${store.editor.mode === "cut" ? "剪切" : "复制"}到 ${store.editorWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
