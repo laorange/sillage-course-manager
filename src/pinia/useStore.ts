@@ -2,8 +2,10 @@ import {defineStore} from "pinia";
 import {Config, Course, CourseInfo, getEmptyCourse} from "../assets/ts/types";
 import dayjs from "dayjs";
 import {CourseDecorator} from "../assets/ts/courseDecorator";
+import PocketBase from "pocketbase";
 
 type State = {
+    client: PocketBase
     config: Config
     userConfig: {
         language: string
@@ -16,12 +18,14 @@ type State = {
         lessonNum: number
         courseEditing: Course
         coursesExisting: Course[]
+        authenticated: boolean
     }
 }
 
 export const useStore = defineStore("store", {
     state: (): State => {
         return {
+            client: new PocketBase(import.meta.env.VITE_BACKEND_URL),
             config: {
                 tableName: "迹云课表",
                 semesterStartDate: "2022-08-29",
@@ -33,7 +37,7 @@ export const useStore = defineStore("store", {
                     {"start": "15:35", "end": "17:10"},
                     {"start": "18:30", "end": "20:05"},
                 ],
-                "languages": ["英语", "法语"],
+                "languages": ["English", "Français"],
                 "dictionary": {
                     "迹云课表": ["Sillage", "Sillage"],
                     "18级": ["Grade 18", "Année 18"],
@@ -143,6 +147,7 @@ export const useStore = defineStore("store", {
                 lessonNum: 1,
                 courseEditing: getEmptyCourse(),
                 coursesExisting: [],
+                authenticated: false,
             },
         };
     },

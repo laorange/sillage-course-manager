@@ -2,6 +2,7 @@ import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
 import HomePage from "../components/Home/HomePage.vue";
 import ConfigEditor from "../components/ConfigEditor/ConfigEditor.vue";
 import CourseTable from "../components/CourseTable/CourseTable.vue";
+import LoginPage from "../components/LoginPage/LoginPage.vue";
 
 
 const routes: RouteRecordRaw[] = [
@@ -26,6 +27,11 @@ const routes: RouteRecordRaw[] = [
             }
         },
     },
+    {
+        path: "/login/",
+        name: "login",
+        component: LoginPage,
+    }
 ];
 
 export default createRouter({

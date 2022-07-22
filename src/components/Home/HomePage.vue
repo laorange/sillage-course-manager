@@ -21,6 +21,9 @@ const handlers = {
   toConfig() {
     router.push({name: "config"});
   },
+  toLogin() {
+    router.push({name: "login"});
+  },
 };
 </script>
 
@@ -43,7 +46,9 @@ const handlers = {
 
       <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
-      <n-button type="warning" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
+      <n-button type="warning" @click="handlers.toLogin">{{ store.translate(`登录`) }}(调试)</n-button>
+
+      <n-button type="error" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}(调试)</n-button>
     </n-space>
   </main>
 </template>

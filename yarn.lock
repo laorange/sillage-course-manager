@@ -913,6 +913,11 @@ pinia@^2.0.14:
     "@vue/devtools-api" "^6.1.4"
     vue-demi "*"
 
+pocketbase@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/pocketbase/-/pocketbase-0.2.1.tgz#0ab9b596286a2d78438b2aad11c9799888d01282"
+  integrity sha512-RPyfMw8MJISyP8PNHDllKC09jnUzZX7Cb1Q0vh9mOytEn5EqFhNLan8e5D1E6h1ebIFS3nT+DzZtP2wYpPygag==
+
 postcss@^8.1.10, postcss@^8.4.13:
   version "8.4.14"
   resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.14.tgz"
