@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import {zhCN, dateZhCN} from "naive-ui";
+import {zhCN, dateZhCN, useMessage} from "naive-ui";
 import {useStore} from "../../pinia/useStore";
 import LessonConfigEditor from "./LessonConfigEditor.vue";
 import GradeEditor from "./GradeEditor.vue";
 import LanguageEditor from "./LanguageEditor.vue";
 import {ref} from "vue";
+import {useRouter} from "vue-router";
 
 const store = useStore();
+const message = useMessage();
+const router = useRouter();
+
+const configBackUp = JSON.parse(JSON.stringify(store.config));
 
 const showDictionaryEditor = ref<boolean>(false);
 
@@ -16,10 +21,20 @@ function isNotMonday(d: string) {
 
 const handlers = {
   upload() {
-    alert("提交后端");
+    let configPromise: Promise<any>;
+    if (store.config.id) {
+      configPromise = store.client.Records.update("config", store.config.id, {content: store.config});
+    } else {
+      configPromise = store.client.Records.create("config", {content: store.config});
+    }
+    configPromise.then(() => {
+      message.success("提交成功");
+      router.push({name: "home"});
+    }).catch(() => message.error("提交失败，请检查网络连接"));
   },
   reset() {
-    alert("重新请求后端");
+    store.config = configBackUp;
+    router.push({name: "home"});
   },
 };
 </script>
