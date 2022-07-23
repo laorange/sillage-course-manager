@@ -17,18 +17,9 @@ const whatDay = computed<number>({
 });
 
 const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(whatDay.value)));
-
-const inDevelopMode: boolean = import.meta.env.MODE === "development";
 </script>
 
 <template>
-  <div style="margin-bottom: 10px" v-if="inDevelopMode">
-    <n-switch v-model:value="store.editor.authenticated">
-      <template #checked>编辑权限：开（用于测试）</template>
-      <template #unchecked>编辑权限：关（用于测试）</template>
-    </n-switch>
-  </div>
-
   <div class="what-day-selector">
     <van-tabs type="card" color="#32647d" :background="`transparent`" v-model:active="whatDayFrom0">
       <van-tab :title="store.translate(`星期${whatDayStr}`)" v-for="whatDayStr in Array.from(`一二三四五六天`)" :key="`星期${whatDayStr}`"/>
