@@ -228,12 +228,12 @@ export const useStore = defineStore("store", {
             // config
             this.client.Records.getFullList("config").then((response) => {
                 if (response[0]?.content) this.config = response[0]?.content;
-            }).catch(() => alert("在获取课程信息时出错了，请检查网络连接"));
+            }).catch(() => alert("在获取系统设置时出错了，请检查网络连接"));
 
             // courses  -  潜在问题: batchSize 设为 1e8，希望能一次性请求全部的课程
             this.client.Records.getFullList("course", 1e8, {sort: "-updated"}).then((response) => {
                 this.courses = response as unknown as Course[];
-            }).catch(() => alert("在获取系统设置时出错了，请检查网络连接"));
+            }).catch(() => alert("在获取课程信息时出错了，请检查网络连接"));
         },
     },
 });
