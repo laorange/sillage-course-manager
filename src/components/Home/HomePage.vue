@@ -48,7 +48,8 @@ const handlers = {
 
       <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
-      <n-button type="warning" @click="handlers.toLogin" v-if="inDevelopMode">登录 (该按钮用于调试)</n-button>
+      <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">登录</n-button>
+      <n-button type="warning" v-if="store.editor.authenticated" @click="store.editor.authenticated = !store.editor.authenticated">退出登录</n-button>
 
       <template v-if="store.editor.authenticated">
         <n-button type="error" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
