@@ -1,12 +1,12 @@
 {
   "name": "sillage-course-manager",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "dev": "vite serve --mode development",
     "production": "vite serve --mode production",
     "build:dev": "vue-tsc --noEmit && vite build --base=./ --mode development",
-    "build:production": "vue-tsc --noEmit && vite build --base=./ --mode development",
+    "build:production": "vue-tsc --noEmit && vite build --base=./ --mode production",
     "preview": "vite preview"
   },
   "dependencies": {
