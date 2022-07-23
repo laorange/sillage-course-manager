@@ -9,7 +9,7 @@ const route = useRoute();
 const activeTabName = computed<string>(() => `grade${route.query.grade}`);
 
 const tempGrades = ref<string[]>([]);
-const tabGrades = computed(() => tempGrades.value.concat(store.grades.slice()).sort());
+const tabGrades = computed(() => Array.from(new Set(tempGrades.value.concat(store.grades.slice()))).sort());
 watch(() => route.query.grade, (grade) => {
   if (!!grade && store.grades.indexOf(`${grade}`) === -1 && tabGrades.value.indexOf(`${grade}`) === -1) {
     tempGrades.value.push(`${grade}`);
