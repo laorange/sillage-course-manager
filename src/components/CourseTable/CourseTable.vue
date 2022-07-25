@@ -4,8 +4,6 @@ import {useStore} from "../../pinia/useStore";
 import {computed} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
-import dayjs from "dayjs";
-import {getIsoWeekDay} from "../../assets/ts/datetimeUtils";
 import GradeTab from "./CourseEditor/GradeTab.vue";
 
 const route = useRoute();
@@ -32,7 +30,7 @@ const inDevelopMode: boolean = import.meta.env.MODE === "development";
     </n-switch>
   </div>
 
-  <WeeklyCourseTable :what-day="getIsoWeekDay(dayjs())" :courses="coursesOfThisGrade.value" :editable="store.authenticated"/>
+  <WeeklyCourseTable :courses="coursesOfThisGrade.value" :editable="store.authenticated"/>
 </template>
 
 <style scoped>

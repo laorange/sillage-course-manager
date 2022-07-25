@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import {Course} from "../../assets/ts/types";
 import {useStore} from "../../pinia/useStore";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import CourseBox from "./CourseBox/CourseBox.vue";
 import {CourseDecorator} from "../../assets/ts/courseToolkit";
 
-const props = withDefaults(defineProps<{ courses: Course[], whatDay?: number, editable?: boolean }>(),
-    {whatDay: 1});
+const props = defineProps<{ courses: Course[], editable?: boolean }>();
 
 const store = useStore();
 
-const whatDayFrom0 = ref<number>(props.whatDay - 1);
-const whatDay = computed<number>({
-  get: () => whatDayFrom0.value + 1,
-  set: (nwd) => whatDayFrom0.value = nwd - 1,
+const whatDayFrom0 = computed<number>({
+  get: () => store.refs.whatDay - 1,
+  set: (newValue) => store.refs.whatDay = newValue + 1,
 });
 
-const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(whatDay.value)));
+const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(store.refs.whatDay)));
 </script>
 
 <template>
