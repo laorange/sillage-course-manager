@@ -32,6 +32,7 @@ const handlers = {
   },
   restore() {
     courseLocal.value = JSON.parse(JSON.stringify(props.course));
+    store.editor.mode = "none";
     store.editor.show = false;
   },
   async update() {
@@ -180,6 +181,8 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
         </template>
         您在本页面所做的修改将会丢失，是否继续？
       </n-popconfirm>
+
+      <n-button type="info" v-show="store.editor.mode==='add'" @click="store.editor.show=false">暂时退出</n-button>
     </n-space>
   </n-config-provider>
 </template>
