@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
 import {useStore} from "../../pinia/useStore";
-import {computed} from "vue";
+import {computed, ref, watch} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
 import GradeTab from "./CourseEditor/GradeTab.vue";
@@ -13,7 +13,8 @@ const grade = computed(() => (route.query.grade ?? "") as string);
 
 const coursesOfThisGrade = computed(() => store.courseOfCurrentSemester.ofGrade(grade.value));
 
-const inDevelopMode: boolean = import.meta.env.MODE === "development";
+const editable = ref<boolean>(store.editor.authenticated);
+watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
 </script>
 
 <template>
@@ -21,16 +22,16 @@ const inDevelopMode: boolean = import.meta.env.MODE === "development";
 
   <h1>{{ store.translate(store.config.tableName) }}</h1>
 
-  <GradeTab/>
-
-  <div style="margin-bottom: 10px" v-if="inDevelopMode">
-    <n-switch v-model:value="store.editor.authenticated">
-      <template #checked>编辑权限：开（用于测试）</template>
-      <template #unchecked>编辑权限：关（用于测试）</template>
+  <div style="margin-bottom: 15px" v-if="store.editor.authenticated">
+    <n-switch v-model:value="editable">
+      <template #checked>管理员视图</template>
+      <template #unchecked>用户视图</template>
     </n-switch>
   </div>
 
-  <WeeklyCourseTable :courses="coursesOfThisGrade.value" :editable="store.authenticated"/>
+  <GradeTab/>
+
+  <WeeklyCourseTable :courses="coursesOfThisGrade.value" :editable="editable"/>
 </template>
 
 <style scoped>

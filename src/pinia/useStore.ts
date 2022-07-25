@@ -93,9 +93,6 @@ export const useStore = defineStore("store", {
         };
     },
     getters: {
-        authenticated(): boolean {
-            return false;
-        },
         semesterStartDay(): dayjs.Dayjs {
             return dayjs(this.config.semesterStartDate);
         },

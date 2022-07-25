@@ -32,7 +32,7 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(pr
       </div>
       <div class="course-table-block">
         <CourseBox :what-day="whatDayFrom0 + 1" :lesson-num="row0+1"
-                   :editable="store.editor.authenticated"
+                   :editable="editable"
                    :courses="coursesOfWhatDay.ofLessonNum(row0+1).value"/>
       </div>
     </div>
