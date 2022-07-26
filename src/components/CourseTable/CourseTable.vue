@@ -5,13 +5,28 @@ import {computed, ref, watch} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
 import GradeTab from "./CourseEditor/GradeTab.vue";
+import {Course} from "../../assets/ts/types";
+import {CourseDecorator} from "../../assets/ts/courseToolkit";
 
 const route = useRoute();
 const store = useStore();
 
-const grade = computed(() => (route.query.grade ?? "") as string);
+// TODO: 是否为当前学期
+const currentSemester = true;
 
-const coursesOfThisGrade = computed(() => store.courseOfCurrentSemester.ofGrade(grade.value));
+let grades = computed<string[]>(() => (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_) as unknown as string[]);
+let rooms = computed<string[]>(() => (route.query.room instanceof Array ? route.query.room : [route.query.room]).filter(_ => !!_) as unknown as string[]);
+let methods = computed<string[]>(() => (route.query.method instanceof Array ? route.query.method : [route.query.method]).filter(_ => !!_) as unknown as string[]);
+let teachers = computed<string[]>(() => (route.query.teacher instanceof Array ? route.query.teacher : [route.query.teacher]).filter(_ => !!_) as unknown as string[]);
+
+const filteredCourses = computed<Course[]>(() => {
+  let decorator: CourseDecorator = (currentSemester ? store.courseOfCurrentSemester : (new CourseDecorator(store.courses)));
+  if (grades.value.length) decorator = decorator.ofGrades(grades.value);
+  if (rooms.value.length) decorator = decorator.ofRooms(rooms.value);
+  if (methods.value.length) decorator = decorator.ofMethods(methods.value);
+  if (teachers.value.length) decorator = decorator.ofTeachers(teachers.value);
+  return decorator.value;
+});
 
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
@@ -39,7 +54,7 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
 
   <GradeTab/>
 
-  <WeeklyCourseTable :courses="coursesOfThisGrade.value" :editable="editable"/>
+  <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
 </template>
 
 <style scoped>

@@ -159,7 +159,7 @@ export const useStore = defineStore("store", {
                 .concat(this.methods)
                 .concat(this.teachers)
                 .concat(this.rooms)
-                .concat(["使用说明"])
+                .concat(["使用说明", "过滤器"])
                 .concat(["星期"])
                 .concat(Array.from("一二三四五六天").map(w => `星期${w}`));
         },
