@@ -12,6 +12,7 @@ const LOCAL_CONFIG_STORAGE_KEY = "local_config";
 onMounted(() => {
   document.title = store.config.tableName;
   store.fetchData();
+  store.validateAuthStatus();
 
   // 从 localStorage 读取本地设置
   store.localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY) ?? store.localConfig;

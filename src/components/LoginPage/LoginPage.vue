@@ -12,7 +12,7 @@ onBeforeMount(() => {
   if (store.editor.authenticated) {
     handlers.loginSuccess();
   } else {
-    handlers.tryToRefresh();
+    store.validateAuthStatus();
   }
 });
 
@@ -31,12 +31,6 @@ const handlers = {
       password: null,
     };
     formRef.value?.restoreValidation();
-  },
-  tryToRefresh() {
-    store.client.Admins.refresh().then(() => {
-      store.editor.authenticated = true;
-      handlers.loginSuccess();
-    }).catch(() => undefined);
   },
   login() {
     console.log(formRef.value);

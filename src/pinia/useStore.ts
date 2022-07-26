@@ -242,5 +242,12 @@ export const useStore = defineStore("store", {
                 this.courses = response as unknown as Course[];
             }).catch(() => alert("在获取课程信息时出错了，请检查网络连接"));
         },
+        validateAuthStatus() {
+            if (localStorage.getItem("pocketbase_auth")) {
+                this.client.Admins.refresh().then(() => {
+                    this.editor.authenticated = true;
+                }).catch(() => localStorage.removeItem("pocketbase_auth"));
+            }
+        },
     },
 });
