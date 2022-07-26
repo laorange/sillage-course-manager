@@ -77,7 +77,7 @@ export const useStore = defineStore("store", {
                 language: "中文",
             },
             refs: {
-                queryDate: formatDate(dayjs())
+                queryDate: formatDate(dayjs()),
             },
             courses: [],
 
@@ -196,6 +196,13 @@ export const useStore = defineStore("store", {
             return (new CourseDecorator(this.courses))
                 .isSameOrAfter(this.semesterStartDay)
                 .before(this.semesterStartDay.add(this.config.maxWeekNum, "week"));
+        },
+        gradeCourseDictOfAll(): { [grade: string]: Course[] } {
+            const _dict: { [grade: string]: Course[] } = {};
+            for (const grade of this.grades) {
+                _dict[grade] = (new CourseDecorator(this.courses)).ofGrade(grade).value;
+            }
+            return _dict;
         },
         gradeCourseDictOfCurrentSemester(): { [grade: string]: Course[] } {
             const _dict: { [grade: string]: Course[] } = {};
