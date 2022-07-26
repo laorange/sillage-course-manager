@@ -34,7 +34,7 @@ const handlers = {
   submitFail() {
     message.error("提交失败，请检查网络连接");
   },
-  thinkTwiceBecauseDataChanged(hook: () => any, content: string, title: string = "提示") {
+  thinkTwiceIfDataChanged(hook: () => any, content: string, title: string = "提示") {
     if (whetherChanged.value) {
       dialog.info({
         title: title,
@@ -48,7 +48,7 @@ const handlers = {
     }
   },
   restore() {
-    this.thinkTwiceBecauseDataChanged(() => {
+    this.thinkTwiceIfDataChanged(() => {
       courseLocal.value = JSON.parse(JSON.stringify(props.course));
       store.editor.mode = "none";
       store.editor.show = false;
@@ -58,7 +58,7 @@ const handlers = {
     if (!whetherCourseIsValid) {
       message.error("请将数据补充完整(红色边框代表必填项)");
     } else if (JSON.stringify(props.course) === JSON.stringify(courseLocal.value)) {
-      message.warning("因为没有更改，所以无事发生");
+      message.info("因为没有更改，所以无事发生");
       this.restore();
     } else {
       // 如有冲突，阻止 并弹出警告
@@ -67,7 +67,7 @@ const handlers = {
         return message.error(conflict);
       }
 
-      this.thinkTwiceBecauseDataChanged(() => {
+      this.thinkTwiceIfDataChanged(() => {
         store.client.Records.update("course", courseLocal.value.id, courseLocal.value).then(() => {
           store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
           store.editor.show = false;
@@ -86,7 +86,7 @@ const handlers = {
         return message.error(conflict);
       }
 
-      this.thinkTwiceBecauseDataChanged(() => {
+      this.thinkTwiceIfDataChanged(() => {
         store.client.Records.create("course", courseLocal.value).then((record) => {
           store.courses.push(record as unknown as Course);
           store.editor.show = false;

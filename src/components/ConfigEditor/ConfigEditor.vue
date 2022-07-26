@@ -4,9 +4,10 @@ import {useStore} from "../../pinia/useStore";
 import LessonConfigEditor from "./LessonConfigEditor.vue";
 import GradeEditor from "./GradeEditor.vue";
 import LanguageEditor from "./LanguageEditor.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {onBeforeRouteLeave, useRouter} from "vue-router";
 import {Config} from "../../assets/ts/types";
+import {whetherTwoObjEqual} from "../../assets/ts/whetherTwoObjEqual";
 
 const store = useStore();
 const message = useMessage();
@@ -14,6 +15,8 @@ const dialog = useDialog();
 const router = useRouter();
 
 let configBackUp = JSON.parse(JSON.stringify(store.config));
+
+const whetherChanged = computed<boolean>(() => whetherTwoObjEqual(configBackUp, store.config));
 
 const showDictionaryEditor = ref<boolean>(false);
 
@@ -38,26 +41,46 @@ onBeforeRouteLeave((to) => {
 });
 
 const handlers = {
-  upload() {
-    let configPromise: Promise<any>;
-    if (store.config.id) {
-      configPromise = store.client.Records.update("config", store.config.id, {content: store.config});
+  thinkTwiceIfDataChanged(hook: () => any, content: string, title: string = "提示", noChangeHook: (() => any) | undefined = undefined) {
+    if (whetherChanged.value) {
+      dialog.info({
+        title: title,
+        content: content,
+        positiveText: "确定",
+        negativeText: "取消",
+        onPositiveClick: () => hook(),
+      });
     } else {
-      configPromise = store.client.Records.create("config", {content: store.config});
+      noChangeHook ? noChangeHook() : hook();
     }
-    configPromise.then((record: Config) => {
-      message.success("提交成功");
-      configBackUp = JSON.parse(JSON.stringify(store.config));
-      store.config.id = record.id;
+  },
+  upload() {
+    this.thinkTwiceIfDataChanged(() => {
+      let configPromise: Promise<any>;
+      if (store.config.id) {
+        configPromise = store.client.Records.update("config", store.config.id, {content: store.config});
+      } else {
+        configPromise = store.client.Records.create("config", {content: store.config});
+      }
+      configPromise.then((record: Config) => {
+        message.success("提交成功");
+        configBackUp = JSON.parse(JSON.stringify(store.config));
+        store.config.id = record.id;
+        handlers.backToHomeWithForce();
+      }).catch(() => message.error("提交失败，请检查网络连接"));
+    }, "即将把当前数据提交到服务器，是否继续？", undefined, () => {
+      message.info("因为没有更改，所以无事发生");
       handlers.backToHomeWithForce();
-    }).catch(() => message.error("提交失败，请检查网络连接"));
+    });
   },
   restoreData() {
     store.config = JSON.parse(JSON.stringify(configBackUp));
   },
   resetAndLeave() {
-    handlers.restoreData();
-    handlers.backToHomeWithForce();
+    this.thinkTwiceIfDataChanged(() => {
+      handlers.restoreData();
+      handlers.backToHomeWithForce();
+    }, "当前未保存的信息将会丢失，是否继续？");
   },
   backToHomeWithForce() {
     router.push({name: "home", params: {force: "true"}});
@@ -114,20 +137,8 @@ const handlers = {
       <n-divider/>
 
       <n-space justify="center" align="center">
-        <n-popconfirm @positive-click="handlers.upload()" positive-text="确定" negative-text="取消">
-          <template #trigger>
-            <n-button type="success" size="large">保存</n-button>
-          </template>
-          即将把当前数据提交到服务器，是否继续？
-        </n-popconfirm>
-
-        <n-popconfirm @positive-click="handlers.resetAndLeave()" positive-text="确定" negative-text="取消">
-          <template #trigger>
-            <n-button type="default" size="large">取消</n-button>
-          </template>
-          当前未保存的信息将会丢失，是否继续？
-        </n-popconfirm>
-
+        <n-button type="success" size="large" @click="handlers.upload()">保存</n-button>
+        <n-button type="default" size="large" @click="handlers.resetAndLeave()">取消</n-button>
       </n-space>
     </div>
   </div>
