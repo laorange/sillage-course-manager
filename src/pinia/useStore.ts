@@ -197,7 +197,7 @@ export const useStore = defineStore("store", {
         },
         getConflictOfCourse(targetCourse: Course): string {
             let existingCourses: Course[] = (new CourseDecorator(this.courses))
-                .ofLessonNum(targetCourse.lessonNum).hasSameDate(targetCourse.dates).value;
+                .ofLessonNum(targetCourse.lessonNum).ofDates(targetCourse.dates).value;
             if (this.editor.mode === "copy" || this.editor.mode === "cut" || this.editor.mode === "add") {
                 // 复制、剪切 的时候 需要考虑 当前正在编辑课程带来的影响。新增时，id为空，无影响
             } else {

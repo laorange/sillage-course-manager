@@ -42,9 +42,11 @@ export class CourseDecorator {
     }
 
     ofGrade(grade: string): CourseDecorator {
-        const filter: CourseFilter = c => {
-            return c.grade === grade;
-        };
+        return this.ofGrades([grade]);
+    }
+
+    ofGrades(grades: string[]): CourseDecorator {
+        const filter: CourseFilter = c => grades.indexOf(c.grade) > -1;
         return this.getNewProxyThroughFilter(filter);
     }
 
@@ -82,8 +84,41 @@ export class CourseDecorator {
             .isSameOrBefore(someDay.add(7 - whatDay, "day"));
     }
 
-    hasSameDate(dates: string[]): CourseDecorator {
+    ofDate(someDate: string): CourseDecorator {
+        return this.ofDates([someDate]);
+    }
+
+    ofDates(dates: string[]): CourseDecorator {
         let filter: CourseFilter = c => c.dates.filter(cd => dates.indexOf(cd) > -1).length > 0;
+        return this.getNewProxyThroughFilter(filter);
+    }
+
+    ofMethods(methods: string[], allowCourseWithoutMethod: boolean = false): CourseDecorator {
+        const filter: CourseFilter = c => c.method ? (methods.indexOf(c.method) > -1) : allowCourseWithoutMethod;
+        return this.getNewProxyThroughFilter(filter);
+    }
+
+    ofTeachers(teachers: string[], allowCourseWithoutTeacher: boolean = false) {
+        let filter: CourseFilter = c => {
+            for (const situation of c.situations) {
+                if (situation.teacher ? teachers.indexOf(situation.teacher) > -1 : allowCourseWithoutTeacher) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        return this.getNewProxyThroughFilter(filter);
+    }
+
+    ofRooms(rooms: string[], allowCourseWithoutRoom: boolean = false) {
+        let filter: CourseFilter = c => {
+            for (const situation of c.situations) {
+                if (situation.room ? rooms.indexOf(situation.room) > -1 : allowCourseWithoutRoom) {
+                    return true;
+                }
+            }
+            return false;
+        };
         return this.getNewProxyThroughFilter(filter);
     }
 }
