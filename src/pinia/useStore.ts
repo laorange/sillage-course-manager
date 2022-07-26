@@ -29,45 +29,19 @@ export const useStore = defineStore("store", {
             client: new PocketBase(import.meta.env.VITE_BACKEND_URL),
             config: {
                 id: "",
-                tableName: "迹云课表",
-                semesterStartDate: "2022-08-29",
-                maxWeekNum: 20,
-                lessonConfigs: [
-                    {"start": "08:00", "end": "09:35"},
-                    {"start": "10:05", "end": "11:40"},
-                    {"start": "13:30", "end": "15:05"},
-                    {"start": "15:35", "end": "17:10"},
-                    {"start": "18:30", "end": "20:05"},
-                ],
-                "languages": ["English", "Français"],
-                "dictionary": {
-                    "迹云课表": ["Sillage", "Sillage"],
-                    "18级": ["Grade 18", "Année 18"],
-                    "19级": ["Grade 19", "Année 19"],
-                    "A班": ["Class A", "Classe A"],
-                    "B班": ["Class B", "Classe B"],
-                    "C班": ["Class C", "Classe C"],
-                    "D班": ["Class D", "Classe D"],
-                    "数据库设计": ["Database design", "Conception de la base de données"],
-                    "确认与验证": ["Confirmation and verification", "Validation et vérification"],
-                    "实验课": ["Experimental class", "Cours de laboratoire"],
-                    "理论课": ["Theory Course", "Cours de théorie"],
-                    "李老师": ["Miss Li", "Mlle Li."],
-                    "王老师": ["Miss Wang", "M. Wang."],
-                    "120教室": ["Classroom 120", "Salle de classe 120"],
-                    "122教室": ["122 classroom", "Salle de classe 122"],
-                    "210教室": ["Classroom 210", "Salle de classe 210"],
-                    "212教室": ["Classroom 212", "Salle de classe 212"],
-                    "星期": ["week", "Semaine"],
-                    "星期一": ["Monday", "Lundi"],
-                    "星期二": ["Tuesday", "Mardi"],
-                    "星期三": ["Wednesday", "Mercredi"],
-                    "星期四": ["Thursday", "Jeudi"],
-                    "星期五": ["Friday", "Vendredi"],
-                    "星期六": ["Saturday", "Samedi"],
-                    "星期天": ["Sunday", "Dimanche"],
-                    "使用说明": ["Introduction", "Introduction"],
-                    "系统配置": ["Settings", "Configurations"],
+                content: {
+                    tableName: "迹云课表",
+                    semesterStartDate: "2022-08-29",
+                    maxWeekNum: 20,
+                    lessonConfigs: [
+                        {"start": "08:00", "end": "09:35"},
+                        {"start": "10:05", "end": "11:40"},
+                        {"start": "13:30", "end": "15:05"},
+                        {"start": "15:35", "end": "17:10"},
+                        {"start": "18:30", "end": "20:05"},
+                    ],
+                    "languages": [],
+                    "dictionary": {},
                 },
             },
             localConfig: {
@@ -90,7 +64,7 @@ export const useStore = defineStore("store", {
     },
     getters: {
         semesterStartDay(): dayjs.Dayjs {
-            return dayjs(this.config.semesterStartDate);
+            return dayjs(this.config.content.semesterStartDate);
         },
         editorWhatDayStr(): string {
             const whatDayStrList = Array.from("一二三四五六天");
@@ -176,7 +150,7 @@ export const useStore = defineStore("store", {
             return courseInfoDict;
         },
         dictionaryItems(): string[] {
-            return [this.config.tableName]
+            return [this.config.content.tableName]
                 .concat(this.grades)
                 .concat((Array.from(new Set(Object.values(this.groupDict).reduce(
                     (out, groups) => out.concat(groups), [])),
@@ -185,13 +159,14 @@ export const useStore = defineStore("store", {
                 .concat(this.methods)
                 .concat(this.teachers)
                 .concat(this.rooms)
+                .concat(["使用说明"])
                 .concat(["星期"])
                 .concat(Array.from("一二三四五六天").map(w => `星期${w}`));
         },
         courseOfCurrentSemester(): CourseDecorator {
             return (new CourseDecorator(this.courses))
                 .isSameOrAfter(this.semesterStartDay)
-                .before(this.semesterStartDay.add(this.config.maxWeekNum, "week"));
+                .before(this.semesterStartDay.add(this.config.content.maxWeekNum, "week"));
         },
         gradeCourseDictOfAll(): { [grade: string]: Course[] } {
             const _dict: { [grade: string]: Course[] } = {};
@@ -214,9 +189,9 @@ export const useStore = defineStore("store", {
                 return "";
             }
             let result = word;
-            let languageIndex = this.config.languages.indexOf(this.localConfig.language);
-            if (word in this.config.dictionary && languageIndex !== -1) {
-                result = this.config.dictionary[word][languageIndex];
+            let languageIndex = this.config.content.languages.indexOf(this.localConfig.language);
+            if (word in this.config.content.dictionary && languageIndex !== -1) {
+                result = this.config.content.dictionary[word][languageIndex];
             }
             return result ? result : word;
         },
@@ -234,7 +209,7 @@ export const useStore = defineStore("store", {
         fetchData() {
             // config
             this.client.Records.getFullList("config").then((response) => {
-                if (response[0]?.content) this.config = response[0]?.content;
+                if (response[0]) this.config = response[0] as unknown as Config;
             }).catch(() => alert("在获取系统设置时出错了，请检查网络连接"));
 
             // courses  -  潜在问题: batchSize 设为 1e8，希望能一次性请求全部的课程

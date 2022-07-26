@@ -30,9 +30,9 @@ const localeOptions = {
 
 const initData = computed<GridRowData[]>(() => store.dictionaryItems.map(item => {
   let itemData: GridRowData = {};
-  for (let i = 0; i < store.config.languages.length; i++) {
+  for (let i = 0; i < store.config.content.languages.length; i++) {
     itemData["中文"] = item;
-    itemData[store.config.languages[i]] = (store.config.dictionary[item] ?? [])[i] ?? "";
+    itemData[store.config.content.languages[i]] = (store.config.content.dictionary[item] ?? [])[i] ?? "";
   }
   return itemData;
 }));
@@ -59,10 +59,8 @@ const dataGrid = ref();
 const dataGridObj = ref<any>(undefined);
 
 function saveDictionaryToStore(gridObj: DataGridXL) {
-  console.log(gridObj.getData());
-
   for (const row of (gridObj.getData() as GridRowData[])) {
-    store.config.dictionary[row["中文"]] = store.config.languages.map(l => row[l] ?? "");
+    store.config.content.dictionary[row["中文"]] = store.config.content.languages.map(l => row[l] ?? "");
   }
 
   message.success("已保存");

@@ -32,6 +32,7 @@ export interface Course extends PocketBaseModel {
     "note": string;
     "method": string | null;
 }
+
 //</editor-fold>
 
 
@@ -46,25 +47,28 @@ export interface Dictionary {
 }
 
 export interface Config extends PocketBaseModel {
-    // 课表名
-    tableName: string;
+    content: {
+        // 课表名
+        tableName: string;
 
-    // 学期开始时间
-    semesterStartDate: string;
+        // 学期开始时间
+        semesterStartDate: string;
 
-    // 学期最大周数
-    maxWeekNum: number;
+        // 学期最大周数
+        maxWeekNum: number;
 
-    // 每节课的开始、结束时间
-    lessonConfigs: LessonConfig[];
+        // 每节课的开始、结束时间
+        lessonConfigs: LessonConfig[];
 
-    // 语言与翻译(i18n)
-    languages: string[];
-    dictionary: Dictionary;
+        // 语言与翻译(i18n)
+        languages: string[];
+        dictionary: Dictionary;
+    };
 }
+
 //</editor-fold>
 
 
-export interface LocalConfig{
-    language: string
+export interface LocalConfig {
+    language: string;
 }

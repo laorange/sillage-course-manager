@@ -10,7 +10,7 @@ const storage = useStorage();
 const LOCAL_CONFIG_STORAGE_KEY = "local_config";
 
 onMounted(() => {
-  document.title = store.config.tableName;
+  document.title = store.config.content.tableName;
   store.fetchData();
   store.validateAuthStatus();
 

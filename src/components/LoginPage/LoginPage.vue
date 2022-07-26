@@ -33,7 +33,6 @@ const handlers = {
     formRef.value?.restoreValidation();
   },
   login() {
-    console.log(formRef.value);
     formRef.value?.validate().then(
         () => {
           store.client.Admins.authViaEmail(model.value.email ?? "", model.value.password ?? "", {}, {})

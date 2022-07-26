@@ -9,7 +9,7 @@ const router = useRouter();
 
 const inDevelopMode: boolean = import.meta.env.MODE === "development";
 
-const languageOptions = computed(() => ["中文"].concat(store.config.languages).map(language => {
+const languageOptions = computed(() => ["中文"].concat(store.config.content.languages).map(language => {
   return {
     value: language,
     label: language,
@@ -36,7 +36,7 @@ const handlers = {
 <template>
   <main>
     <n-space :vertical="true" justify="center" align="center" size="large">
-      <h1>{{ store.translate(store.config.tableName) }}</h1>
+      <h1>{{ store.translate(store.config.content.tableName) }}</h1>
       <div class="version">v{{ config.version }}<span v-if="inDevelopMode">-alpha</span></div>
 
       <div class="language-selector">

@@ -42,7 +42,7 @@ function onCancel() {
   <div>
     <div style="margin-bottom: 10px">
       <n-select
-          v-model:value="store.config.languages"
+          v-model:value="store.config.content.languages"
           placeholder="点击此处可选择外语。若预设中无您所需，可直接输入"
           :filterable="true"
           :multiple="true"
@@ -50,7 +50,7 @@ function onCancel() {
           :options="languageOptions"
       />
     </div>
-    <n-button type="info" @click="showLocal=true" v-show="store.config.languages.length!==0">配置词典</n-button>
+    <n-button type="info" @click="showLocal=true" v-show="store.config.content.languages.length!==0">配置词典</n-button>
   </div>
 </template>
 

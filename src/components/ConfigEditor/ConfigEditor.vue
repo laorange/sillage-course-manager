@@ -6,6 +6,7 @@ import GradeEditor from "./GradeEditor.vue";
 import LanguageEditor from "./LanguageEditor.vue";
 import {ref} from "vue";
 import {onBeforeRouteLeave, useRouter} from "vue-router";
+import {Config} from "../../assets/ts/types";
 
 const store = useStore();
 const message = useMessage();
@@ -44,9 +45,10 @@ const handlers = {
     } else {
       configPromise = store.client.Records.create("config", {content: store.config});
     }
-    configPromise.then(() => {
+    configPromise.then((record: Config) => {
       message.success("提交成功");
       configBackUp = JSON.parse(JSON.stringify(store.config));
+      store.config.id = record.id;
       handlers.backToHomeWithForce();
     }).catch(() => message.error("提交失败，请检查网络连接"));
   },
@@ -71,13 +73,13 @@ const handlers = {
       <div class="responsive-left-part">
         <div aria-label="课程信息">
           <n-divider :dashed="true">课表名称</n-divider>
-          <n-input v-model:value="store.config.tableName" placeholder="课表名称"
-                   :status="store.config.tableName ? `success` : `error`"/>
+          <n-input v-model:value="store.config.content.tableName" placeholder="课表名称"
+                   :status="store.config.content.tableName ? `success` : `error`"/>
         </div>
 
         <n-divider :dashed="true">学期开始日期(用于计算周数)</n-divider>
         <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
-          <n-date-picker v-model:formatted-value="store.config.semesterStartDate"
+          <n-date-picker v-model:formatted-value="store.config.content.semesterStartDate"
                          placement="bottom"
                          :is-date-disabled="isNotMonday"
                          :actions="[]"
@@ -86,7 +88,7 @@ const handlers = {
         </n-config-provider>
 
         <n-divider :dashed="true">学期最大周数</n-divider>
-        <n-input-number v-model:value="store.config.maxWeekNum"
+        <n-input-number v-model:value="store.config.content.maxWeekNum"
                         :update-value-on-input="false" placeholder="n" :min="1">
           <template #prefix>本学期共</template>
           <template #suffix>周</template>

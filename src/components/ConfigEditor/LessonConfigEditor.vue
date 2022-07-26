@@ -15,7 +15,7 @@ function createLessonConfigs(): LessonConfig {
 <template>
   <div class="situation-editor">
     <n-divider>每节课的开始与结束时间</n-divider>
-    <n-dynamic-input v-model:value="store.config.lessonConfigs" :on-create="createLessonConfigs">
+    <n-dynamic-input v-model:value="store.config.content.lessonConfigs" :on-create="createLessonConfigs">
       <template #create-button-default>点击此处来添加一节课</template>
       <template #default="{ value, index }">
         <div style="display: flex; width: 100%; align-items: center">

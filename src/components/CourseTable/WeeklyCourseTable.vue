@@ -30,7 +30,7 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(pr
   </div>
 
   <div class="course-table-body">
-    <div class="course-table-row" v-for="(lessonConfig, row0) in store.config.lessonConfigs" :key="`lessonNum${row0}`">
+    <div class="course-table-row" v-for="(lessonConfig, row0) in store.config.content.lessonConfigs" :key="`lessonNum${row0}`">
       <div class="lesson-start-end-time">
         <div>{{ lessonConfig.start }}</div>
         <div>{{ lessonConfig.end }}</div>

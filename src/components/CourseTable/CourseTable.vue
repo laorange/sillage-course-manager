@@ -20,7 +20,7 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
 <template>
   <CourseEditDialog/>
 
-  <h1>{{ store.translate(store.config.tableName) }}</h1>
+  <h1>{{ store.translate(store.config.content.tableName) }}</h1>
 
   <div style="margin-bottom: 15px" v-if="store.editor.authenticated">
     <n-space justify="center" align="center">
