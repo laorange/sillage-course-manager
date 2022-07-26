@@ -81,6 +81,11 @@ export class CourseDecorator {
         return this.isSameOrAfter(someDay.add(1 - whatDay, "day"))
             .isSameOrBefore(someDay.add(7 - whatDay, "day"));
     }
+
+    hasSameDate(dates: string[]): CourseDecorator {
+        let filter: CourseFilter = c => c.dates.filter(cd => dates.indexOf(cd) > -1).length > 0;
+        return this.getNewProxyThroughFilter(filter);
+    }
 }
 
 export function isValidCourse(course: Course): boolean {

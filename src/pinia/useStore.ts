@@ -21,7 +21,6 @@ type State = {
         whatDay: number
         lessonNum: number
         courseEditing: Course
-        coursesExisting: Course[]
         authenticated: boolean
     }
 }
@@ -87,7 +86,6 @@ export const useStore = defineStore("store", {
                 whatDay: 1,
                 lessonNum: 1,
                 courseEditing: getEmptyCourse(),
-                coursesExisting: [],
                 authenticated: false,
             },
         };
@@ -225,13 +223,13 @@ export const useStore = defineStore("store", {
             return result ? result : word;
         },
         getConflictOfCourse(targetCourse: Course): string {
-            let existingCourses: Course[];
+            let existingCourses: Course[] = (new CourseDecorator(this.courses))
+                .ofLessonNum(targetCourse.lessonNum).hasSameDate(targetCourse.dates).value;
             if (this.editor.mode === "copy" || this.editor.mode === "cut" || this.editor.mode === "add") {
                 // 复制、剪切 的时候 需要考虑 当前正在编辑课程带来的影响。新增时，id为空，无影响
-                existingCourses = this.editor.coursesExisting;
             } else {
                 // 编辑(更新) 时 不需要考虑 当前正在编辑课程带来的影响
-                existingCourses = this.editor.coursesExisting.filter((c: Course) => c.id !== targetCourse.id);
+                existingCourses = existingCourses.filter((c: Course) => c.id !== targetCourse.id);
             }
             return (new CourseConflictDetector(targetCourse, existingCourses)).getConflictString();
         },
