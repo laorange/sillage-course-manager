@@ -4,17 +4,22 @@ import {useStore} from "../../pinia/useStore";
 import {computed} from "vue";
 import CourseBox from "./CourseBox/CourseBox.vue";
 import {CourseDecorator} from "../../assets/ts/courseToolkit";
+import {formatDate, getIsoWeekDay} from "../../assets/ts/datetimeUtils";
+import dayjs from "dayjs";
 
 const props = defineProps<{ courses: Course[], editable?: boolean }>();
 
 const store = useStore();
 
 const whatDayFrom0 = computed<number>({
-  get: () => store.refs.whatDay - 1,
-  set: (newValue) => store.refs.whatDay = newValue + 1,
+  get: () => getIsoWeekDay(dayjs(store.refs.queryDate)) - 1,
+  set: (to) => {
+    let queryDay = dayjs(store.refs.queryDate);
+    store.refs.queryDate = formatDate(queryDay.add(to + 1 - getIsoWeekDay(queryDay), "day"));
+  },
 });
 
-const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(store.refs.whatDay)));
+const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(getIsoWeekDay(dayjs(store.refs.queryDate)))));
 </script>
 
 <template>

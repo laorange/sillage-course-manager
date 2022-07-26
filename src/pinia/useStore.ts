@@ -3,7 +3,7 @@ import {Config, Course, CourseInfo} from "../assets/ts/types";
 import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
-import {getIsoWeekDay} from "../assets/ts/datetimeUtils";
+import {formatDate} from "../assets/ts/datetimeUtils";
 
 type State = {
     client: PocketBase
@@ -12,7 +12,7 @@ type State = {
         language: string
     }
     refs: {
-        whatDay: number
+        queryDate: string
     },
     courses: Course[]
     editor: {
@@ -77,7 +77,7 @@ export const useStore = defineStore("store", {
                 language: "中文",
             },
             refs: {
-                whatDay: getIsoWeekDay(dayjs()),
+                queryDate: formatDate(dayjs())
             },
             courses: [],
 
