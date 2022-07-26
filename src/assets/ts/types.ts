@@ -63,3 +63,8 @@ export interface Config extends PocketBaseModel {
     dictionary: Dictionary;
 }
 //</editor-fold>
+
+
+export interface LocalConfig{
+    language: string
+}

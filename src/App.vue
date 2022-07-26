@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import {onMounted} from "vue";
+import {onMounted, watch} from "vue";
 import {useStore} from "./pinia/useStore";
 import TabBar from "./components/TabBar.vue";
+import {useStorage} from "vue3-storage";
+import {LocalConfig} from "./assets/ts/types";
 
 const store = useStore();
+const storage = useStorage();
+const LOCAL_CONFIG_STORAGE_KEY = "local_config";
 
 onMounted(() => {
   document.title = store.config.tableName;
-
   store.fetchData();
+
+  // 从 localStorage 读取本地设置
+  store.localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY) ?? store.localConfig;
 });
+
+watch(() => store.localConfig, (to) => {
+  // 向 localStorage 存入本地设置
+  storage.setStorageSync(LOCAL_CONFIG_STORAGE_KEY, to);
+}, {deep: true});
 </script>
 
 <template>

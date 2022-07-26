@@ -1,7 +1,7 @@
 {
   "name": "sillage-course-manager",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "dev": "vite serve --mode development",
     "production": "vite serve --mode production",
@@ -20,7 +20,8 @@
     "pocketbase": "^0.2.1",
     "vant": "^3.5.2",
     "vue": "^3.2.25",
-    "vue-router": "^4.1.1"
+    "vue-router": "^4.1.1",
+    "vue3-storage": "^0.1.11"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",

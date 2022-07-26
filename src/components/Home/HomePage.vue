@@ -36,7 +36,7 @@ const handlers = {
       <div class="version">v{{ config.version }}<span v-if="inDevelopMode">-alpha</span></div>
 
       <div class="language-selector">
-        <n-select v-model:value="store.userConfig.language" :options="languageOptions"/>
+        <n-select v-model:value="store.localConfig.language" :options="languageOptions"/>
       </div>
 
       <n-button v-for="grade in store.grades"

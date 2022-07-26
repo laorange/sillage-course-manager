@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {Config, Course, CourseInfo} from "../assets/ts/types";
+import {Config, Course, CourseInfo, LocalConfig} from "../assets/ts/types";
 import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
@@ -8,9 +8,7 @@ import {formatDate} from "../assets/ts/datetimeUtils";
 type State = {
     client: PocketBase
     config: Config
-    userConfig: {
-        language: string
-    }
+    localConfig: LocalConfig
     refs: {
         queryDate: string
     },
@@ -72,7 +70,7 @@ export const useStore = defineStore("store", {
                     "系统配置": ["Settings", "Configurations"],
                 },
             },
-            userConfig: {
+            localConfig: {
                 language: "中文",
             },
             refs: {
@@ -216,7 +214,7 @@ export const useStore = defineStore("store", {
                 return "";
             }
             let result = word;
-            let languageIndex = this.config.languages.indexOf(this.userConfig.language);
+            let languageIndex = this.config.languages.indexOf(this.localConfig.language);
             if (word in this.config.dictionary && languageIndex !== -1) {
                 result = this.config.dictionary[word][languageIndex];
             }
