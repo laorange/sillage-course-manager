@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {Config, Course, CourseInfo} from "../assets/ts/types";
 import dayjs from "dayjs";
-import {CourseDecorator, getConflictBetweenCourseAndExistingCourses, getEmptyCourse} from "../assets/ts/courseToolkit";
+import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
 import {getIsoWeekDay} from "../assets/ts/datetimeUtils";
 
@@ -226,7 +226,7 @@ export const useStore = defineStore("store", {
                 // 编辑(更新) 时 不需要考虑 当前正在编辑课程带来的影响
                 existingCourses = this.editor.coursesExisting.filter((c: Course) => c.id !== targetCourse.id);
             }
-            return getConflictBetweenCourseAndExistingCourses(targetCourse, existingCourses);
+            return (new CourseConflictDetector(targetCourse, existingCourses)).getConflictString();
         },
         fetchData() {
             // config
