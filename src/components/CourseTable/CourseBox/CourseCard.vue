@@ -37,7 +37,6 @@ function onContextMenu(e: MouseEvent) {
             store.editor.whatDay = props.whatDay;
             store.editor.lessonNum = props.lessonNum;
             store.editor.courseEditing = props.course;
-            store.editor.coursesExisting = props.coursesExisting;
           },
         },
         {
@@ -65,7 +64,7 @@ function onContextMenu(e: MouseEvent) {
               positiveText: "确定",
               negativeText: "取消",
               onPositiveClick: () => {
-                store.client.Records.delete("course", props.course.id).then((record) => {
+                store.client.Records.delete("course", props.course.id).then(() => {
                   store.courses = store.courses.filter(c => c.id !== props.course.id);
                   message.success("删除成功");
                 }).catch(() => message.error("删除失败，请检查网络连接"));

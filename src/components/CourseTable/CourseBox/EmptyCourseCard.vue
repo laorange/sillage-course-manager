@@ -26,7 +26,6 @@ const newDates = computed<string[]>(() => store.editor.courseEditing.dates.map(
     }));
 
 function addInfoInThisBlockIntoStore() {
-  store.editor.coursesExisting = props.coursesExisting;
   store.editor.whatDay = props.whatDay;
   store.editor.lessonNum = props.lessonNum;
 }
