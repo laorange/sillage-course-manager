@@ -72,3 +72,5 @@ export interface Config extends PocketBaseModel {
 export interface LocalConfig {
     language: string;
 }
+
+export type GradeGroupArray = [string, string]
