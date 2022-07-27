@@ -1,32 +1,14 @@
 <script setup lang="ts">
-import {useRoute} from "vue-router";
 import {useStore} from "../../pinia/useStore";
-import {computed, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
-import GradeTab from "./CourseEditor/GradeTab.vue";
 import {Course} from "../../assets/ts/types";
-import {CourseDecorator} from "../../assets/ts/courseToolkit";
+import RouteFilter from "./RouteFilter/RouteFilter.vue";
 
-const route = useRoute();
 const store = useStore();
 
-// TODO: 是否为当前学期
-const currentSemester = true;
-
-let grades = computed<string[]>(() => (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_) as unknown as string[]);
-let rooms = computed<string[]>(() => (route.query.room instanceof Array ? route.query.room : [route.query.room]).filter(_ => !!_) as unknown as string[]);
-let methods = computed<string[]>(() => (route.query.method instanceof Array ? route.query.method : [route.query.method]).filter(_ => !!_) as unknown as string[]);
-let teachers = computed<string[]>(() => (route.query.teacher instanceof Array ? route.query.teacher : [route.query.teacher]).filter(_ => !!_) as unknown as string[]);
-
-const filteredCourses = computed<Course[]>(() => {
-  let decorator: CourseDecorator = (currentSemester ? store.courseOfCurrentSemester : (new CourseDecorator(store.courses)));
-  if (grades.value.length) decorator = decorator.ofGrades(grades.value);
-  if (rooms.value.length) decorator = decorator.ofRooms(rooms.value);
-  if (methods.value.length) decorator = decorator.ofMethods(methods.value);
-  if (teachers.value.length) decorator = decorator.ofTeachers(teachers.value);
-  return decorator.value;
-});
+const filteredCourses = ref<Course[]>([]);
 
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
@@ -49,10 +31,9 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
         继续编辑
       </n-button>
     </n-space>
-
   </div>
 
-  <GradeTab/>
+  <RouteFilter v-model:courses="filteredCourses"/>
 
   <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
 </template>
