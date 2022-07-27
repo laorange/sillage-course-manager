@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import {computed} from "vue";
+import {useStore} from "../../../pinia/useStore";
 
 const props = defineProps<{ value: string[], optionStrArray: string[], placeholder: string }>();
 const emits = defineEmits(["update:value"]);
+
+const store = useStore();
 
 const valueLocal = computed<string[]>({
   get: () => props.value,
@@ -20,7 +23,7 @@ const valueLocal = computed<string[]>({
         :clearable="true"
         max-tag-count="responsive"
         :placeholder="placeholder"
-        :options="optionStrArray.map(_=>{return {label:_, value:_}})"
+        :options="optionStrArray.map(_=>{return {label: store.translate(_), value: _}})"
     />
   </n-form-item>
 </template>

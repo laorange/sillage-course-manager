@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {GradeGroupArray} from "../../../assets/ts/types";
-import {computed, ref, watch} from "vue";
+import {computed} from "vue";
 import {useStore} from "../../../pinia/useStore";
 import {CascaderOption} from "naive-ui";
 
@@ -30,14 +30,15 @@ const cascaderOptions = computed<CascaderOption[]>(() => {
   let _options: CascaderOption[] = [];
   for (const [grade, groups] of Object.entries(store.groupDict)) {
     _options.push({
-      label: grade,
+      label: store.translate(grade),
       value: grade,
       disabled: !groups.filter(_ => !!_).length,
       children: groups.map(group => {
-        return {label: group, value: JSON.stringify([grade, group])};
+        return {label: store.translate(group), value: JSON.stringify([grade, group])};
       }),
     });
   }
+  _options.sort().reverse();
   return _options;
 });
 </script>
