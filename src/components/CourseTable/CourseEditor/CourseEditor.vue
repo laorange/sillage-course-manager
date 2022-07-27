@@ -157,7 +157,8 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
     <div class="responsive-right-part">
       <div aria-label="年级（大组）">
         <n-divider :dashed="true">年级 / 大组</n-divider>
-        <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :options="gradeOptions" placeholder="请选择或输入"/>
+        <n-select v-model:value="courseLocal.grade" :filterable="true" :tag="true" :options="gradeOptions" placeholder="请选择或输入"
+                  :status="courseLocal.grade ? `success` : `error`"/>
       </div>
 
       <div aria-label="班级（小组）">
