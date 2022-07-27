@@ -188,6 +188,10 @@ export const useStore = defineStore("store", {
             if (!word) {
                 return "";
             }
+            // 若没有设置外语语言，则直接返回原词
+            if (!this.config.content.languages) {
+                return word
+            }
             let result = word;
             let languageIndex = this.config.content.languages.indexOf(this.localConfig.language);
             if (word in this.config.content.dictionary && languageIndex !== -1) {
