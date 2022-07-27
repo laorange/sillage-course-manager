@@ -38,7 +38,7 @@ const cascaderOptions = computed<CascaderOption[]>(() => {
       }),
     });
   }
-  _options.sort().reverse();
+  _options.sort((a, b) => ((a.label ?? "1") > (b.label ?? "2")) ? 1 : -1);
   return _options;
 });
 </script>
