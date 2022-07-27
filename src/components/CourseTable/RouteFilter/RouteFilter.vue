@@ -49,6 +49,7 @@ watch(() => sources.value, (src) => {
   if (src.rooms.length) decorator = decorator.ofRooms(src.rooms);
   if (src.methods.length) decorator = decorator.ofMethods(src.methods);
   if (src.teachers.length) decorator = decorator.ofTeachers(src.teachers);
+  if (src.groups.length) decorator = decorator.ofGradeGroups(src.groups);
   formModel.value = {...src, courseDecorator: undefined};
   emits("update:courses", decorator.value);
 }, {deep: true, immediate: true});
@@ -75,8 +76,7 @@ const handlers = {
   <div class="route-filter">
     <n-button size="large" :dashed="true" color="#32647d" @click="showFilterDialog=true">
       <n-ellipsis style="max-width: 80vw">
-        {{ store.translate(`正在查看`) }}:
-        {{ title }}
+        {{ store.translate(`正在查看`) }}: {{ title ? title : `⚙` }}
       </n-ellipsis>
     </n-button>
   </div>

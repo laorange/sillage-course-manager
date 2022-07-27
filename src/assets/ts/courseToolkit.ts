@@ -1,4 +1,4 @@
-import {Course} from "./types";
+import {Course, GradeGroupArray} from "./types";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -48,6 +48,29 @@ export class CourseDecorator {
     ofGrades(grades: string[]): CourseDecorator {
         const filter: CourseFilter = c => grades.indexOf(c.grade) > -1;
         return this.getNewProxyThroughFilter(filter);
+    }
+
+    ofGradeGroups(ggs: GradeGroupArray[]): CourseDecorator {
+        const grades = Array.from(new Set(ggs.map(gg => gg[0])));
+        const gradeGroupDict: { [grade: string]: string[] } = {};
+        for (const gg of ggs) {
+            gradeGroupDict[gg[0]] ? gradeGroupDict[gg[0]].push(gg[1]) : (gradeGroupDict[gg[0]] = [gg[1]]);
+        }
+
+        // 先通过年级过滤
+        return this.ofGrades(grades).getNewProxyThroughFilter(course => {
+            for (const situation of course.situations) {
+                if (situation.groups.length === 0) {
+                    // 如果某节课没有指定“班级/小组”，则按年级，则符合条件
+                    return true;
+                }
+                // 如果该课程的某 situation.groups 与需要的 groups 有重叠，则符合条件
+                else if (gradeGroupDict[course.grade].filter(groupNeeded => situation.groups.indexOf(groupNeeded) > -1).length > 0) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     byDate(datePassJudge: (date: string) => boolean): CourseDecorator {
