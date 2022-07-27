@@ -23,11 +23,11 @@ const currentSemester = computed<boolean>(() => true);
 
 let sources = computed(() => {
   return {
-    grades: (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_) as unknown as string[],
-    groups: (route.query.groups instanceof Array ? route.query.groups : [route.query.groups]).filter(_ => !!_).map(_ => JSON.parse(_ as string)) as GradeGroupArray[],
-    rooms: (route.query.rooms instanceof Array ? route.query.rooms : [route.query.rooms]).filter(_ => !!_) as unknown as string[],
-    methods: (route.query.methods instanceof Array ? route.query.methods : [route.query.methods]).filter(_ => !!_) as unknown as string[],
-    teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_) as unknown as string[],
+    grades: (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[],
+    groups: (route.query.groups instanceof Array ? route.query.groups : [route.query.groups]).filter(_ => !!_).map(_ => JSON.parse(_ as string)).sort() as GradeGroupArray[],
+    rooms: (route.query.rooms instanceof Array ? route.query.rooms : [route.query.rooms]).filter(_ => !!_).sort() as unknown as string[],
+    methods: (route.query.methods instanceof Array ? route.query.methods : [route.query.methods]).filter(_ => !!_).sort() as unknown as string[],
+    teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_).sort() as unknown as string[],
     courseDecorator: (currentSemester ? store.courseOfCurrentSemester : (new CourseDecorator(store.courses))),
   };
 });

@@ -51,13 +51,12 @@ const cascaderOptions = computed<CascaderOption[]>(() => {
         :placeholder="placeholder"
         max-tag-count="responsive"
         expand-trigger="hover"
-        placement="bottom"
+        placement="bottom-start"
         :options="cascaderOptions"
         :cascade="true"
         :show-path="true"
         check-strategy="child"
         :filterable="true"
-        size="small"
         :clear-filter-after-select="true"
     />
   </n-form-item>
