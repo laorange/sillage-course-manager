@@ -41,12 +41,11 @@ const roomOptions = computed<SelectOption[]>(() => store.rooms.map(r => {
   <div class="situation-editor">
     <n-dynamic-input v-model:value="situationsLocal" :on-create="createSituation">
       <template #create-button-default>
-        <div>添加教学计划<span style="color: red">(需要至少添加一个)</span></div>
+        <div>添加教学计划</div>
       </template>
       <template #default="{ value, index }">
         <div class="situation-editor__single-situation">
           <n-select v-model:value="value.groups" :options="groupOptions" placeholder="班级名 / 小组名"
-                    :status="value.groups.length ? `success` : `error`"
                     :filterable="true" :tag="true" :clearable="true" :multiple="true"/>
           <n-select v-model:value="value.teacher" :options="teacherOptions" placeholder="教师(选填)"
                     :filterable="true" :tag="true" :clearable="true"/>
