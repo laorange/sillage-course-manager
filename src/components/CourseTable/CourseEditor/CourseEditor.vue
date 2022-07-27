@@ -71,6 +71,7 @@ const handlers = {
         store.client.Records.update("course", courseLocal.value.id, courseLocal.value).then(() => {
           store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
           store.editor.show = false;
+          store.editor.mode = "none";
           handlers.submitSuccess();
         }).catch(handlers.submitFail);
       }, "将会把变更提交数据库，是否继续？");
@@ -90,6 +91,7 @@ const handlers = {
         store.client.Records.create("course", courseLocal.value).then((record) => {
           store.courses.push(record as unknown as Course);
           store.editor.show = false;
+          store.editor.mode = "none";
           handlers.submitSuccess();
         }).catch(handlers.submitFail);
       }, "将会把变更提交数据库，是否继续？");

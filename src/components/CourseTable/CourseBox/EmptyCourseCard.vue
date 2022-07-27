@@ -69,7 +69,6 @@ function onContextMenu(e: MouseEvent) {
         negativeText: "取消",
         onPositiveClick: () => {
           if (store.editor.mode === "cut") {
-            store.editor.mode = "none";
             store.editor.courseEditing.lessonNum = props.lessonNum;
             store.editor.courseEditing.dates = newDates.value;
             store.editor.courseEditing.grade = grade;
@@ -77,6 +76,7 @@ function onContextMenu(e: MouseEvent) {
             store.client.Records.update("course", store.editor.courseEditing.id, courseLocal).then(() => {
               store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal);
               store.editor.show = false;
+              store.editor.mode = "none";
               message.success(`剪切成功`);
             }).catch(() => message.error("提交失败，请检查网络连接"));
 
