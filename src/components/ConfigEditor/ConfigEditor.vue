@@ -58,9 +58,9 @@ const handlers = {
     this.thinkTwiceIfDataChanged(() => {
       let configPromise: Promise<any>;
       if (store.config.id) {
-        configPromise = store.client.Records.update("config", store.config.id, {content: store.config});
+        configPromise = store.client.Records.update("config", store.config.id, store.config);
       } else {
-        configPromise = store.client.Records.create("config", {content: store.config});
+        configPromise = store.client.Records.create("config", store.config);
       }
       configPromise.then((record: Config) => {
         message.success("提交成功");
