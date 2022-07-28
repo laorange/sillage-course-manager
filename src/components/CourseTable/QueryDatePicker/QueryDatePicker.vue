@@ -45,9 +45,9 @@ const handlers = {
         </n-switch>
 
         <n-space justify="center" align="center">
-          <n-button type="info" size="small" @click="handlers.lastWeek()" v-if="store.localConfig.isDateMode">上一周</n-button>
+          <n-button type="info" size="small" @click="handlers.lastWeek()" v-if="store.localConfig.isDateMode">{{ store.translate(`上一周`) }}</n-button>
           <div v-if="weekStr">{{ weekStr }}</div>
-          <n-button type="info" size="small" @click="handlers.nextWeek()" v-if="store.localConfig.isDateMode">下一周</n-button>
+          <n-button type="info" size="small" @click="handlers.nextWeek()" v-if="store.localConfig.isDateMode">{{ store.translate(`下一周`) }}</n-button>
         </n-space>
       </n-space>
     </n-space>
