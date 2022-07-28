@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // @ts-ignore
 import DataGridXL from "@datagridxl/datagridxl2";
-import {computed, nextTick, ref, watch} from "vue";
+import {computed, nextTick, onBeforeMount, ref, watch} from "vue";
 import {Course} from "../../assets/ts/types";
 import {useStore} from "../../pinia/useStore";
 
@@ -175,6 +175,11 @@ const source = computed(() => {
 // endregion
 
 watch(() => source.value, refreshGridData, {deep: true, immediate: true});
+
+onBeforeMount(() => {
+  // 查看教学计划时，强制使用星期模式
+  if (store.localConfig.isDateMode) store.localConfig.isDateMode = false;
+});
 </script>
 
 <template>
