@@ -7,7 +7,7 @@ import {parseFontColor} from "../../../assets/ts/useColorParser";
 import useContextMenu from "../../../assets/ts/useContextMenu";
 import {useDialog, useMessage} from "naive-ui";
 
-const props = defineProps<{ course: Course, coursesExisting: Course[], whatDay: number, lessonNum: number, editable?: boolean }>();
+const props = defineProps<{ course: Course, coursesExisting: Course[], lessonNum: number, editable?: boolean }>();
 
 const store = useStore();
 const message = useMessage();
@@ -32,7 +32,7 @@ function onContextMenu(e: MouseEvent) {
           onClick: () => {
             store.editor.show = true;
             store.editor.mode = "edit";
-            store.editor.whatDay = props.whatDay;
+            store.editor.date = store.refs.queryDate;
             store.editor.lessonNum = props.lessonNum;
             store.editor.courseEditing = props.course;
           },
@@ -42,6 +42,7 @@ function onContextMenu(e: MouseEvent) {
           onClick: () => {
             store.editor.mode = "copy";
             store.editor.courseEditing = props.course;
+            store.editor.date = store.refs.queryDate;
             message.success("已复制");
           },
         },
@@ -50,6 +51,7 @@ function onContextMenu(e: MouseEvent) {
           onClick: () => {
             store.editor.mode = "cut";
             store.editor.courseEditing = props.course;
+            store.editor.date = store.refs.queryDate;
             message.success("已剪切");
           },
         },

@@ -3,7 +3,7 @@ import {Course} from "../../../assets/ts/types";
 import CourseCard from "./CourseCard.vue";
 import EmptyCourseCard from "./EmptyCourseCard.vue";
 
-defineProps<{ courses: Course[], whatDay: number, lessonNum: number, editable?: boolean }>();
+defineProps<{ courses: Course[], lessonNum: number, editable?: boolean }>();
 
 </script>
 
@@ -11,16 +11,16 @@ defineProps<{ courses: Course[], whatDay: number, lessonNum: number, editable?: 
   <!-- 如果此处没有课 -->
   <div class="course-box" v-if="courses.length===0">
     <template v-if="editable">
-      <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
+      <EmptyCourseCard :lesson-num="lessonNum" :courses-existing="courses"/>
     </template>
   </div>
 
   <div class="course-box" v-else>
     <div class="course-card-container" v-for="course in courses" :key="course.id">
-      <CourseCard :what-day="whatDay" :lesson-num="lessonNum" :course="course" :courses-existing="courses" :editable="editable"/>
+      <CourseCard :lesson-num="lessonNum" :course="course" :courses-existing="courses" :editable="editable"/>
     </div>
     <div class="empty-course-card" v-if="editable">
-      <EmptyCourseCard :what-day="whatDay" :lesson-num="lessonNum" :courses-existing="courses"/>
+      <EmptyCourseCard :lesson-num="lessonNum" :courses-existing="courses"/>
     </div>
   </div>
 </template>

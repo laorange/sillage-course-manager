@@ -148,12 +148,10 @@ function refreshGridData() {
         gridData.push(store.translate(record.group));
         gridData.push(record.weekTimes.reduce((sum, weekTime) => sum + weekTime, 0));
         record.weekTimes.map(weekTime => gridData.push(weekTime));
-        console.log(gridData);
         _gridDataArray.push(gridData);
       }
     }
   }
-  console.log(getOptions(_gridDataArray));
   nextTick(() => {
     planTableBodyObj.value = new DataGridXL(planTableBody.value, getOptions(_gridDataArray));
     Object.assign(document.body, {dataGridObj: planTableBody.value});

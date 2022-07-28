@@ -120,7 +120,7 @@ watch(() => courseLocal.value.info.name, (name) => {
 
 const weeks = ref<number[]>(props.course.dates.map(d => store.getWeekNumOfSomeDate(d)));
 watch(() => weeks.value, (ws) => {
-  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editor.whatDay - 1, "day")));
+  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorWhatDay - 1, "day")));
 }, {deep: true});
 
 const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));

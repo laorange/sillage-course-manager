@@ -3,7 +3,7 @@ import {Config, Course, CourseInfo, LocalConfig} from "../assets/ts/types";
 import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
-import {formatDate, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
+import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 
 type State = {
     client: PocketBase
@@ -16,7 +16,7 @@ type State = {
     editor: {
         show: boolean,
         mode: "none" | "add" | "copy" | "cut" | "edit"
-        whatDay: number
+        date: string
         lessonNum: number
         courseEditing: Course
         authenticated: boolean
@@ -56,7 +56,7 @@ export const useStore = defineStore("store", {
             editor: {
                 show: false,
                 mode: "none",
-                whatDay: 1,
+                date: formatDate(dayjs()),
                 lessonNum: 1,
                 courseEditing: getEmptyCourse(),
                 authenticated: false,
@@ -67,9 +67,19 @@ export const useStore = defineStore("store", {
         semesterStartDay(): dayjs.Dayjs {
             return dayjs(this.config.content.semesterStartDate);
         },
+        queryWhatDay(): number {
+            return getIsoWeekDay(dayjs(this.refs.queryDate));
+        },
+        queryWhatDayStr(): string {
+            const whatDayStrList = Array.from("一二三四五六天");
+            return `星期${whatDayStrList[this.queryWhatDay - 1]}`;
+        },
+        editorWhatDay(): number {
+            return getIsoWeekDay(dayjs(this.editor.date));
+        },
         editorWhatDayStr(): string {
             const whatDayStrList = Array.from("一二三四五六天");
-            return `星期${whatDayStrList[this.editor.whatDay - 1]}`;
+            return `星期${whatDayStrList[this.editorWhatDay - 1]}`;
         },
         grades(): string[] {
             let _grades: string[] = [];
