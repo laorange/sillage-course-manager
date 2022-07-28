@@ -3,6 +3,7 @@ import HomePage from "../components/Home/HomePage.vue";
 import ConfigEditor from "../components/ConfigEditor/ConfigEditor.vue";
 import CourseTable from "../components/CourseTable/CourseTable.vue";
 import LoginPage from "../components/LoginPage/LoginPage.vue";
+import PlanTable from "../components/PlanTable/PlanTable.vue";
 
 
 const routes: RouteRecordRaw[] = [
@@ -26,7 +27,12 @@ const routes: RouteRecordRaw[] = [
         path: "/login/",
         name: "login",
         component: LoginPage,
-    }
+    },
+    {
+        path: "/plan/",
+        name: "plan",
+        component: PlanTable,
+    },
 ];
 
 export default createRouter({

@@ -43,6 +43,8 @@ declare module '@vue/runtime-core' {
     NSpace: typeof import('naive-ui')['NSpace']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTransfer: typeof import('naive-ui')['NTransfer']
+    PlanTable: typeof import('./src/components/PlanTable/PlanTable.vue')['default']
+    PlanTableBody: typeof import('./src/components/PlanTable/PlanTableBody.vue')['default']
     QueryDatePicker: typeof import('./src/components/CourseTable/QueryDatePicker/QueryDatePicker.vue')['default']
     RouteFilter: typeof import('./src/components/CourseTable/RouteFilter/RouteFilter.vue')['default']
     RouteFilterSelect: typeof import('./src/components/CourseTable/RouteFilter/RouteFilterSelect.vue')['default']

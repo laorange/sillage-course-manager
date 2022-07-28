@@ -20,6 +20,9 @@ const handlers = {
   toDocs() {
     location.href = "https://laorange.github.io/sillage-docs";
   },
+  toPlan() {
+    router.push({name: "plan"});
+  },
   toConfig() {
     router.push({name: "config"});
   },
@@ -43,6 +46,8 @@ const handlers = {
         <n-select v-model:value="store.localConfig.language" :options="languageOptions"/>
       </div>
 
+      <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
+
       <n-button v-for="grade in store.grades"
                 :key="`grade${grade}`"
                 type="success" size="large"
@@ -50,7 +55,7 @@ const handlers = {
         {{ store.translate(grade) }}
       </n-button>
 
-      <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
+      <n-button type="info" @click="handlers.toPlan">{{ store.translate(`教学计划`) }}</n-button>
 
       <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">登录</n-button>
       <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
