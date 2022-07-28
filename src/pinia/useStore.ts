@@ -46,6 +46,7 @@ export const useStore = defineStore("store", {
             },
             localConfig: {
                 language: "中文",
+                isDateMode: false,
             },
             refs: {
                 queryDate: formatDate(dayjs()),
@@ -160,7 +161,7 @@ export const useStore = defineStore("store", {
                 .concat(this.teachers)
                 .concat(this.rooms)
                 .concat(["使用说明", "正在查看", "年级", "班级", "授课方式", "授课教师", "教室"])
-                .concat(["星期"])
+                .concat(["日期", "星期"])
                 .concat(Array.from("一二三四五六天").map(w => `星期${w}`));
         },
         courseOfCurrentSemester(): CourseDecorator {
@@ -190,7 +191,7 @@ export const useStore = defineStore("store", {
             }
             // 若没有设置外语语言，则直接返回原词
             if (!this.config.content.languages) {
-                return word
+                return word;
             }
             let result = word;
             let languageIndex = this.config.content.languages.indexOf(this.localConfig.language);

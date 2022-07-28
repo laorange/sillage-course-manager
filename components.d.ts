@@ -43,6 +43,7 @@ declare module '@vue/runtime-core' {
     NSpace: typeof import('naive-ui')['NSpace']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTransfer: typeof import('naive-ui')['NTransfer']
+    QueryDatePicker: typeof import('./src/components/CourseTable/QueryDatePicker/QueryDatePicker.vue')['default']
     RouteFilter: typeof import('./src/components/CourseTable/RouteFilter/RouteFilter.vue')['default']
     RouteFilterSelect: typeof import('./src/components/CourseTable/RouteFilter/RouteFilterSelect.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

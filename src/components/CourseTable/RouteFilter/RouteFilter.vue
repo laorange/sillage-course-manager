@@ -7,6 +7,7 @@ import {useStore} from "../../../pinia/useStore";
 import RouteFilterSelect from "./RouteFilterSelect.vue";
 import {useMessage} from "naive-ui";
 import GradeGroupSelect from "./GradeGroupSelect.vue";
+import dayjs from "dayjs";
 
 const props = defineProps<{ courses: Course[] }>();
 const emits = defineEmits(["update:courses"]);
@@ -18,17 +19,19 @@ const message = useMessage();
 
 const showFilterDialog = ref<boolean>(false);
 
-// 是否只显示当前学期的课程
-const currentSemester = computed<boolean>(() => true);
 
 let sources = computed(() => {
   return {
+    // formModel data
     grades: (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[],
     groups: (route.query.groups instanceof Array ? route.query.groups : [route.query.groups]).filter(_ => !!_).map(_ => JSON.parse(_ as string)).sort() as GradeGroupArray[],
     rooms: (route.query.rooms instanceof Array ? route.query.rooms : [route.query.rooms]).filter(_ => !!_).sort() as unknown as string[],
     methods: (route.query.methods instanceof Array ? route.query.methods : [route.query.methods]).filter(_ => !!_).sort() as unknown as string[],
     teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_).sort() as unknown as string[],
-    courseDecorator: (currentSemester ? store.courseOfCurrentSemester : (new CourseDecorator(store.courses))),
+
+    queryDate: store.refs.queryDate,
+    isDateMode: store.localConfig.isDateMode,
+    courseDecorator: store.localConfig.isDateMode ? (new CourseDecorator(store.courses)) : store.courseOfCurrentSemester,
   };
 });
 
@@ -39,20 +42,27 @@ const title = computed<string>(() => {
       .map((s: string) => store.translate(s)).filter(_ => !!_).join(` `);
 });
 
+
 // 每次显示/关闭抽屉时，将路由的参数同步到formModel
-const formModel = ref({...sources.value, courseDecorator: undefined});
-watch(() => showFilterDialog.value, () => formModel.value = {...sources.value, courseDecorator: undefined});
+const formModel = ref<{ grades: string[], groups: GradeGroupArray[], rooms: string[], methods: string[], teachers: string[] }>({
+  grades: [], groups: [], rooms: [], methods: [], teachers: [],
+});
+watch(() => showFilterDialog.value, () => formModel.value = {...sources.value});
+
 
 watch(() => sources.value, (src) => {
+  // 日期模式：不限制是当前学期；星期模式：必须为当前学期
   let decorator: CourseDecorator = src.courseDecorator;
+  if (src.isDateMode) decorator = decorator.isInSameWeek(dayjs(src.queryDate));
   if (src.grades.length) decorator = decorator.ofGrades(src.grades);
   if (src.rooms.length) decorator = decorator.ofRooms(src.rooms);
   if (src.methods.length) decorator = decorator.ofMethods(src.methods);
   if (src.teachers.length) decorator = decorator.ofTeachers(src.teachers);
   if (src.groups.length) decorator = decorator.ofGradeGroups(src.groups);
-  formModel.value = {...src, courseDecorator: undefined};
+  formModel.value = {...src};
   emits("update:courses", decorator.value);
 }, {deep: true, immediate: true});
+
 
 const handlers = {
   pushWithNewFilter() {

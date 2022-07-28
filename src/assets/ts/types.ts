@@ -71,6 +71,7 @@ export interface Config extends PocketBaseModel {
 
 export interface LocalConfig {
     language: string;
+    isDateMode: boolean;
 }
 
 export type GradeGroupArray = [string, string]
