@@ -3,12 +3,12 @@ import dayjs from "dayjs";
 import {zhCN, dateZhCN} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
 import {computed, watch} from "vue";
-import {formatDate, getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
+import {formatDate} from "../../../assets/ts/datetimeUtils";
 
 const store = useStore();
 
 const weekStr = computed<string>(() => {
-  let week = getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(store.refs.queryDate)) + 1;
+  let week = store.getWeekNumOfSomeDate(store.refs.queryDate);
   if (week > store.config.content.maxWeekNum || week <= 0) return "";
   let _weekUnitStr = store.translate("星期");
   return _weekUnitStr === "星期" ? `第${week}周` : `${_weekUnitStr} ${week}`;

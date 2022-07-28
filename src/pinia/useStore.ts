@@ -3,7 +3,7 @@ import {Config, Course, CourseInfo, LocalConfig} from "../assets/ts/types";
 import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
-import {formatDate} from "../assets/ts/datetimeUtils";
+import {formatDate, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 
 type State = {
     client: PocketBase
@@ -228,6 +228,12 @@ export const useStore = defineStore("store", {
                     this.editor.authenticated = true;
                 }).catch(() => localStorage.removeItem("pocketbase_auth"));
             }
+        },
+        getWeekNumOfSomeDate(someDate: string | dayjs.Dayjs): number {
+            if (typeof someDate === "string") {
+                someDate = dayjs(someDate);
+            }
+            return getWeekAmountBetweenTwoDay(this.semesterStartDay, someDate) + 1;
         },
     },
 });

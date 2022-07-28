@@ -6,8 +6,7 @@ import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption, useMessage, useDialog} from "naive-ui";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {useStore} from "../../../pinia/useStore";
-import {formatDate, getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
-import dayjs from "dayjs";
+import {formatDate} from "../../../assets/ts/datetimeUtils";
 import {isValidCourse} from "../../../assets/ts/courseToolkit";
 import {useRoute} from "vue-router";
 import {whetherTwoObjEqual} from "../../../assets/ts/whetherTwoObjEqual";
@@ -119,7 +118,7 @@ watch(() => courseLocal.value.info.name, (name) => {
   }
 });
 
-const weeks = ref<number[]>(props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
+const weeks = ref<number[]>(props.course.dates.map(d => store.getWeekNumOfSomeDate(d)));
 watch(() => weeks.value, (ws) => {
   courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editor.whatDay - 1, "day")));
 }, {deep: true});

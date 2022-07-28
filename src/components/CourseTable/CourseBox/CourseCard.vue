@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {Course, Situation} from "../../../assets/ts/types";
 import {computed} from "vue";
-import dayjs from "dayjs";
-import {getWeekAmountBetweenTwoDay} from "../../../assets/ts/datetimeUtils";
 import {useStore} from "../../../pinia/useStore";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {parseFontColor} from "../../../assets/ts/useColorParser";
@@ -16,7 +14,7 @@ const message = useMessage();
 const dialog = useDialog();
 const {$contextmenu} = useContextMenu();
 
-const weeks = computed<number[]>(() => props.course.dates.map(d => getWeekAmountBetweenTwoDay(store.semesterStartDay, dayjs(d)) + 1));
+const weeks = computed<number[]>(() => props.course.dates.map(d => store.getWeekNumOfSomeDate(d)));
 
 function getSituationStr(situation: Situation) {
   return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join(" | ");
