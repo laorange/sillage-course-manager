@@ -8,6 +8,7 @@ import RouteFilterSelect from "./RouteFilterSelect.vue";
 import {useMessage} from "naive-ui";
 import GradeGroupSelect from "./GradeGroupSelect.vue";
 import dayjs from "dayjs";
+import useClipboard from "vue-clipboard3";
 
 const props = defineProps<{ courses: Course[] }>();
 const emits = defineEmits(["update:courses"]);
@@ -16,6 +17,7 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const message = useMessage();
+const {toClipboard} = useClipboard();
 
 const showFilterDialog = ref<boolean>(false);
 
@@ -79,16 +81,28 @@ const handlers = {
       },
     });
   },
+  async copyUrl() {
+    try {
+      await toClipboard(window.location.href);
+      message.success(`${store.translate("复制网址")}: ${route.fullPath}`);
+    } catch (e) {
+      message.error(`Error: ${e}`);
+    }
+  },
 };
 </script>
 
 <template>
   <div class="route-filter">
-    <n-button size="large" :dashed="true" color="#32647d" @click="showFilterDialog=true">
-      <n-ellipsis style="max-width: 80vw">
-        {{ store.translate(`正在查看`) }}: {{ title ? title : `⚙` }}
-      </n-ellipsis>
-    </n-button>
+    <n-space justify="center" align="center" wrap="wrap">
+      <n-button :dashed="true" color="#32647d" @click="showFilterDialog=true">
+        <n-ellipsis style="max-width: 80vw">
+          {{ store.translate(`正在查看`) }}: {{ title ? title : `⚙` }}
+        </n-ellipsis>
+      </n-button>
+
+      <n-button :dashed="true" color="#32647d" @click="handlers.copyUrl()">{{ store.translate(`复制网址`) }}</n-button>
+    </n-space>
   </div>
 
   <n-drawer v-model:show="showFilterDialog" height="100%" placement="top">
