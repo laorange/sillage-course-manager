@@ -20,6 +20,11 @@ const message = useMessage();
 const dialog = useDialog();
 const grades = computed<string[]>(() => (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[]);
 
+const isQueryDateInCurrentSemester = computed<boolean>(() => {
+  let _week = store.getWeekNumOfSomeDate(store.refs.queryDate);
+  return _week > 0 || _week <= store.config.content.maxWeekNum;
+});
+
 const newDates = computed<string[]>(() => store.editor.courseEditing.dates.map(
     (d: string) => {
       const preDate = dayjs(d);
@@ -40,7 +45,9 @@ function onContextMenu(e: MouseEvent) {
       onClick: () => {
         store.editor.mode = "add";
         store.editor.show = true;
-        store.editor.courseEditing = getEmptyCourse();
+        let emptyCourse = getEmptyCourse();
+        console.log(isQueryDateInCurrentSemester.value);
+        store.editor.courseEditing = isQueryDateInCurrentSemester.value ? {...emptyCourse, dates: [store.refs.queryDate]} : emptyCourse;
       },
     },
   ];
