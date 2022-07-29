@@ -9,22 +9,24 @@ import {useStore} from "../../../pinia/useStore";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
 import {isValidCourse} from "../../../assets/ts/courseToolkit";
 import {useRoute} from "vue-router";
-import {whetherTwoObjEqual} from "../../../assets/ts/whetherTwoObjEqual";
+import {whetherTwoObjNotEqual} from "../../../assets/ts/whetherTwoObjNotEqual";
 
 const store = useStore();
 const route = useRoute();
 const message = useMessage();
 const dialog = useDialog();
 
-const props = defineProps<{ course: Course }>();
+const operatingCourse = computed<Course>(() => store.editor.mode === "add" ? store.editor.courseAdding : store.editor.courseEditing);
 
-const courseLocal = ref<Course>({
-  ...JSON.parse(JSON.stringify(props.course)),
-  lessonNum: store.editor.lessonNum,
-  grade: (route.query.grade instanceof Array ? route.query.grade[0] : route.query.grade) ?? null,
+const courseLocal = ref<Course>(JSON.parse(JSON.stringify(operatingCourse.value)));
+watch(() => operatingCourse.value, (oc) => {
+  courseLocal.value = {
+    ...JSON.parse(JSON.stringify(oc)),
+    grade: (route.query.grade instanceof Array ? route.query.grade[0] : route.query.grade) ?? null,
+  };
 });
 
-const whetherChanged = computed<boolean>(() => whetherTwoObjEqual(courseLocal.value, props.course));
+const whetherChanged = computed<boolean>(() => whetherTwoObjNotEqual(courseLocal.value, operatingCourse.value));
 
 const handlers = {
   submitSuccess() {
@@ -48,7 +50,7 @@ const handlers = {
   },
   restore() {
     this.thinkTwiceIfDataChanged(() => {
-      courseLocal.value = JSON.parse(JSON.stringify(props.course));
+      courseLocal.value = JSON.parse(JSON.stringify(operatingCourse.value));
       store.editor.mode = "none";
       store.editor.show = false;
     }, "您在本页面所做的修改将会丢失，是否继续？");
@@ -56,7 +58,7 @@ const handlers = {
   async update() {
     if (!whetherCourseIsValid) {
       message.error("请将数据补充完整(红色边框代表必填项)");
-    } else if (JSON.stringify(props.course) === JSON.stringify(courseLocal.value)) {
+    } else if (!whetherChanged.value) {
       message.info("因为没有更改，所以无事发生");
       this.restore();
     } else {
@@ -118,16 +120,16 @@ watch(() => courseLocal.value.info.name, (name) => {
   }
 });
 
-const weeks = ref<number[]>(props.course.dates.map(d => store.getWeekNumOfSomeDate(d)));
+const weeks = ref<number[]>(courseLocal.value.dates.map(d => store.getWeekNumOfSomeDate(d)));
 watch(() => weeks.value, (ws) => {
-  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorWhatDay - 1, "day")));
+  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.queryWhatDay - 1, "day")));
 }, {deep: true});
 
 const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));
 </script>
 
 <template>
-  <h2 style="text-align: center">{{ store.editorWhatDayStr }} &nbsp; 第{{ store.editor.lessonNum }}节课</h2>
+  <h2 style="text-align: center">{{ store.queryWhatDayStr }} &nbsp; 第{{ store.editor.lessonNum }}节课</h2>
   <div class="course-editor">
     <div class="responsive-left-part">
       <div aria-label="课程信息">

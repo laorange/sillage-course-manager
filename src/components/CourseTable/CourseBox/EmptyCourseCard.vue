@@ -20,11 +20,6 @@ const message = useMessage();
 const dialog = useDialog();
 const grades = computed<string[]>(() => (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[]);
 
-const isQueryDateInCurrentSemester = computed<boolean>(() => {
-  let _week = store.getWeekNumOfSomeDate(store.refs.queryDate);
-  return _week > 0 || _week <= store.config.content.maxWeekNum;
-});
-
 function addInfoInThisBlockIntoStore() {
   store.editor.lessonNum = props.lessonNum;
 }
@@ -38,8 +33,11 @@ function onContextMenu(e: MouseEvent) {
       onClick: () => {
         store.editor.mode = "add";
         store.editor.show = true;
-        let emptyCourse = getEmptyCourse();
-        store.editor.courseEditing = isQueryDateInCurrentSemester.value ? {...emptyCourse, dates: [store.refs.queryDate]} : emptyCourse;
+        store.editor.courseAdding = {
+          ...getEmptyCourse(),
+          lessonNum: props.lessonNum,
+          dates: store.localConfig.isDateMode ? [store.refs.queryDate] : [],
+        };
       },
     },
   ];
@@ -87,7 +85,7 @@ const handlers = {
     cut(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editorWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到 ${grade}的 ${store.queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到 ${grade}的 ${store.queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: () => {
@@ -109,7 +107,7 @@ const handlers = {
     copy(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editorWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到 ${grade}的 ${store.queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到 ${grade}的 ${store.queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: () => {
@@ -137,12 +135,12 @@ const handlers = {
     cut(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editor.date}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到${grade}的${store.refs.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到${grade}的${store.refs.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
           let newCourse = handlers.isDateMode.getNewCourse(grade);
-          let restDates = store.editor.courseEditing.dates.filter(d => d !== store.editor.date);
+          let restDates = store.editor.courseEditing.dates.filter(d => d !== store.editor.fromDate);
           try {
             if (restDates.length) {
 
@@ -175,7 +173,7 @@ const handlers = {
     copy(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editor.date}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到${grade}的${store.refs.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到${grade}的${store.refs.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {

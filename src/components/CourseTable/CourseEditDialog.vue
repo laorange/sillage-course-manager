@@ -1,15 +1,9 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
-import {computed, watch} from "vue";
+import {computed} from "vue";
 import CourseEditor from "./CourseEditor/CourseEditor.vue";
-import {getEmptyCourse} from "../../assets/ts/courseToolkit";
 
 const store = useStore();
-watch(() => store.editor.courseEditing, (newCourse) => {
-  if (!newCourse) {
-    store.editor.courseEditing = getEmptyCourse();
-  }
-}, {immediate: true});
 
 const title = computed(() => {
   switch (store.editor.mode) {
@@ -30,7 +24,7 @@ const title = computed(() => {
 <template>
   <n-drawer v-model:show="store.editor.show" height="100%" placement="top" :close-on-esc="false">
     <n-drawer-content :title="title">
-      <CourseEditor :course="store.editor.courseEditing"/>
+      <CourseEditor/>
     </n-drawer-content>
   </n-drawer>
 </template>

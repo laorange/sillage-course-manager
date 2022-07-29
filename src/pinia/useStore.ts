@@ -16,9 +16,10 @@ type State = {
     editor: {
         show: boolean,
         mode: "none" | "add" | "copy" | "cut" | "edit"
-        date: string
+        fromDate: string
         lessonNum: number
         courseEditing: Course
+        courseAdding: Course
         authenticated: boolean
     }
 }
@@ -56,9 +57,10 @@ export const useStore = defineStore("store", {
             editor: {
                 show: false,
                 mode: "none",
-                date: formatDate(dayjs()),
+                fromDate: formatDate(dayjs()),
                 lessonNum: 1,
                 courseEditing: getEmptyCourse(),
+                courseAdding: getEmptyCourse(),
                 authenticated: false,
             },
         };
@@ -74,12 +76,12 @@ export const useStore = defineStore("store", {
             const whatDayStrList = Array.from("一二三四五六天");
             return `星期${whatDayStrList[this.queryWhatDay - 1]}`;
         },
-        editorWhatDay(): number {
-            return getIsoWeekDay(dayjs(this.editor.date));
+        editorFromWhatDay(): number {
+            return getIsoWeekDay(dayjs(this.editor.fromDate));
         },
-        editorWhatDayStr(): string {
+        editorFromWhatDayStr(): string {
             const whatDayStrList = Array.from("一二三四五六天");
-            return `星期${whatDayStrList[this.editorWhatDay - 1]}`;
+            return `星期${whatDayStrList[this.editorFromWhatDay - 1]}`;
         },
         grades(): string[] {
             let _grades: string[] = [];

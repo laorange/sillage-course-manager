@@ -8,7 +8,7 @@ function getDataType(data: any): string {
 }
 
 // 判断两个对象的属性是否相同
-export function whetherTwoObjEqual(source: any, comparison: any): boolean {
+export function whetherTwoObjNotEqual(source: any, comparison: any): boolean {
     const iterable = (data: any) => ["Object", "Array"].includes(getDataType(data));
     if (!iterable(source)) {
         throw new Error(`source should be a Object or Array , but got ${getDataType(source)}`);
@@ -28,7 +28,7 @@ export function whetherTwoObjEqual(source: any, comparison: any): boolean {
 
     return comparisonKeys.some(key => {
         if (iterable(source[key])) {
-            return whetherTwoObjEqual(source[key], comparison[key]);
+            return whetherTwoObjNotEqual(source[key], comparison[key]);
         } else {
             return source[key] !== comparison[key];
         }

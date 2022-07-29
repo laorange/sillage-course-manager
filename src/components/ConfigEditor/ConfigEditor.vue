@@ -7,7 +7,7 @@ import LanguageEditor from "./LanguageEditor.vue";
 import {computed, ref} from "vue";
 import {onBeforeRouteLeave, useRouter} from "vue-router";
 import {Config} from "../../assets/ts/types";
-import {whetherTwoObjEqual} from "../../assets/ts/whetherTwoObjEqual";
+import {whetherTwoObjNotEqual} from "../../assets/ts/whetherTwoObjNotEqual";
 
 const store = useStore();
 const message = useMessage();
@@ -16,7 +16,7 @@ const router = useRouter();
 
 let configBackUp = JSON.parse(JSON.stringify(store.config));
 
-const whetherChanged = computed<boolean>(() => whetherTwoObjEqual(configBackUp, store.config));
+const whetherChanged = computed<boolean>(() => whetherTwoObjNotEqual(configBackUp, store.config));
 
 const showDictionaryEditor = ref<boolean>(false);
 

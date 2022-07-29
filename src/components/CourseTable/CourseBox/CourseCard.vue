@@ -32,7 +32,6 @@ function onContextMenu(e: MouseEvent) {
           onClick: () => {
             store.editor.show = true;
             store.editor.mode = "edit";
-            store.editor.date = store.refs.queryDate;
             store.editor.lessonNum = props.lessonNum;
             store.editor.courseEditing = props.course;
           },
@@ -42,7 +41,7 @@ function onContextMenu(e: MouseEvent) {
           onClick: () => {
             store.editor.mode = "copy";
             store.editor.courseEditing = props.course;
-            store.editor.date = store.refs.queryDate;
+            store.editor.fromDate = store.refs.queryDate;
             message.success("已复制");
           },
         },
@@ -51,7 +50,7 @@ function onContextMenu(e: MouseEvent) {
           onClick: () => {
             store.editor.mode = "cut";
             store.editor.courseEditing = props.course;
-            store.editor.date = store.refs.queryDate;
+            store.editor.fromDate = store.refs.queryDate;
             message.success("已剪切");
           },
         },
