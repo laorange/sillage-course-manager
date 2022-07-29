@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
 import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
+import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
 
 type State = {
     client: PocketBase
@@ -113,7 +114,10 @@ export const useStore = defineStore("store", {
             return _groupDict;
         },
         rooms(): string[] {
-            const _rooms: string[] = [];
+            // 从预设中导入
+            const _rooms: string[] = roomArray;
+
+            // 从已有课程中遍历出已有教室
             for (const courses of this.courses) {
                 for (const situation of courses.situations) {
                     if (!!situation.room && _rooms.indexOf(situation.room) === -1) {
@@ -121,10 +125,14 @@ export const useStore = defineStore("store", {
                     }
                 }
             }
+
             return _rooms.sort();
         },
         teachers(): string[] {
-            const _teachers: string[] = [];
+            // 从预设中导入
+            let _teachers: string[] = teacherArray;
+
+            // 从已有课程中遍历出已有授课教师
             for (const courses of this.courses) {
                 for (const situation of courses.situations) {
                     if (!!situation.teacher && _teachers.indexOf(situation.teacher) === -1) {
@@ -135,7 +143,9 @@ export const useStore = defineStore("store", {
             return _teachers.sort();
         },
         methods(): string[] {
-            let _methods: string[] = [];
+            // 从预设中导入
+            let _methods: string[] = methodArray;
+            // 从已有课程中遍历出现有授课方式
             for (const courses of this.courses) {
                 if (!!courses.method && _methods.indexOf(courses.method) === -1) {
                     _methods.push(courses.method);
@@ -144,22 +154,22 @@ export const useStore = defineStore("store", {
             return _methods.sort();
         },
         courseNames(): string[] {
-            const _courseNames: string[] = [];
-            for (const courses of this.courses) {
-                if (!!courses.info.name && _courseNames.indexOf(courses.info.name) === -1) {
-                    _courseNames.push(courses.info.name);
-                }
-            }
-            return _courseNames.sort();
+            return Object.keys(this.courseInfoDict).sort();
         },
         courseInfoDict(): { [key: string]: CourseInfo } {
             // 提取现有课程的课程信息，(若有多个同名课程，只会记录首次出现的课程信息)
             const courseInfoDict: { [key: string]: CourseInfo } = {};
+
+            // 先从已有课程中遍历出课程信息
             for (const courses of this.courses) {
-                if (!courseInfoDict[courses.info.name]) {
-                    courseInfoDict[courses.info.name] = courses.info;
-                }
+                if (!courseInfoDict[courses.info.name]) courseInfoDict[courses.info.name] = courses.info;
             }
+
+            // 再从json文件中导入预设的课程信息，如果已有某节课的信息，不会覆盖旧信息
+            for (const courseInfo of (courseInfoArray as CourseInfo[])) {
+                if (!courseInfoDict[courseInfo.name]) courseInfoDict[courseInfo.name] = courseInfo;
+            }
+
             return courseInfoDict;
         },
         dictionaryItems(): string[] {
