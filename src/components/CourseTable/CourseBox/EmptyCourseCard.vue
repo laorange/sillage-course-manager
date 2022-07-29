@@ -90,7 +90,7 @@ const handlers = {
     cut(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到 ${grade}的 ${queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到 ${grade}的 ${queryWhatDayStr.value} 第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: () => {
@@ -112,7 +112,7 @@ const handlers = {
     copy(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到 ${grade}的 ${queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到 ${grade}的 ${queryWhatDayStr.value} 第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: () => {
