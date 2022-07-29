@@ -30,9 +30,11 @@ function addInfoInThisBlockIntoStore() {
 function onContextMenu(e: MouseEvent) {
   e.preventDefault();
   addInfoInThisBlockIntoStore();
-  let items: MenuItem[] = [
-    {
-      label: "新增课程",
+  let items: MenuItem[] = [];
+
+  if (grades.value.length) {
+    grades.value.map(grade => items.push({
+      label: `为${grade}新增课程`,
       onClick: () => {
         store.editor.mode = "add";
         store.editor.show = true;
@@ -40,23 +42,38 @@ function onContextMenu(e: MouseEvent) {
         store.editor.courseAdding = {
           ...getEmptyCourse(),
           lessonNum: props.lessonNum,
-          grade: ((route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as string[])[0],
+          grade: grade,
           dates: props.isDateMode ? [props.queryDate] : [],
         };
       },
-    },
-  ];
+    }));
 
-  grades.value.map(grade => items.push({
-    label: `粘贴到${grade}`,
-    disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
-    onClick: () => {
-      if (props.isDateMode && store.editor.mode === "cut") handlers.isDateMode.cut(grade);
-      else if (props.isDateMode && store.editor.mode === "copy") handlers.isDateMode.copy(grade);
-      else if (!props.isDateMode && store.editor.mode === "cut") handlers.notDateMode.cut(grade);
-      else if (!props.isDateMode && store.editor.mode === "copy") handlers.notDateMode.copy(grade);
-    },
-  }));
+    grades.value.map(grade => items.push({
+      label: `粘贴到${grade}`,
+      disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
+      onClick: () => {
+        if (props.isDateMode && store.editor.mode === "cut") handlers.isDateMode.cut(grade);
+        else if (props.isDateMode && store.editor.mode === "copy") handlers.isDateMode.copy(grade);
+        else if (!props.isDateMode && store.editor.mode === "cut") handlers.notDateMode.cut(grade);
+        else if (!props.isDateMode && store.editor.mode === "copy") handlers.notDateMode.copy(grade);
+      },
+    }));
+  } else {
+    store.grades.map(grade => items.push({
+      label: `为${grade}新增课程`,
+      onClick: () => {
+        store.editor.mode = "add";
+        store.editor.show = true;
+        store.editor.fromDates = [props.queryDate];
+        store.editor.courseAdding = {
+          ...getEmptyCourse(),
+          lessonNum: props.lessonNum,
+          grade: grade,
+          dates: props.isDateMode ? [props.queryDate] : [],
+        };
+      },
+    }));
+  }
 
   $contextmenu({
     x: e.pageX,
