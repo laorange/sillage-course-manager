@@ -41,11 +41,13 @@ const handlers = {
   <div class="query-date-picker" aria-label="日期选择">
     <n-space :vertical="true">
       <n-space justify="center" align="center" wrap="wrap">
-        <n-config-provider :locale="store.localConfig.language===`中文`?zhCN:undefined"
-                           :date-locale="store.localConfig.language===`中文`?dateZhCN:undefined">
-          <n-date-picker v-model:formatted-value="queryDateLocal" value-format="yyyy-MM-dd" type="date"
-                         placement="bottom" :input-readonly="true" :first-day-of-week="0" :disabled="!store.localConfig.isDateMode"/>
-        </n-config-provider>
+        <template v-if="store.localConfig.isDateMode">
+          <n-config-provider :locale="store.localConfig.language===`中文`?zhCN:undefined"
+                             :date-locale="store.localConfig.language===`中文`?dateZhCN:undefined">
+            <n-date-picker v-model:formatted-value="queryDateLocal" value-format="yyyy-MM-dd" type="date"
+                           placement="bottom" :input-readonly="true" :first-day-of-week="0" :disabled="!store.localConfig.isDateMode"/>
+          </n-config-provider>
+        </template>
 
         <n-switch v-model:value="store.localConfig.isDateMode">
           <template #checked>{{ store.translate(`日期`) }}</template>
