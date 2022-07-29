@@ -101,7 +101,7 @@ const handlers = {
     </n-space>
   </div>
 
-  <n-drawer v-model:show="showFilterDialog" height="100%" placement="top">
+  <n-drawer v-model:show="showFilterDialog" height="80%" placement="top">
     <n-drawer-content :title="store.translate(`正在查看`)" :closable="true" :footer-style="{justifyContent:'space-around'}">
       <div class="route-filter-drawer">
         <n-form
