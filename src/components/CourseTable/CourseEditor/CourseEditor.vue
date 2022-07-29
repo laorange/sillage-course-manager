@@ -169,7 +169,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
 
       <div aria-label="课程颜色">
         <n-divider :dashed="true">课程颜色</n-divider>
-        <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc">
+        <n-color-picker :modes="['hex']" placement="bottom" v-model:value="courseLocal.info.bgc" :show-alpha="false">
           <template #label>点此设置背景颜色：{{ courseLocal.info.bgc }}</template>
         </n-color-picker>
       </div>
