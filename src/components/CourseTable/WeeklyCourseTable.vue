@@ -64,6 +64,7 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => {
 .course-table-body {
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
   border-top: var(--border-color) 1px solid;
   border-left: var(--border-color) 1px solid;
 }

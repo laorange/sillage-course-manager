@@ -12,7 +12,7 @@ import {getEmptyCourse} from "../../../assets/ts/courseToolkit";
 
 const {$contextmenu} = useContextMenu();
 
-const props = defineProps<{ lessonNum: number, queryDate: string, isDateMode:boolean, coursesExisting: Course[] }>();
+const props = defineProps<{ lessonNum: number, queryDate: string, isDateMode: boolean, coursesExisting: Course[] }>();
 
 const store = useStore();
 const route = useRoute();
@@ -36,7 +36,7 @@ function onContextMenu(e: MouseEvent) {
       onClick: () => {
         store.editor.mode = "add";
         store.editor.show = true;
-        store.editor.fromDate = props.queryDate;
+        store.editor.fromDates = [props.queryDate];
         store.editor.courseAdding = {
           ...getEmptyCourse(),
           lessonNum: props.lessonNum,
@@ -81,7 +81,7 @@ const handlers = {
         ...store.editor.courseEditing,
         lessonNum: props.lessonNum,
         grade: grade,
-        dates: store.editor.courseEditing.dates.map((d: string) => {
+        dates: store.editor.fromDates.map((d: string) => {
           const preDate = dayjs(d);
           return formatDate(preDate.add(queryWhatDay.value - getIsoWeekDay(preDate), "day"));
         }),
@@ -93,19 +93,42 @@ const handlers = {
         content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到 ${grade}的 ${queryWhatDayStr.value} 第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
-        onPositiveClick: () => {
+        onPositiveClick: async () => {
           // 星期模式，在一个星期内平移
           let newCourse = handlers.notDateMode.getNewCourse(grade);
-          store.client.Records.update("course", store.editor.courseEditing.id, newCourse).then(() => {
-            // store.editor.courseEditing.lessonNum = props.lessonNum;
-            // store.editor.courseEditing.dates = courseLocal.dates;
-            // store.editor.courseEditing.grade = grade;
-            // 用新的课程信息替换原来的
-            store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(newCourse);
-            store.editor.show = false;
-            store.editor.mode = "none";
-            message.success(`剪切成功`);
-          }).catch(() => message.error("提交失败，请检查网络连接"));
+          let restDates = store.editor.courseEditing.dates.filter(d => store.editor.fromDates.indexOf(d) === -1);
+          // 全部剪切
+          if (restDates.length === 0) {
+            try {
+              await store.client.Records.update("course", store.editor.courseEditing.id, newCourse);
+              // 用新的课程信息替换原来的
+              store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(newCourse);
+              store.editor.show = false;
+              store.editor.mode = "none";
+              message.success(`剪切成功`);
+            } catch {
+              message.error("提交失败，请检查网络连接");
+            }
+          }
+          //  部分剪切
+          else {
+            try {
+              // 用新的课程信息替换原来的
+              let courseUpdate = {...store.editor.courseEditing, dates: restDates};
+              await store.client.Records.update("course", store.editor.courseEditing.id, courseUpdate);
+              store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseUpdate);
+
+              // 创建新的
+              newCourse = await store.client.Records.create("course", newCourse) as unknown as Course;
+              store.courses.push(newCourse);
+
+              store.editor.show = false;
+              store.editor.mode = "none";
+              message.success(`剪切成功`);
+            } catch {
+              message.error("提交失败，请检查网络连接");
+            }
+          }
         },
       });
     },
@@ -140,12 +163,12 @@ const handlers = {
     cut(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到${grade}的${queryWhatDayStr}第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editor.fromDates.join("、")} 第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到${grade}的${queryWhatDayStr}第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
           let newCourse = handlers.isDateMode.getNewCourse(grade);
-          let restDates = store.editor.courseEditing.dates.filter(d => d !== store.editor.fromDate);
+          let restDates = store.editor.courseEditing.dates.filter(d => store.editor.fromDates.indexOf(d) === -1);
           try {
             if (restDates.length) {
 
@@ -178,7 +201,7 @@ const handlers = {
     copy(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到${grade}的${props.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editor.fromDates}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到${grade}的${props.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {

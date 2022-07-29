@@ -3,7 +3,7 @@ import {Config, Course, CourseInfo, LocalConfig} from "../assets/ts/types";
 import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
-import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
+import {getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
 
 type State = {
@@ -14,7 +14,7 @@ type State = {
     editor: {
         show: boolean,
         mode: "none" | "add" | "copy" | "cut" | "edit"
-        fromDate: string
+        fromDates: string[]
         lessonNum: number
         courseEditing: Course
         courseAdding: Course
@@ -52,7 +52,7 @@ export const useStore = defineStore("store", {
             editor: {
                 show: false,
                 mode: "none",
-                fromDate: formatDate(dayjs()),
+                fromDates: [],
                 lessonNum: 1,
                 courseEditing: getEmptyCourse(),
                 courseAdding: getEmptyCourse(),
@@ -65,7 +65,7 @@ export const useStore = defineStore("store", {
             return dayjs(this.config.content.semesterStartDate);
         },
         editorFromWhatDay(): number {
-            return getIsoWeekDay(dayjs(this.editor.fromDate));
+            return getIsoWeekDay(dayjs(this.editor.fromDates[0]));
         },
         editorFromWhatDayStr(): string {
             const whatDayStrList = Array.from("一二三四五六天");
