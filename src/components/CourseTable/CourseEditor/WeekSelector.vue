@@ -10,15 +10,24 @@ const weeksLocal = computed<number[]>({
   set: (newValue) => emits("update:weeks", newValue),
 });
 
-const weekOptions = computed<SelectOption[]>(() => new Array(props.maxWeekNum).fill(0).map((_, index) => {
-  return {
-    label: `第${index + 1}周`,
-    value: index + 1,
-    disabled: (props.disabledWeeks ?? []).indexOf(index + 1) !== -1,
-  };
-}));
+const weekOptions = computed<SelectOption[]>(() => {
+  let maxWeekProps = Math.max(...weeksLocal.value);
+  let minWeekProps = Math.min(...weeksLocal.value);
+  let maxWeekNum = props.maxWeekNum >= maxWeekProps ? props.maxWeekNum : maxWeekProps;
+  let minWeekNum = minWeekProps >= 1 ? 1 : minWeekProps;
 
-const availableWeeks = computed<number[]>(() => weekOptions.value.filter(wo => !wo.disabled).map(wo => wo.value) as number[]);
+  let _options: SelectOption[] = [];
+  for (let w = minWeekNum; w <= maxWeekNum; w++) {
+    _options.push({
+      label: w >= 1 ? `第${w}周` : `开学前${1 - w}周`,
+      value: w + 1,
+      disabled: (props.disabledWeeks ?? []).indexOf(w) !== -1,
+    });
+  }
+  return _options;
+});
+
+const availableWeeks = computed<number[]>(() => weekOptions.value.filter(wo => !wo?.disabled).map(wo => wo.value) as number[]);
 
 const handlers = {
   selectAll() {
