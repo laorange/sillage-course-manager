@@ -3,7 +3,7 @@ import {Course} from "../../../assets/ts/types";
 import CourseCard from "./CourseCard.vue";
 import EmptyCourseCard from "./EmptyCourseCard.vue";
 
-defineProps<{ courses: Course[], queryDate: string, lessonNum: number, editable?: boolean }>();
+defineProps<{ courses: Course[], queryDate: string, isDateMode: boolean, lessonNum: number, editable?: boolean }>();
 
 </script>
 
@@ -11,7 +11,7 @@ defineProps<{ courses: Course[], queryDate: string, lessonNum: number, editable?
   <!-- 如果此处没有课 -->
   <div class="course-box" v-if="courses.length===0">
     <template v-if="editable">
-      <EmptyCourseCard :query-date="queryDate" :lesson-num="lessonNum" :courses-existing="courses"/>
+      <EmptyCourseCard :query-date="queryDate" :is-date-mode="isDateMode" :lesson-num="lessonNum" :courses-existing="courses"/>
     </template>
   </div>
 
@@ -20,7 +20,7 @@ defineProps<{ courses: Course[], queryDate: string, lessonNum: number, editable?
       <CourseCard :query-date="queryDate" :lesson-num="lessonNum" :course="course" :courses-existing="courses" :editable="editable"/>
     </div>
     <div class="empty-course-card" v-if="editable">
-      <EmptyCourseCard :query-date="queryDate" :lesson-num="lessonNum" :courses-existing="courses"/>
+      <EmptyCourseCard :query-date="queryDate" :is-date-mode="isDateMode" :lesson-num="lessonNum" :courses-existing="courses"/>
     </div>
   </div>
 </template>

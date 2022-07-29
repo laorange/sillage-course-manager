@@ -12,7 +12,7 @@ import {getEmptyCourse} from "../../../assets/ts/courseToolkit";
 
 const {$contextmenu} = useContextMenu();
 
-const props = defineProps<{ lessonNum: number, queryDate: string, coursesExisting: Course[] }>();
+const props = defineProps<{ lessonNum: number, queryDate: string, isDateMode:boolean, coursesExisting: Course[] }>();
 
 const store = useStore();
 const route = useRoute();
@@ -41,7 +41,7 @@ function onContextMenu(e: MouseEvent) {
           ...getEmptyCourse(),
           lessonNum: props.lessonNum,
           grade: ((route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as string[])[0],
-          dates: store.localConfig.isDateMode ? [props.queryDate] : [],
+          dates: props.isDateMode ? [props.queryDate] : [],
         };
       },
     },
@@ -51,10 +51,10 @@ function onContextMenu(e: MouseEvent) {
     label: `粘贴到${grade}`,
     disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
     onClick: () => {
-      if (store.localConfig.isDateMode && store.editor.mode === "cut") handlers.isDateMode.cut(grade);
-      else if (store.localConfig.isDateMode && store.editor.mode === "copy") handlers.isDateMode.copy(grade);
-      else if (!store.localConfig.isDateMode && store.editor.mode === "cut") handlers.notDateMode.cut(grade);
-      else if (!store.localConfig.isDateMode && store.editor.mode === "copy") handlers.notDateMode.copy(grade);
+      if (props.isDateMode && store.editor.mode === "cut") handlers.isDateMode.cut(grade);
+      else if (props.isDateMode && store.editor.mode === "copy") handlers.isDateMode.copy(grade);
+      else if (!props.isDateMode && store.editor.mode === "cut") handlers.notDateMode.cut(grade);
+      else if (!props.isDateMode && store.editor.mode === "copy") handlers.notDateMode.copy(grade);
     },
   }));
 

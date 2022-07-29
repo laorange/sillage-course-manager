@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Course} from "../../assets/ts/types";
 import {useStore} from "../../pinia/useStore";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import CourseBox from "./CourseBox/CourseBox.vue";
 import {CourseDecorator} from "../../assets/ts/courseToolkit";
 import {formatDate, getIsoWeekDay} from "../../assets/ts/datetimeUtils";
@@ -13,6 +13,8 @@ const props = defineProps<{ courses: Course[], editable?: boolean }>();
 const store = useStore();
 
 const queryDate = ref<string>(formatDate(dayjs()));
+const isDateMode = ref<boolean>(store.localConfig.isDateMode);
+watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
 
 const whatDayFrom0 = computed<number>({
   get: () => getIsoWeekDay(dayjs(queryDate.value)) - 1,
@@ -24,12 +26,12 @@ const whatDayFrom0 = computed<number>({
 
 const coursesOfWhatDay = computed<CourseDecorator>(() => {
   let _cd = (new CourseDecorator(props.courses).ofWhatDay(getIsoWeekDay(dayjs(queryDate.value))));
-  return store.localConfig.isDateMode ? _cd.isInSameWeek(dayjs(queryDate.value)) : _cd;
+  return isDateMode.value ? _cd.isInSameWeek(dayjs(queryDate.value)) : _cd;
 });
 </script>
 
 <template>
-  <QueryDatePicker v-model:query-date="queryDate"/>
+  <QueryDatePicker v-model:is-date-mode="isDateMode" v-model:query-date="queryDate"/>
 
   <div class="what-day-selector">
     <van-tabs type="card" color="#32647d" :background="`transparent`" v-model:active="whatDayFrom0">
@@ -45,6 +47,7 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => {
       </div>
       <div class="course-table-block">
         <CourseBox :query-date="queryDate"
+                   :is-date-mode="isDateMode"
                    :lesson-num="row0+1"
                    :editable="editable"
                    :courses="coursesOfWhatDay.ofLessonNum(row0+1).value"/>

@@ -30,8 +30,7 @@ let sources = computed(() => {
     methods: (route.query.methods instanceof Array ? route.query.methods : [route.query.methods]).filter(_ => !!_).sort() as unknown as string[],
     teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_).sort() as unknown as string[],
 
-    isDateMode: store.localConfig.isDateMode,
-    courseDecorator: store.localConfig.isDateMode ? (new CourseDecorator(store.courses)) : store.courseOfCurrentSemester,
+    courseDecorator: new CourseDecorator(store.courses),
   };
 });
 
