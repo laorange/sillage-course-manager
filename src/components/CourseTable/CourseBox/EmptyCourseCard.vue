@@ -183,7 +183,6 @@ const handlers = {
             await store.client.Records.create("course", newCourse);
             store.courses = store.courses.concat([newCourse]);
             store.editor.show = false;
-            store.editor.mode = "none";
             message.success(`复制成功`);
           } catch (e) {
             message.error("提交失败，请检查网络连接");
