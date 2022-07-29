@@ -6,6 +6,7 @@ import CourseBox from "./CourseBox/CourseBox.vue";
 import {CourseDecorator} from "../../assets/ts/courseToolkit";
 import {formatDate, getIsoWeekDay} from "../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
+import QueryDatePicker from "./QueryDatePicker/QueryDatePicker.vue";
 
 const props = defineProps<{ courses: Course[], editable?: boolean }>();
 
@@ -23,6 +24,8 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(pr
 </script>
 
 <template>
+  <QueryDatePicker/>
+
   <div class="what-day-selector">
     <van-tabs type="card" color="#32647d" :background="`transparent`" v-model:active="whatDayFrom0">
       <van-tab :title="store.translate(`星期${whatDayStr}`)" v-for="whatDayStr in Array.from(`一二三四五六天`)" :key="`星期${whatDayStr}`"/>

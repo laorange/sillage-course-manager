@@ -5,7 +5,6 @@ import CourseEditDialog from "./CourseEditDialog.vue";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
 import {Course} from "../../assets/ts/types";
 import RouteFilter from "./RouteFilter/RouteFilter.vue";
-import QueryDatePicker from "./QueryDatePicker/QueryDatePicker.vue";
 
 const store = useStore();
 
@@ -37,9 +36,14 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
 
   <RouteFilter v-model:courses="filteredCourses"/>
 
-  <QueryDatePicker/>
-
-  <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
+  <div style="width: 100%;display: flex;">
+    <div style="flex: 1;margin-right: 5px">
+      <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
+    </div>
+    <div style="flex: 1" v-if="editable">
+      <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
+    </div>
+  </div>
 </template>
 
 <style scoped>
