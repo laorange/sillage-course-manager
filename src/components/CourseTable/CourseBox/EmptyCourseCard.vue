@@ -36,6 +36,7 @@ function onContextMenu(e: MouseEvent) {
         store.editor.courseAdding = {
           ...getEmptyCourse(),
           lessonNum: props.lessonNum,
+          grade: ((route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as string[])[0],
           dates: store.localConfig.isDateMode ? [store.refs.queryDate] : [],
         };
       },
