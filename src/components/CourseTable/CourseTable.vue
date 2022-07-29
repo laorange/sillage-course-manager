@@ -42,14 +42,14 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
 
   <RouteFilter v-model:courses="filteredCourses"/>
 
-  <div style="width: 100%;display: flex;">
-    <div style="flex: 1;margin-right: 5px">
+  <n-grid :cols="(editable && whetherTwoColumns)?2:1" :x-gap="5">
+    <n-gi>
       <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
-    </div>
-    <div style="flex: 1" v-if="editable && whetherTwoColumns">
+    </n-gi>
+    <n-gi v-if="editable && whetherTwoColumns">
       <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
-    </div>
-  </div>
+    </n-gi>
+  </n-grid>
 </template>
 
 <style scoped>
