@@ -50,12 +50,12 @@ const handlers = {
 
       <n-button v-for="grade in store.grades"
                 :key="`grade${grade}`"
-                type="success" size="large"
+                type="success"
                 @click="router.push({name:`course`, query:{grade}})">
         {{ store.translate(grade) }}
       </n-button>
 
-      <n-button type="info" @click="handlers.toPlan">{{ store.translate(`教学计划`) }}</n-button>
+      <n-button type="success" @click="handlers.toPlan">{{ store.translate(`教学计划`) }}</n-button>
 
       <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">登录</n-button>
       <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
