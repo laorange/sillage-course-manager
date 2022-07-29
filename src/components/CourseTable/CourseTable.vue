@@ -28,10 +28,10 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
         <template #unchecked>用户视图</template>
       </n-switch>
 
-      <n-button type="info" @click="store.editor.show=true" :round="true"
-                v-show="store.editor.mode===`add` || store.editor.mode===`edit`">
-        继续编辑
-      </n-button>
+      <!--      <n-button type="info" @click="store.editor.show=true" :round="true"-->
+      <!--                v-show="store.editor.mode===`add` || store.editor.mode===`edit`">-->
+      <!--        继续编辑-->
+      <!--      </n-button>-->
     </n-space>
   </div>
 

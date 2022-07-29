@@ -195,7 +195,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
 
       <n-button type="warning" @click="handlers.restore()">取消修改</n-button>
 
-      <n-button type="info" v-show="store.editor.mode==='add'" @click="store.editor.show=false">暂时退出</n-button>
+      <!--      <n-button type="info" v-show="store.editor.mode==='add'" @click="store.editor.show=false">暂时退出</n-button>-->
     </n-space>
   </n-config-provider>
 </template>
