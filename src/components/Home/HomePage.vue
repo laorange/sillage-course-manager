@@ -57,7 +57,7 @@ const handlers = {
 
       <n-button type="success" @click="handlers.toPlan">{{ store.translate(`教学计划`) }}</n-button>
 
-      <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">登录</n-button>
+      <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">登录(该按钮仅测试阶段可见)</n-button>
       <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
 
       <template v-if="store.editor.authenticated">
