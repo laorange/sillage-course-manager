@@ -7,7 +7,6 @@ import {useStore} from "../../../pinia/useStore";
 import RouteFilterSelect from "./RouteFilterSelect.vue";
 import {useMessage} from "naive-ui";
 import GradeGroupSelect from "./GradeGroupSelect.vue";
-import dayjs from "dayjs";
 import useClipboard from "vue-clipboard3";
 
 const props = defineProps<{ courses: Course[] }>();
@@ -31,7 +30,6 @@ let sources = computed(() => {
     methods: (route.query.methods instanceof Array ? route.query.methods : [route.query.methods]).filter(_ => !!_).sort() as unknown as string[],
     teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_).sort() as unknown as string[],
 
-    queryDate: store.refs.queryDate,
     isDateMode: store.localConfig.isDateMode,
     courseDecorator: store.localConfig.isDateMode ? (new CourseDecorator(store.courses)) : store.courseOfCurrentSemester,
   };
@@ -55,7 +53,6 @@ watch(() => showFilterDialog.value, () => formModel.value = {...sources.value});
 watch(() => sources.value, (src) => {
   // 日期模式：不限制是当前学期；星期模式：必须为当前学期
   let decorator: CourseDecorator = src.courseDecorator;
-  if (src.isDateMode) decorator = decorator.isInSameWeek(dayjs(src.queryDate));
   if (src.grades.length) decorator = decorator.ofGrades(src.grades);
   if (src.rooms.length) decorator = decorator.ofRooms(src.rooms);
   if (src.methods.length) decorator = decorator.ofMethods(src.methods);

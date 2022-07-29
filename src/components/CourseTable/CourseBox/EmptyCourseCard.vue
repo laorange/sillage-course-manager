@@ -12,13 +12,16 @@ import {getEmptyCourse} from "../../../assets/ts/courseToolkit";
 
 const {$contextmenu} = useContextMenu();
 
-const props = defineProps<{ lessonNum: number, coursesExisting: Course[] }>();
+const props = defineProps<{ lessonNum: number, queryDate: string, coursesExisting: Course[] }>();
 
 const store = useStore();
 const route = useRoute();
 const message = useMessage();
 const dialog = useDialog();
 const grades = computed<string[]>(() => (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[]);
+
+const queryWhatDay = computed<number>(() => getIsoWeekDay(dayjs(props.queryDate)));
+const queryWhatDayStr = computed<string>(() => store.getWhatDayStr(queryWhatDay.value));
 
 function addInfoInThisBlockIntoStore() {
   store.editor.lessonNum = props.lessonNum;
@@ -33,11 +36,12 @@ function onContextMenu(e: MouseEvent) {
       onClick: () => {
         store.editor.mode = "add";
         store.editor.show = true;
+        store.editor.fromDate = props.queryDate;
         store.editor.courseAdding = {
           ...getEmptyCourse(),
           lessonNum: props.lessonNum,
           grade: ((route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as string[])[0],
-          dates: store.localConfig.isDateMode ? [store.refs.queryDate] : [],
+          dates: store.localConfig.isDateMode ? [props.queryDate] : [],
         };
       },
     },
@@ -79,14 +83,14 @@ const handlers = {
         grade: grade,
         dates: store.editor.courseEditing.dates.map((d: string) => {
           const preDate = dayjs(d);
-          return formatDate(preDate.add(store.queryWhatDay - getIsoWeekDay(preDate), "day"));
+          return formatDate(preDate.add(queryWhatDay.value - getIsoWeekDay(preDate), "day"));
         }),
       });
     },
     cut(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到 ${grade}的 ${store.queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到 ${grade}的 ${queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: () => {
@@ -108,7 +112,7 @@ const handlers = {
     copy(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到 ${grade}的 ${store.queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editorFromWhatDayStr}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到 ${grade}的 ${queryWhatDayStr} 第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: () => {
@@ -130,13 +134,13 @@ const handlers = {
         ...store.editor.courseEditing,
         lessonNum: props.lessonNum,
         grade: grade,
-        dates: [store.refs.queryDate],
+        dates: [props.queryDate],
       });
     },
     cut(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到${grade}的${store.refs.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被剪切到${grade}的${queryWhatDayStr}第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
@@ -174,14 +178,14 @@ const handlers = {
     copy(grade: string) {
       dialog.info({
         title: "提示",
-        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到${grade}的${store.refs.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
+        content: `${store.editor.fromDate}第${store.editor.courseEditing.lessonNum}节 ${store.editor.courseEditing.grade}的${store.editor.courseEditing.info.name} 将会被复制到${grade}的${props.queryDate}第${store.editor.lessonNum}节课，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
           let newCourse = handlers.isDateMode.getNewCourse(grade);
           try {
-            await store.client.Records.create("course", newCourse);
-            store.courses = store.courses.concat([newCourse]);
+            newCourse = await store.client.Records.create("course", newCourse) as unknown as Course;
+            store.courses.push(newCourse);
             store.editor.show = false;
             message.success(`复制成功`);
           } catch (e) {

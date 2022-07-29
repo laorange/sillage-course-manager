@@ -122,14 +122,14 @@ watch(() => courseLocal.value.info.name, (name) => {
 
 const weeks = ref<number[]>(courseLocal.value.dates.map(d => store.getWeekNumOfSomeDate(d)));
 watch(() => weeks.value, (ws) => {
-  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.queryWhatDay - 1, "day")));
+  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorFromWhatDay - 1, "day")));
 }, {deep: true});
 
 const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));
 </script>
 
 <template>
-  <h2 style="text-align: center">{{ store.queryWhatDayStr }} &nbsp; 第{{ store.editor.lessonNum }}节课</h2>
+  <h2 style="text-align: center">{{ store.editorFromWhatDayStr }} &nbsp; 第{{ store.editor.lessonNum }}节课</h2>
   <div class="course-editor">
     <div class="responsive-left-part">
       <div aria-label="课程信息">

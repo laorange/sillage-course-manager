@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Course} from "../../assets/ts/types";
 import {useStore} from "../../pinia/useStore";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import CourseBox from "./CourseBox/CourseBox.vue";
 import {CourseDecorator} from "../../assets/ts/courseToolkit";
 import {formatDate, getIsoWeekDay} from "../../assets/ts/datetimeUtils";
@@ -12,19 +12,24 @@ const props = defineProps<{ courses: Course[], editable?: boolean }>();
 
 const store = useStore();
 
+const queryDate = ref<string>(formatDate(dayjs()));
+
 const whatDayFrom0 = computed<number>({
-  get: () => getIsoWeekDay(dayjs(store.refs.queryDate)) - 1,
+  get: () => getIsoWeekDay(dayjs(queryDate.value)) - 1,
   set: (to) => {
-    let queryDay = dayjs(store.refs.queryDate);
-    store.refs.queryDate = formatDate(queryDay.add(to + 1 - getIsoWeekDay(queryDay), "day"));
+    let queryDay = dayjs(queryDate.value);
+    queryDate.value = formatDate(queryDay.add(to + 1 - getIsoWeekDay(queryDay), "day"));
   },
 });
 
-const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(props.courses).ofWhatDay(getIsoWeekDay(dayjs(store.refs.queryDate)))));
+const coursesOfWhatDay = computed<CourseDecorator>(() => {
+  let _cd = (new CourseDecorator(props.courses).ofWhatDay(getIsoWeekDay(dayjs(queryDate.value))));
+  return store.localConfig.isDateMode ? _cd.isInSameWeek(dayjs(queryDate.value)) : _cd;
+});
 </script>
 
 <template>
-  <QueryDatePicker/>
+  <QueryDatePicker v-model:query-date="queryDate"/>
 
   <div class="what-day-selector">
     <van-tabs type="card" color="#32647d" :background="`transparent`" v-model:active="whatDayFrom0">
@@ -39,7 +44,8 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => (new CourseDecorator(pr
         <div>{{ lessonConfig.end }}</div>
       </div>
       <div class="course-table-block">
-        <CourseBox :lesson-num="row0+1"
+        <CourseBox :query-date="queryDate"
+                   :lesson-num="row0+1"
                    :editable="editable"
                    :courses="coursesOfWhatDay.ofLessonNum(row0+1).value"/>
       </div>

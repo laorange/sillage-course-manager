@@ -10,6 +10,7 @@ const store = useStore();
 
 const filteredCourses = ref<Course[]>([]);
 
+const whetherTwoColumns = ref<boolean>(true);
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
 </script>
@@ -27,6 +28,11 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
         <template #unchecked>用户视图</template>
       </n-switch>
 
+      <n-switch v-model:value="whetherTwoColumns" v-show="editable">
+        <template #checked>双栏</template>
+        <template #unchecked>单栏</template>
+      </n-switch>
+
       <!--      <n-button type="info" @click="store.editor.show=true" :round="true"-->
       <!--                v-show="store.editor.mode===`add` || store.editor.mode===`edit`">-->
       <!--        继续编辑-->
@@ -40,7 +46,7 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
     <div style="flex: 1;margin-right: 5px">
       <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
     </div>
-    <div style="flex: 1" v-if="editable">
+    <div style="flex: 1" v-if="editable && whetherTwoColumns">
       <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
     </div>
   </div>

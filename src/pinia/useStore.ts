@@ -10,9 +10,6 @@ type State = {
     client: PocketBase
     config: Config
     localConfig: LocalConfig
-    refs: {
-        queryDate: string
-    },
     courses: Course[]
     editor: {
         show: boolean,
@@ -50,9 +47,6 @@ export const useStore = defineStore("store", {
                 language: "中文",
                 isDateMode: false,
             },
-            refs: {
-                queryDate: formatDate(dayjs()),
-            },
             courses: [],
 
             editor: {
@@ -69,13 +63,6 @@ export const useStore = defineStore("store", {
     getters: {
         semesterStartDay(): dayjs.Dayjs {
             return dayjs(this.config.content.semesterStartDate);
-        },
-        queryWhatDay(): number {
-            return getIsoWeekDay(dayjs(this.refs.queryDate));
-        },
-        queryWhatDayStr(): string {
-            const whatDayStrList = Array.from("一二三四五六天");
-            return `星期${whatDayStrList[this.queryWhatDay - 1]}`;
         },
         editorFromWhatDay(): number {
             return getIsoWeekDay(dayjs(this.editor.fromDate));
@@ -256,6 +243,9 @@ export const useStore = defineStore("store", {
                 someDate = dayjs(someDate);
             }
             return getWeekAmountBetweenTwoDay(this.semesterStartDay, someDate) + 1;
+        },
+        getWhatDayStr(whatDay: number) {
+            return `星期${Array.from("一二三四五六天")[whatDay - 1]}`;
         },
     },
 });
