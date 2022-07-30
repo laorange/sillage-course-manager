@@ -20,7 +20,7 @@ const weekOptions = computed<SelectOption[]>(() => {
   for (let w = minWeekNum; w <= maxWeekNum; w++) {
     _options.push({
       label: w >= 1 ? `第${w}周` : `开学前${1 - w}周`,
-      value: w + 1,
+      value: w,
       disabled: (props.disabledWeeks ?? []).indexOf(w) !== -1,
     });
   }
