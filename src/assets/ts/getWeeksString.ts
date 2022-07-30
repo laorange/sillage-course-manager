@@ -1,5 +1,5 @@
 function splitWeekNeighbors(weeks: number[]) {
-    return Array.from(new Set(weeks)).sort((a, b) => a - b).reduce((results: number[][], week: number): number[][] => {
+    return Array.from(new Set(weeks)).filter(w => /(^[1-9]\d*$)/.test(`${w}`)).sort((a, b) => a - b).reduce((results: number[][], week: number): number[][] => {
         if (results.length === 0) return [[week]];
 
         let addFlag: boolean = false;
