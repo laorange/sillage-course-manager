@@ -3,7 +3,10 @@ import {Course} from "../../../assets/ts/types";
 import CourseCard from "./CourseCard.vue";
 import EmptyCourseCard from "./EmptyCourseCard.vue";
 
-defineProps<{ courses: Course[], queryDate: string, isDateMode: boolean, lessonNum: number, editable?: boolean }>();
+defineProps<{
+  courses: Course[], queryDate: string, isDateMode: boolean, lessonNum: number,
+  editable?: boolean, showWeeks?: boolean, showGrade?: boolean
+}>();
 
 </script>
 
@@ -17,7 +20,8 @@ defineProps<{ courses: Course[], queryDate: string, isDateMode: boolean, lessonN
 
   <div class="course-box" v-else>
     <div class="course-card-container" v-for="course in courses" :key="course.id">
-      <CourseCard :query-date="queryDate" :lesson-num="lessonNum" :course="course" :courses-existing="courses" :editable="editable"/>
+      <CourseCard :query-date="queryDate" :lesson-num="lessonNum" :course="course" :courses-existing="courses"
+                  :editable="editable" :show-grade="showGrade" :show-weeks="showWeeks"/>
     </div>
     <div class="empty-course-card" v-if="editable">
       <EmptyCourseCard :query-date="queryDate" :is-date-mode="isDateMode" :lesson-num="lessonNum" :courses-existing="courses"/>

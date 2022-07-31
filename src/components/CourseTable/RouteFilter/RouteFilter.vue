@@ -9,8 +9,8 @@ import {useMessage} from "naive-ui";
 import GradeGroupSelect from "./GradeGroupSelect.vue";
 import useClipboard from "vue-clipboard3";
 
-const props = defineProps<{ courses: Course[] }>();
-const emits = defineEmits(["update:courses"]);
+const props = defineProps<{ courses: Course[], showGrade: boolean }>();
+const emits = defineEmits(["update:courses", "update:showGrade"]);
 
 const store = useStore();
 const route = useRoute();
@@ -40,6 +40,13 @@ const title = computed<string>(() => {
       .concat(formModel.value.teachers).concat(formModel.value.methods).concat(formModel.value.rooms)
       .map((s: string) => store.translate(s)).filter(_ => !!_).join(` `);
 });
+
+
+// 监视路由中年级的数量，当且仅当年级数量为1时，不"显示年级"
+watch(() => sources.value.grades, (grades) => {
+  if (grades.length === 1) emits("update:showGrade", false);
+  else emits("update:showGrade", true);
+}, {deep: true});
 
 
 // 每次显示/关闭抽屉时，将路由的参数同步到formModel

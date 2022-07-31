@@ -10,6 +10,7 @@ const store = useStore();
 
 const filteredCourses = ref<Course[]>([]);
 
+const showGrade = ref<boolean>(false);
 const whetherTwoColumns = ref<boolean>(true);
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
@@ -40,14 +41,14 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
     </n-space>
   </div>
 
-  <RouteFilter v-model:courses="filteredCourses"/>
+  <RouteFilter v-model:courses="filteredCourses" v-model:show-grade="showGrade"/>
 
   <n-grid :cols="(editable && whetherTwoColumns)?2:1" :x-gap="5">
     <n-gi>
-      <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
+      <WeeklyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
     </n-gi>
     <n-gi v-if="editable && whetherTwoColumns">
-      <WeeklyCourseTable :courses="filteredCourses" :editable="editable"/>
+      <WeeklyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
     </n-gi>
   </n-grid>
 </template>

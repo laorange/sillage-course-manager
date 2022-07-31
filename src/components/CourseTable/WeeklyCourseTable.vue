@@ -8,7 +8,7 @@ import {formatDate, getIsoWeekDay} from "../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import QueryDatePicker from "./QueryDatePicker/QueryDatePicker.vue";
 
-const props = defineProps<{ courses: Course[], editable?: boolean }>();
+const props = defineProps<{ courses: Course[], editable?: boolean, showGrade?: boolean }>();
 
 const store = useStore();
 
@@ -35,7 +35,7 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => {
 
   <div class="what-day-selector">
     <van-tabs type="card" color="#32647d" :background="`transparent`" v-model:active="whatDayFrom0">
-      <van-tab :title="store.translate(`星期${whatDayStr}`)" v-for="whatDayStr in Array.from(`一二三四五六天`)" :key="`星期${whatDayStr}`"/>
+      <van-tab :title="store.translate(`星期${whatDayStr}`)" v-for="whatDayStr in [...`一二三四五六天`]" :key="`星期${whatDayStr}`"/>
     </van-tabs>
   </div>
 
@@ -50,6 +50,8 @@ const coursesOfWhatDay = computed<CourseDecorator>(() => {
                    :is-date-mode="isDateMode"
                    :lesson-num="row0+1"
                    :editable="editable"
+                   :show-grade="showGrade"
+                   :show-weeks="!isDateMode"
                    :courses="coursesOfWhatDay.ofLessonNum(row0+1).value"/>
       </div>
     </div>

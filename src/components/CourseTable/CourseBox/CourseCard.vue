@@ -8,7 +8,10 @@ import ContextMenu from "@imengyu/vue3-context-menu";
 import {useDialog, useMessage} from "naive-ui";
 import {MenuItem} from "@imengyu/vue3-context-menu";
 
-const props = defineProps<{ course: Course, coursesExisting: Course[], queryDate: string, lessonNum: number, editable?: boolean }>();
+const props = withDefaults(defineProps<{
+  course: Course, coursesExisting: Course[], queryDate: string, lessonNum: number,
+  editable?: boolean, showWeeks?: boolean, showGrade?: boolean
+}>(), {showWeeks: true, showGrade: false});
 
 const store = useStore();
 const message = useMessage();
@@ -222,7 +225,8 @@ const getWeekStrWithUnit = computed<string>(() => {
     <div v-if="course.info.code">{{ store.translate(course.info.code) }}</div>
     <div>{{ store.translate(course.info.name) }}</div>
     <div v-if="course.method">{{ store.translate(course.method) }}</div>
-    <div>{{ getWeekStrWithUnit }}</div>
+    <div v-if="showGrade">{{ store.translate(course.grade) }}</div>
+    <div v-if="showWeeks">{{ getWeekStrWithUnit }}</div>
 
     <!--  situations  -->
     <template v-if="course.situations.length===1">
