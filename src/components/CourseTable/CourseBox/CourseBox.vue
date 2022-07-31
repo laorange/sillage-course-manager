@@ -37,7 +37,7 @@ defineProps<{
 .course-box {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
   height: 100%;
   overflow-x: auto;
