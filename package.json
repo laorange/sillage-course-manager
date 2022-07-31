@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@datagridxl/datagridxl2": "^2.0.10",
-    "@imengyu/vue3-context-menu": "^1.0.9",
+    "@imengyu/vue3-context-menu": "git+https://git@github.com/laorange/vue3-context-menu.git",
     "axios": "^0.27.2",
     "dayjs": "^1.11.3",
     "pinia": "^2.0.14",

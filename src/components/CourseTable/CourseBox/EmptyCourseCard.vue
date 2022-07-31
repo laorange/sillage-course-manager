@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {useStore} from "../../../pinia/useStore";
-import useContextMenu from "../../../assets/ts/useContextMenu";
 import {MenuItem} from "@imengyu/vue3-context-menu";
 import {Course} from "../../../assets/ts/types";
 import {useDialog, useMessage} from "naive-ui";
@@ -9,8 +8,7 @@ import dayjs from "dayjs";
 import {computed} from "vue";
 import {useRoute} from "vue-router";
 import {getEmptyCourse} from "../../../assets/ts/courseToolkit";
-
-const {$contextmenu} = useContextMenu();
+import ContextMenu from "@imengyu/vue3-context-menu";
 
 const props = defineProps<{ lessonNum: number, queryDate: string, isDateMode: boolean, coursesExisting: Course[] }>();
 
@@ -75,7 +73,7 @@ function onContextMenu(e: MouseEvent) {
     }));
   }
 
-  $contextmenu({
+  ContextMenu.showContextMenu({
     x: e.pageX,
     y: e.pageY,
     items,

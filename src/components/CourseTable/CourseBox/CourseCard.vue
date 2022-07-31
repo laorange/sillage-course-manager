@@ -4,7 +4,7 @@ import {computed} from "vue";
 import {useStore} from "../../../pinia/useStore";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {parseFontColor} from "../../../assets/ts/useColorParser";
-import useContextMenu from "../../../assets/ts/useContextMenu";
+import ContextMenu from "@imengyu/vue3-context-menu";
 import {useDialog, useMessage} from "naive-ui";
 import {MenuItem} from "@imengyu/vue3-context-menu";
 
@@ -13,7 +13,6 @@ const props = defineProps<{ course: Course, coursesExisting: Course[], queryDate
 const store = useStore();
 const message = useMessage();
 const dialog = useDialog();
-const {$contextmenu} = useContextMenu();
 
 const weeks = computed<number[]>(() => props.course.dates.map(d => store.getWeekNumOfSomeDate(d)));
 
@@ -197,7 +196,7 @@ const optionGetters = {
 function onContextMenu(e: MouseEvent) {
   if (props.editable) {
     e.preventDefault();
-    $contextmenu({
+    ContextMenu.showContextMenu({
       x: e.pageX,
       y: e.pageY,
       items: [
