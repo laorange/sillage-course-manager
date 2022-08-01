@@ -129,13 +129,10 @@ const optionGetters = {
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
-          try {
-            await store.client.Records.delete("course", props.course.id);
+          await store.api.course.delete(props.course, () => {
             store.courses = store.courses.filter(c => c.id !== props.course.id);
             message.success("删除成功");
-          } catch {
-            message.error("删除失败，请检查网络连接");
-          }
+          }, () => message.error("删除失败，请检查网络连接"));
         },
       });
     }
@@ -178,13 +175,10 @@ const optionGetters = {
               positiveText: "确定",
               negativeText: "取消",
               onPositiveClick: async () => {
-                try {
-                  let newCourse = await store.client.Records.update("course", props.course.id, {...props.course, dates: restDates});
-                  store.courses = store.courses.filter(c => c.id !== props.course.id).concat([newCourse as unknown as Course]);
+                await store.api.course.update(props.course, {...props.course, dates: restDates}, (newCourse) => {
+                  store.courses = store.courses.filter(c => c.id !== props.course.id).concat([newCourse]);
                   message.success("删除成功");
-                } catch (e) {
-                  message.error("删除失败，请检查网络连接");
-                }
+                }, () => message.error("删除失败，请检查网络连接"));
               },
             });
           }

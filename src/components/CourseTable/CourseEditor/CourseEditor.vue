@@ -69,12 +69,15 @@ const handlers = {
       }
 
       this.thinkTwiceIfDataChanged(() => {
-        store.client.Records.update("course", courseLocal.value.id, courseLocal.value).then(() => {
-          store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
-          store.editor.show = false;
-          store.editor.mode = "none";
-          handlers.submitSuccess();
-        }).catch(handlers.submitFail);
+        store.api.course.update(operatingCourse.value, courseLocal.value,
+            () => {
+              store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseLocal.value);
+              store.editor.show = false;
+              store.editor.mode = "none";
+              handlers.submitSuccess();
+            },
+            handlers.submitFail,
+        );
       }, "将会把变更提交数据库，是否继续？");
     }
   },
@@ -89,12 +92,15 @@ const handlers = {
       }
 
       this.thinkTwiceIfDataChanged(() => {
-        store.client.Records.create("course", courseLocal.value).then((record) => {
-          store.courses.push(record as unknown as Course);
-          store.editor.show = false;
-          store.editor.mode = "none";
-          handlers.submitSuccess();
-        }).catch(handlers.submitFail);
+        store.api.course.create(courseLocal.value,
+            record => {
+              store.courses.push(record as unknown as Course);
+              store.editor.show = false;
+              store.editor.mode = "none";
+              handlers.submitSuccess();
+            },
+            handlers.submitFail,
+        );
       }, "将会把变更提交数据库，是否继续？");
     }
   },

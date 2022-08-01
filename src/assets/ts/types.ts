@@ -1,4 +1,4 @@
-interface PocketBaseModel {
+export interface PocketBaseModel {
     id: string;
     created?: string;
     updated?: string;
@@ -67,6 +67,15 @@ export interface Config extends PocketBaseModel {
 }
 
 //</editor-fold>
+
+
+export interface Notice extends PocketBaseModel {
+    type: "course" | "bulletin";
+    content?: string;
+    from?: Course;
+    to?: Course;
+    groups?: GradeGroupArray[];
+}
 
 
 export interface LocalConfig {

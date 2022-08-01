@@ -114,35 +114,31 @@ const handlers = {
           let restDates = store.editor.courseEditing.dates.filter(d => store.editor.fromDates.indexOf(d) === -1);
           // 全部剪切
           if (restDates.length === 0) {
-            try {
-              await store.client.Records.update("course", store.editor.courseEditing.id, newCourse);
+            await store.api.course.update(store.editor.courseEditing, newCourse, () => {
               // 用新的课程信息替换原来的
               store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(newCourse);
               store.editor.show = false;
               store.editor.mode = "none";
               message.success(`剪切成功`);
-            } catch {
-              message.error("提交失败，请检查网络连接");
-            }
+            }, () => message.error("提交失败，请检查网络连接"));
           }
           //  部分剪切
           else {
-            try {
-              // 用新的课程信息替换原来的
-              let courseUpdate = {...store.editor.courseEditing, dates: restDates};
-              await store.client.Records.update("course", store.editor.courseEditing.id, courseUpdate);
+            // 用新的课程信息替换原来的
+            let courseUpdate = {...store.editor.courseEditing, dates: restDates};
+            await store.api.course.update(store.editor.courseEditing, courseUpdate, async () => {
               store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseUpdate);
-
               // 创建新的
-              newCourse = await store.client.Records.create("course", newCourse) as unknown as Course;
-              store.courses.push(newCourse);
+              await store.api.course.create(newCourse, () => {
+                store.courses.push(newCourse);
 
-              store.editor.show = false;
-              store.editor.mode = "none";
-              message.success(`剪切成功`);
-            } catch {
-              message.error("提交失败，请检查网络连接");
-            }
+                store.editor.show = false;
+                store.editor.mode = "none";
+                message.success(`剪切成功`);
+              }, (e) => {
+                throw e;
+              });
+            }, () => message.error("提交失败，请检查网络连接"));
           }
         },
       });
@@ -156,17 +152,26 @@ const handlers = {
         onPositiveClick: () => {
           let newCourse = handlers.notDateMode.getNewCourse(grade);
           // store.editor.mode = "none";  // 是否清空复制状态 > 否
-          store.client.Records.create("course", newCourse).then((record) => {
+          store.api.course.create(newCourse, (record) => {
             store.courses.push(record as unknown as Course);
             store.editor.show = false;
             message.success(`复制成功`);
-          }).catch(() => message.error("提交失败，请检查网络连接"));
+          }, () => message.error("提交失败，请检查网络连接"));
         },
       });
     },
   },
   // 日期模式
   isDateMode: {
+    cutSuccess() {
+      store.editor.show = false;
+      store.editor.mode = "none";
+      message.success(`剪切成功`);
+    },
+    cutFail(e: Error) {
+      message.error("提交失败，请检查网络连接");
+      console.error(e);
+    },
     getNewCourse(grade: string): Course {
       return handlers.ensureNoConflict({
         ...store.editor.courseEditing,
@@ -184,32 +189,36 @@ const handlers = {
         onPositiveClick: async () => {
           let newCourse = handlers.isDateMode.getNewCourse(grade);
           let restDates = store.editor.courseEditing.dates.filter(d => store.editor.fromDates.indexOf(d) === -1);
-          try {
-            if (restDates.length) {
 
-              // 日期模式 ①如果原课程有很多周，那就删除选中的那一周，再新增指定日期的课
-              let updateTo: Course = {...store.editor.courseEditing, dates: restDates};
-              await store.client.Records.update("course", store.editor.courseEditing.id, updateTo);
-              newCourse = await store.client.Records.create("course", newCourse) as unknown as Course;
-              // 用新的课程信息替换原来的
-              store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat([updateTo, newCourse]);
+          if (restDates.length) {
 
-            } else {
+            // 日期模式 ①如果原课程有很多周，那就删除选中的那一周，再新增指定日期的课
+            let updateTo: Course = {...store.editor.courseEditing, dates: restDates};
+            await store.api.course.update(store.editor.courseEditing, updateTo,
+                async () => {
+                  await store.api.course.create(newCourse,
+                      (newCourse) => {
+                        // 用新的课程信息替换原来的
+                        store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat([updateTo, newCourse]);
+                      },
+                      (e) => {
+                        throw e;
+                      });
+                  handlers.isDateMode.cutSuccess();
+                },
+                () => handlers.isDateMode.cutFail);
+          } else {
 
-              // ② 如果原课程只有一周，那就直接改日期
-              await store.client.Records.update("course", store.editor.courseEditing.id, newCourse);
-              // 用新的课程信息替换原来的
-              store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat([newCourse]);
-
-            }
-
-            store.editor.show = false;
-            store.editor.mode = "none";
-            message.success(`剪切成功`);
-          } catch (e) {
-            message.error("提交失败，请检查网络连接");
-            console.error(e);
+            // ② 如果原课程只有一周，那就直接改日期
+            await store.api.course.update(store.editor.courseEditing, newCourse,
+                () => {
+                  // 用新的课程信息替换原来的
+                  store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat([newCourse]);
+                  handlers.isDateMode.cutSuccess();
+                },
+                () => handlers.isDateMode.cutFail);
           }
+
         },
       });
     },
@@ -221,15 +230,17 @@ const handlers = {
         negativeText: "取消",
         onPositiveClick: async () => {
           let newCourse = handlers.isDateMode.getNewCourse(grade);
-          try {
-            newCourse = await store.client.Records.create("course", newCourse) as unknown as Course;
-            store.courses.push(newCourse);
-            store.editor.show = false;
-            message.success(`复制成功`);
-          } catch (e) {
-            message.error("提交失败，请检查网络连接");
-            console.error(e);
-          }
+
+          await store.api.course.create(newCourse,
+              (newCourse) => {
+                store.courses.push(newCourse);
+                store.editor.show = false;
+                message.success(`复制成功`);
+              },
+              (e) => {
+                message.error("提交失败，请检查网络连接");
+                console.error(e);
+              });
         },
       });
     },

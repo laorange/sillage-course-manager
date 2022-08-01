@@ -18,6 +18,7 @@ declare module '@vue/runtime-core' {
     GradeEditor: typeof import('./src/components/ConfigEditor/GradeEditor.vue')['default']
     GradeGroupSelect: typeof import('./src/components/CourseTable/RouteFilter/GradeGroupSelect.vue')['default']
     HomePage: typeof import('./src/components/Home/HomePage.vue')['default']
+    Initiator: typeof import('./src/components/Initiator.vue')['default']
     LanguageEditor: typeof import('./src/components/ConfigEditor/LanguageEditor.vue')['default']
     LessonConfigEditor: typeof import('./src/components/ConfigEditor/LessonConfigEditor.vue')['default']
     LoginPage: typeof import('./src/components/LoginPage/LoginPage.vue')['default']

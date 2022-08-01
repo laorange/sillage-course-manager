@@ -54,20 +54,22 @@ const handlers = {
       noChangeHook ? noChangeHook() : hook();
     }
   },
+  commitSuccess(record: Config) {
+    message.success("提交成功");
+    configBackUp = JSON.parse(JSON.stringify(store.config));
+    store.config.id = record.id;
+    handlers.backToHomeWithForce();
+  },
+  commitFail() {
+    message.error("提交失败，请检查网络连接");
+  },
   upload() {
     this.thinkTwiceIfDataChanged(() => {
-      let configPromise: Promise<any>;
       if (store.config.id) {
-        configPromise = store.client.Records.update("config", store.config.id, store.config);
+        store.api.config.update(configBackUp, store.config, handlers.commitSuccess, handlers.commitFail);
       } else {
-        configPromise = store.client.Records.create("config", store.config);
+        store.api.config.create(store.config, handlers.commitSuccess, handlers.commitFail);
       }
-      configPromise.then((record: Config) => {
-        message.success("提交成功");
-        configBackUp = JSON.parse(JSON.stringify(store.config));
-        store.config.id = record.id;
-        handlers.backToHomeWithForce();
-      }).catch(() => message.error("提交失败，请检查网络连接"));
     }, "即将把当前数据提交到服务器，是否继续？", undefined, () => {
       message.info("因为没有更改，所以无事发生");
       handlers.backToHomeWithForce();

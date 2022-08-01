@@ -35,7 +35,7 @@ const handlers = {
   login() {
     formRef.value?.validate().then(
         () => {
-          store.client.Admins.authViaEmail(model.value.email ?? "", model.value.password ?? "", {}, {})
+          store.api.client.Admins.authViaEmail(model.value.email ?? "", model.value.password ?? "", {}, {})
               .then(() => {
                 store.editor.authenticated = true;
                 handlers.loginSuccess();

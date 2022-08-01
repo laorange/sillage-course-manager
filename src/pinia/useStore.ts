@@ -1,16 +1,20 @@
 import {defineStore} from "pinia";
-import {Config, Course, CourseInfo, LocalConfig} from "../assets/ts/types";
+import {Config, Course, CourseInfo, LocalConfig, Notice} from "../assets/ts/types";
 import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
 import {getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
+import {ApiHandler} from "../assets/ts/ApiHandler";
 
 type State = {
-    client: PocketBase
+    api: ApiHandler
+
     config: Config
-    localConfig: LocalConfig
     courses: Course[]
+    notices: Notice[]
+
+    localConfig: LocalConfig
     editor: {
         show: boolean,
         mode: "none" | "add" | "copy" | "cut" | "edit"
@@ -25,7 +29,9 @@ type State = {
 export const useStore = defineStore("store", {
     state: (): State => {
         return {
-            client: new PocketBase(import.meta.env.VITE_BACKEND_URL),
+            api: new ApiHandler(new PocketBase(import.meta.env.VITE_BACKEND_URL)),
+
+            courses: [],
             config: {
                 id: "",
                 content: {
@@ -43,11 +49,12 @@ export const useStore = defineStore("store", {
                     "dictionary": {},
                 },
             },
+            notices: [],
+
             localConfig: {
                 language: "中文",
                 isDateMode: false,
             },
-            courses: [],
 
             editor: {
                 show: false,
@@ -220,20 +227,9 @@ export const useStore = defineStore("store", {
             }
             return (new CourseConflictDetector(targetCourse, existingCourses)).getConflictString();
         },
-        fetchData() {
-            // config
-            this.client.Records.getFullList("config").then((response) => {
-                if (response[0]) this.config = response[0] as unknown as Config;
-            }).catch(() => alert("在获取系统设置时出错了，请检查网络连接"));
-
-            // courses  -  潜在问题: batchSize 设为 1e8，希望能一次性请求全部的课程
-            this.client.Records.getFullList("course", 1e8, {sort: "-updated"}).then((response) => {
-                this.courses = response as unknown as Course[];
-            }).catch(() => alert("在获取课程信息时出错了，请检查网络连接"));
-        },
         validateAuthStatus() {
             if (localStorage.getItem("pocketbase_auth")) {
-                this.client.Admins.refresh().then(() => {
+                this.api.client.Admins.refresh().then(() => {
                     this.editor.authenticated = true;
                 }).catch(() => localStorage.removeItem("pocketbase_auth"));
             }
