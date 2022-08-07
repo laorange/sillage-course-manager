@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, watch} from "vue";
+import {onBeforeMount, watch} from "vue";
 import {useStore} from "../pinia/useStore";
 
 import {useStorage} from "vue3-storage";
@@ -19,13 +19,10 @@ const initiators = {
   api() {
     store.api.config.list(configs => {
       if (configs.length) store.config = configs[0];
-      message.info("系统设置加载完成");
     }, () => message.error("系统设置加载失败"));
 
-    store.api.course.list(courses => {
-      store.courses = courses;
-      message.info("课程加载完成");
-    }, () => message.error("课程加载失败"));
+    store.api.course.list(courses => store.courses = courses, () => message.error("课程加载失败"));
+    store.api.notice.list(notices => store.notices = notices, () => message.error("课程加载失败"));
   },
   loginStatus() {
     store.validateAuthStatus();
@@ -37,7 +34,7 @@ const initiators = {
 };
 
 
-onMounted(() => {
+onBeforeMount(() => {
   initiators.pageTitle();
   initiators.api();
   initiators.loginStatus();
