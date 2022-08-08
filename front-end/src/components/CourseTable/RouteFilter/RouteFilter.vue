@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Course, GradeGroupArray} from "../../../assets/ts/types";
+import {Course, GradeGroupArray, Notice} from "../../../assets/ts/types";
 import {computed, nextTick, ref, watch} from "vue";
 import {CourseDecorator} from "../../../assets/ts/courseToolkit";
 import {useRoute, useRouter} from "vue-router";
@@ -8,9 +8,10 @@ import RouteFilterSelect from "./RouteFilterSelect.vue";
 import {useMessage} from "naive-ui";
 import GradeGroupSelect from "./GradeGroupSelect.vue";
 import useClipboard from "vue-clipboard3";
+import {NoticeDecorator} from "../../../assets/ts/noticeToolkit";
 
-const props = defineProps<{ courses: Course[], showGrade: boolean }>();
-const emits = defineEmits(["update:courses", "update:showGrade"]);
+const props = defineProps<{ courses: Course[], showGrade: boolean, notices?: Notice[] }>();
+const emits = defineEmits(["update:courses", "update:showGrade", "update:notices"]);
 
 const store = useStore();
 const route = useRoute();
@@ -31,6 +32,7 @@ let sources = computed(() => {
     teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_).sort() as unknown as string[],
 
     courseDecorator: new CourseDecorator(store.courses),
+    noticeDecorator: props.notices ? new NoticeDecorator(store.notices) : undefined,
   };
 });
 
@@ -57,6 +59,16 @@ watch(() => showFilterDialog.value, () => formModel.value = {...sources.value});
 
 
 watch(() => sources.value, (src) => {
+  if (src.noticeDecorator) {
+    let noticesFilter = src.noticeDecorator;
+
+    let targetGradeGroups = src.grades.length ? src.grades.map(g => [g, ""]) : [];
+    if (src.groups.length) targetGradeGroups = targetGradeGroups.concat(src.groups);
+
+    if (targetGradeGroups.length) noticesFilter.ofGradeGroups(targetGradeGroups as GradeGroupArray[]);
+    emits("update:notices", noticesFilter.value);
+  }
+
   // 日期模式：不限制是当前学期；星期模式：必须为当前学期
   let decorator: CourseDecorator = src.courseDecorator;
   if (src.grades.length) decorator = decorator.ofGrades(src.grades);

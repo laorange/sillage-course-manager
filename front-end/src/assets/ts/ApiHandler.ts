@@ -32,7 +32,7 @@ class Collection<T extends PocketBaseModel> {
     async list(successHook?: (results: T[]) => any, errorHook?: (e: Error) => any) {
         try {
             // 潜在问题: batchSize 设为 1e8，以便一次性请求全部的信息
-            let results = await this.client.Records.getFullList(this.collectionName, 1e8) as unknown as T[];
+            let results = await this.client.Records.getFullList(this.collectionName, 1e8, {sort: "-updated"}) as unknown as T[];
             if (successHook) successHook(results);
         } catch (e) {
             if (errorHook) errorHook(e as Error);

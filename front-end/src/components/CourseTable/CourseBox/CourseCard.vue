@@ -242,6 +242,7 @@ const getWeekStrWithUnit = computed<string>(() => {
 <style scoped>
 .course-card {
   display: flex;
+  text-align: center;
   flex-direction: column;
   height: 100%;
   justify-content: center;

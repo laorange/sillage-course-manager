@@ -3,12 +3,14 @@ import {useStore} from "../../pinia/useStore";
 import {ref, watch} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
-import {Course} from "../../assets/ts/types";
+import {Course, Notice} from "../../assets/ts/types";
 import RouteFilter from "./RouteFilter/RouteFilter.vue";
+import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
 
 const store = useStore();
 
 const filteredCourses = ref<Course[]>([]);
+const filteredNotices = ref<Notice[]>([]);
 
 const showGrade = ref<boolean>(false);
 const whetherTwoColumns = ref<boolean>(true);
@@ -41,7 +43,7 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
     </n-space>
   </div>
 
-  <RouteFilter v-model:courses="filteredCourses" v-model:show-grade="showGrade"/>
+  <RouteFilter v-model:courses="filteredCourses" v-model:show-grade="showGrade" v-model:notices="filteredNotices"/>
 
   <n-grid :cols="(editable && whetherTwoColumns)?2:1" :x-gap="5">
     <n-gi>
@@ -51,6 +53,8 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
       <WeeklyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
     </n-gi>
   </n-grid>
+
+  <NoticeDisplay :notices="filteredNotices"/>
 </template>
 
 <style scoped>
