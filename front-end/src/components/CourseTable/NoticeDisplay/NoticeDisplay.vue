@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import {Notice} from "../../../assets/ts/types";
 import NoticeCard from "./NoticeCard.vue";
+import {useStore} from "../../../pinia/useStore";
 
 const props = defineProps<{ notices: Notice[] }>();
+
+const store = useStore();
 </script>
 
 <template>
   <div id="notice-display">
-    <n-divider/>
+    <n-divider><h3>{{ store.translate(`变更日志`) }}</h3></n-divider>
 
     <n-timeline>
       <NoticeCard v-for="notice of notices" :key="`notice${notice.id}`" :notice="notice"/>
