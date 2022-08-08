@@ -65,7 +65,7 @@ watch(() => sources.value, (src) => {
     let targetGradeGroups = src.grades.length ? src.grades.map(g => [g, ""]) : [];
     if (src.groups.length) targetGradeGroups = targetGradeGroups.concat(src.groups);
 
-    if (targetGradeGroups.length) noticesFilter.ofGradeGroups(targetGradeGroups as GradeGroupArray[]);
+    if (targetGradeGroups.length) noticesFilter = noticesFilter.ofGradeGroups(targetGradeGroups as GradeGroupArray[]);
     emits("update:notices", noticesFilter.value);
   }
 

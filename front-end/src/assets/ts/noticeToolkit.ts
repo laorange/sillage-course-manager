@@ -15,13 +15,14 @@ export class NoticeDecorator {
 
     ofGradeGroups(targetGradeGroups: GradeGroupArray[]) {
         let filterFunc: NoticeFilter = n => {
+            let targetGrades: string[] = targetGradeGroups.map(gg => gg[0]);
+
             // 如果没有年级和分组，则为全员公告。any=>true
             if (!n.groups?.length) return true;
 
             for (const nGradeGroup of n.groups) {
                 let nGrade = nGradeGroup[0];
                 let nGroup = nGradeGroup[1];
-                let targetGrades: string[] = targetGradeGroups.map(gg => gg[0]);
 
                 // 没有分组，则为全年级公告。年级相同=>true
                 if (!nGroup) {
@@ -33,8 +34,12 @@ export class NoticeDecorator {
                 // 有分组，则需要 年级&分组 均相同，才是目标人群
                 else {
                     for (const targetGG of targetGradeGroups) {
-                        if (targetGG[0] === nGrade && targetGG[1] === nGroup) {
-                            return true;
+                        // 如果年级相同
+                        if (targetGG[0] === nGrade) {
+                            // 需求中没有分组，或需求的分组与某个公告的分组相同，=>true
+                            if (!targetGG[1] || targetGG[1] === nGroup) {
+                                return true;
+                            }
                         }
                     }
                 }
