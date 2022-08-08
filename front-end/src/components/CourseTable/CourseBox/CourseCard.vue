@@ -7,17 +7,18 @@ import {parseFontColor} from "../../../assets/ts/useColorParser";
 import ContextMenu from "@imengyu/vue3-context-menu";
 import {useDialog, useMessage} from "naive-ui";
 import {MenuItem} from "@imengyu/vue3-context-menu";
+import {getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
+import dayjs from "dayjs";
 
 const props = withDefaults(defineProps<{
-  course: Course, coursesExisting: Course[], queryDate: string, lessonNum: number,
-  editable?: boolean, showWeeks?: boolean, showGrade?: boolean
-}>(), {showWeeks: true, showGrade: false});
+  course: Course,
+  showWeeks?: boolean, showGrade?: boolean, showWhatDay?: boolean, showLessonTime?: boolean,
+  editData?: { coursesExisting: Course[], queryDate: string, lessonNum: number }
+}>(), {showWeeks: true, showGrade: false, showWhatDay: false, showLessonTime: false});
 
 const store = useStore();
 const message = useMessage();
 const dialog = useDialog();
-
-const weeks = computed<number[]>(() => props.course.dates.map(d => store.getWeekNumOfSomeDate(d)));
 
 function getSituationStr(situation: Situation) {
   return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join(" | ");
@@ -28,11 +29,13 @@ const optionGetters = {
     return {
       label: "编辑",
       onClick: () => {
-        store.editor.show = true;
-        store.editor.mode = "edit";
-        store.editor.fromDates = props.course.dates;
-        store.editor.lessonNum = props.lessonNum;
-        store.editor.courseEditing = props.course;
+        if (props.editData) {
+          store.editor.show = true;
+          store.editor.mode = "edit";
+          store.editor.fromDates = props.course.dates;
+          store.editor.lessonNum = props.editData.lessonNum;
+          store.editor.courseEditing = props.course;
+        }
       },
     };
   },
@@ -191,7 +194,7 @@ const optionGetters = {
 };
 
 function onContextMenu(e: MouseEvent) {
-  if (props.editable) {
+  if (props.editData) {
     e.preventDefault();
     ContextMenu.showContextMenu({
       x: e.pageX,
@@ -207,9 +210,23 @@ function onContextMenu(e: MouseEvent) {
 }
 
 const getWeekStrWithUnit = computed<string>(() => {
-  let weekStr = getWeeksString(weeks.value);
+  let validWeeks = props.course.dates.map(d => store.getWeekNumOfSomeDate(d)).filter(w => (w > 0 && w <= store.config.content.maxWeekNum));
+  let weekZhStr = getWeeksString(validWeeks);
   let _weekUnitStr = store.translate("星期");
-  return _weekUnitStr === "星期" ? `第${weekStr}周` : `${_weekUnitStr} ${weekStr}`;
+  let weekStr = (_weekUnitStr === "星期") ? `第${weekZhStr}周` : `${_weekUnitStr} ${weekZhStr}`;
+
+  let invalidDates = props.course.dates.filter(d => {
+    let week = store.getWeekNumOfSomeDate(d);
+    return week <= 0 || week > store.config.content.maxWeekNum;
+  });
+
+  return invalidDates.length ? invalidDates.concat([weekStr]).join(",") : weekStr;
+});
+
+const whatDayStr = computed<string>(() => store.translate(store.getWhatDayStr(getIsoWeekDay(dayjs(props.course.dates[0]) ?? dayjs()))));
+const lessonTimeStr = computed<string>(() => {
+  let lessonConfig = store.config.content.lessonConfigs[props.course.lessonNum - 1];
+  return `${lessonConfig.start}~${lessonConfig.end}`;
 });
 </script>
 
@@ -221,6 +238,8 @@ const getWeekStrWithUnit = computed<string>(() => {
     <div v-if="course.method">{{ store.translate(course.method) }}</div>
     <div v-if="showGrade">{{ store.translate(course.grade) }}</div>
     <div v-if="showWeeks">{{ getWeekStrWithUnit }}</div>
+    <div v-if="showWhatDay">{{ whatDayStr }}</div>
+    <div v-if="showLessonTime">{{ lessonTimeStr }}</div>
 
     <!--  situations  -->
     <template v-if="course.situations.length===1">

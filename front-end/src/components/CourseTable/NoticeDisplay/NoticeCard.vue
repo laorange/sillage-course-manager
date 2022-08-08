@@ -46,17 +46,17 @@ const typeName = computed<TypeName>(() => {
     </template>
     <template #default>
       <div class="notice-card-content">
-        <n-grid x-gap="30" :cols="[notice.to, notice.from].filter(_=>!!_).length+(typeName==='info'?1:0)">
-          <n-gi v-if="typeName==='info'">
-            <div class="notice-card-content-text">{{ notice.content }}</div>
-          </n-gi>
+        <n-grid x-gap="30" :cols="[notice.to, notice.from].filter(_=>!!_).length">
+          <!--  <n-gi v-if="typeName==='info'">-->
+          <!--    <div class="notice-card-content-text">{{ notice.content }}</div>-->
+          <!--  </n-gi>-->
 
           <n-gi v-if="notice.to">
-            <CourseCard :course="notice.to" :courses-existing="[]" :show-grade="true" :lesson-num="1" query-date="2022-08-08"/>
+            <CourseCard :course="notice.to" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
           </n-gi>
 
           <n-gi v-if="notice.from">
-            <CourseCard :course="notice.from" :courses-existing="[]" :show-grade="true" :lesson-num="1" query-date="2022-08-08"/>
+            <CourseCard :course="notice.from" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
           </n-gi>
         </n-grid>
       </div>
