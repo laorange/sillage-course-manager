@@ -85,14 +85,16 @@ const handlers = {
   pushWithNewFilter() {
     nextTick(() => message.success(title.value));
     showFilterDialog.value = false;
+    formModel.value.grades = formModel.value.grades.length ? formModel.value.grades : store.grades
+
     router.push({
       ...route,
       query: {
-        grade: formModel.value.grades ? formModel.value.grades : undefined,
-        rooms: formModel.value.rooms ? formModel.value.rooms : undefined,
-        methods: formModel.value.methods ? formModel.value.methods : undefined,
-        teachers: formModel.value.teachers ? formModel.value.teachers : undefined,
-        groups: formModel.value.groups ? formModel.value.groups.map(g => JSON.stringify(g)) : undefined,
+        grade: formModel.value.grades,
+        rooms: formModel.value.rooms.length ? formModel.value.rooms : undefined,
+        methods: formModel.value.methods.length ? formModel.value.methods : undefined,
+        teachers: formModel.value.teachers.length ? formModel.value.teachers : undefined,
+        groups: formModel.value.groups.length ? formModel.value.groups.map(g => JSON.stringify(g)) : undefined,
       },
     });
   },
