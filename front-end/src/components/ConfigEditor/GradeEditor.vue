@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import {useStore} from "../../pinia/useStore";
 import {useRouter} from "vue-router";
+import {useMessage} from "naive-ui";
 
 const store = useStore();
 const router = useRouter();
+const message = useMessage();
 
 const newGrade = ref<string>("");
 const existingGradeNewName = ref<string>("");
@@ -43,20 +45,30 @@ const handlers = {
   cancelSelectionOfGrade() {
     selectedGrade.value = null;
   },
-  renameSelectedGrade() {
+  async renameSelectedGrade() {
     if (selectedGrade.value) {
-      alert("提交后端");
-      for (const course of store.courses) {
-        if (course.grade === selectedGrade.value) {
-          course.grade = existingGradeNewName.value;
-        }
+      // 将所有目标年级的课程改为新的名字
+      let selectedGradeCourses = store.courses.filter(c => c.grade === selectedGrade.value);
+      for (const course of selectedGradeCourses) {
+        await store.api.course.update(course, {...course, grade: existingGradeNewName.value},
+            () => message.success(`${course.info.name}的年级由${course.grade}变为${existingGradeNewName.value}`),
+            () => message.error(`id为${course.id}的${course.info.name}: 年级更改失败`),
+        );
+        course.grade = existingGradeNewName.value;
       }
+
       handlers.cancelSelectionOfGrade();
     }
   },
-  deleteSelectedGrade() {
+  async deleteSelectedGrade() {
     if (selectedGrade.value) {
-      alert("提交后端");
+      // 删除所有目标年级的课程
+      let selectedGradeCourses = store.courses.filter(c => c.grade === selectedGrade.value);
+      for (const course of selectedGradeCourses) {
+        await store.api.course.delete(course, () => message.success(`${course.info.name}删除成功`),
+            () => message.error(`id为${course.id}的【${course.info.name}: 删除失败`));
+      }
+
       store.courses = store.courses.filter(c => c.grade !== selectedGrade.value);
       handlers.cancelSelectionOfGrade();
     }
