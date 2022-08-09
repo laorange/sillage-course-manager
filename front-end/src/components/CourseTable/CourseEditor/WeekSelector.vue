@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import {computed} from "vue";
 import {zhCN, dateZhCN, SelectOption} from "naive-ui";
+import dayjs from "dayjs";
+import {formatDate} from "../../../assets/ts/datetimeUtils";
 
-const props = withDefaults(defineProps<{ weeks: number[], maxWeekNum?: number, disabledWeeks?: number[] }>(), {maxWeekNum: 20});
+const props = withDefaults(defineProps<{
+  weeks: number[], semesterStartDay: dayjs.Dayjs, whatDay: number,
+  maxWeekNum?: number, disabledWeeks?: number[]
+}>(), {maxWeekNum: 20});
 const emits = defineEmits(["update:weeks"]);
 
 const weeksLocal = computed<number[]>({
@@ -19,7 +24,7 @@ const weekOptions = computed<SelectOption[]>(() => {
   let _options: SelectOption[] = [];
   for (let w = minWeekNum; w <= maxWeekNum; w++) {
     _options.push({
-      label: w >= 1 ? `第${w}周` : `开学前${1 - w}周`,
+      label: (w >= 1 ? `第${w}周` : `开学前${1 - w}周`) + `(${formatDate(props.semesterStartDay.add(w - 1, "week").add(props.whatDay - 1, "day"))})`,
       value: w,
       disabled: (props.disabledWeeks ?? []).indexOf(w) !== -1,
     });
@@ -89,7 +94,9 @@ const judgements = {
       </n-space>
 
       <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
-        <n-transfer v-model:value="weeksLocal" :options="weekOptions" size="small" source-title="可选" target-title="已选"/>
+        <n-transfer v-model:value="weeksLocal" :options="weekOptions"
+                    :virtual-scroll="true" :filterable="true"
+                    size="small" source-title="可选" target-title="已选"/>
       </n-config-provider>
     </n-space>
   </div>
