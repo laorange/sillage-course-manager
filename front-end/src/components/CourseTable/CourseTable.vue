@@ -46,12 +46,12 @@ const handlers = {
       </n-switch>
 
       <n-switch v-model:value="whetherTwoColumns">
-        <template #checked>双栏</template>
-        <template #unchecked>单栏</template>
+        <template #checked>{{ store.translate(`双栏`) }}</template>
+        <template #unchecked>{{ store.translate(`单栏`) }}</template>
       </n-switch>
 
       <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="90">
-        <n-button :dashed="true" color="#32647d" size="small" @click="handlers.moveToNoticeDisplay">{{ store.translate(`变更日志`) }}</n-button>
+        <n-button :dashed="true" color="#32647d" size="small" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
       </n-badge>
     </n-space>
   </div>

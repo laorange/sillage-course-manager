@@ -10,7 +10,9 @@ const store = useStore();
 
 <template>
   <div id="notice-display">
-    <n-divider><h3>{{ store.translate(`变更日志`) }}</h3></n-divider>
+    <n-divider/>
+
+    <h2 style="text-align: center">{{ store.translate(`公告`) }}</h2>
 
     <n-timeline>
       <NoticeCard v-for="notice of notices" :key="`notice${notice.id}`" :notice="notice"/>
