@@ -4,9 +4,7 @@ import {computed, ref, watch} from "vue";
 import WeekSelector from "./WeekSelector.vue";
 import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption, useMessage, useDialog} from "naive-ui";
-import getWeeksString from "../../../assets/ts/getWeeksString";
 import {useStore} from "../../../pinia/useStore";
-import {formatDate} from "../../../assets/ts/datetimeUtils";
 import {isValidCourse} from "../../../assets/ts/courseToolkit";
 import {useRoute} from "vue-router";
 import {whetherTwoObjNotEqual} from "../../../assets/ts/whetherTwoObjNotEqual";
@@ -126,10 +124,7 @@ watch(() => courseLocal.value.info.name, (name) => {
   }
 });
 
-const weeks = ref<number[]>(courseLocal.value.dates.map(d => store.getWeekNumOfSomeDate(d)));
-watch(() => weeks.value, (ws) => {
-  courseLocal.value.dates = ws.map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorFromWhatDay - 1, "day")));
-}, {deep: true});
+
 
 const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));
 </script>
@@ -152,11 +147,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
         </n-space>
       </div>
 
-      <n-divider :dashed="true">上课周数:
-        <span v-if="weeks.length">第{{ getWeeksString(weeks) }}周</span>
-        <span v-else style="color: red">请在下方的穿梭框中选择</span>
-      </n-divider>
-      <WeekSelector v-model:weeks="weeks" :semester-start-day="store.semesterStartDay" :what-day="store.editorFromWhatDay"/>
+      <WeekSelector v-model:dates="courseLocal.dates" :semester-start-day="store.semesterStartDay" :what-day="store.editorFromWhatDay"/>
     </div>
 
     <div class="responsive-middle-divider"/>
