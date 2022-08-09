@@ -1,3 +1,10 @@
+export interface RawPocketBaseData<K> {
+    "page": number,
+    "perPage": number,
+    "totalItems": number,
+    "items": K[]
+}
+
 export interface PocketBaseModel {
     id: string;
     created?: string;

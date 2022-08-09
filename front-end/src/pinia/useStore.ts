@@ -8,6 +8,8 @@ import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/t
 import {ApiHandler} from "../assets/ts/ApiHandler";
 
 type State = {
+    isLoading: boolean
+
     api: ApiHandler
 
     config: Config
@@ -29,6 +31,8 @@ type State = {
 export const useStore = defineStore("store", {
     state: (): State => {
         return {
+            isLoading: false,
+
             api: new ApiHandler(new PocketBase(import.meta.env.VITE_BACKEND_URL)),
 
             courses: [],

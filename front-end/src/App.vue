@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import TabBar from "./components/TabBar.vue";
 import Initiator from "./components/Initiator.vue";
+import {useStore} from "./pinia/useStore";
 
+const store = useStore();
 </script>
 
 <template>
   <n-dialog-provider>
     <n-message-provider>
-      <router-view/>
-      <Initiator/>
+      <n-spin :show="store.isLoading">
+        <router-view/>
+        <Initiator/>
+      </n-spin>
     </n-message-provider>
   </n-dialog-provider>
 

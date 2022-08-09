@@ -1,5 +1,6 @@
 import PocketBase from "pocketbase";
-import {Config, Course, GradeGroupArray, Notice, PocketBaseModel} from "./types";
+import {Config, Course, GradeGroupArray, Notice, PocketBaseModel, RawPocketBaseData} from "./types";
+import axios, {AxiosPromise} from "axios";
 
 
 function getGradeGroupArrayOfCourse(course: Course | Course[]): GradeGroupArray[] {
@@ -31,8 +32,7 @@ class Collection<T extends PocketBaseModel> {
 
     async list(successHook?: (results: T[]) => any, errorHook?: (e: Error) => any) {
         try {
-            // 潜在问题: batchSize 设为 1e8，以便一次性请求全部的信息
-            let results = await this.client.Records.getFullList(this.collectionName, 1e8, {sort: "-updated"}) as unknown as T[];
+            let results = await this.client.Records.getFullList(this.collectionName, 200, {sort: "-updated"}) as unknown as T[];
             if (successHook) successHook(results);
         } catch (e) {
             if (errorHook) errorHook(e as Error);
@@ -62,9 +62,44 @@ class Collection<T extends PocketBaseModel> {
 class CourseCollection extends Collection<Course> {
     noticeHandler: Collection<Notice>;
 
-    constructor(client: PocketBase, configHandler: Collection<Notice>) {
+    constructor(client: PocketBase, noticeHandler: Collection<Notice>) {
         super(client, "course");
-        this.noticeHandler = configHandler;
+        this.noticeHandler = noticeHandler;
+    }
+
+    async list(successHook?: (results: Course[]) => any, errorHook?: (e: Error) => any) {
+        try {
+            let pioneer = (await axios(this.client.baseUrl + "/api/collections/course/records", {
+                params: {
+                    page: 1,
+                    perPage: 1,
+                    sort: "-updated",
+                },
+            })).data as RawPocketBaseData<Course>;
+
+            let courses: Course[] = [];
+
+            const MAX_PER_PAGE = 200;
+
+            let promises: AxiosPromise<RawPocketBaseData<Course>>[] = [];
+            for (let page = 1; page <= Math.ceil(pioneer.totalItems / MAX_PER_PAGE); page++) {
+                promises.push(axios(this.client.baseUrl + "/api/collections/course/records", {
+                    params: {
+                        page,
+                        perPage: MAX_PER_PAGE,
+                        sort: "-updated",
+                    },
+                }));
+            }
+            let results = await Promise.all(promises);
+            for (const result of results) {
+                courses = courses.concat(result.data.items);
+            }
+
+            if (successHook) successHook(courses);
+        } catch (e) {
+            if (errorHook) errorHook(e as Error);
+        }
     }
 
     async create(newRecord: Course, successHook?: (result: Course) => any, errorHook?: (e: Error) => any) {
@@ -111,6 +146,29 @@ class CourseCollection extends Collection<Course> {
     }
 }
 
+class NoticeCollection extends Collection<Notice> {
+    constructor(client: PocketBase) {
+        super(client, "notice");
+    }
+
+    async list(successHook?: (results: Notice[]) => any, errorHook?: (e: Error) => any) {
+        try {
+            // 最多只请求200条公告
+            let results: Notice[] = (await axios(this.client.baseUrl + "/api/collections/notice/records", {
+                params: {
+                    page: 1,
+                    perPage: 200,
+                    sort: "-updated",
+                },
+            })).data.items;
+            if (successHook) successHook(results);
+
+        } catch (e) {
+            if (errorHook) errorHook(e as Error);
+        }
+    }
+}
+
 export class ApiHandler {
     client: PocketBase;
     config: Collection<Config>;
@@ -120,7 +178,7 @@ export class ApiHandler {
     constructor(client: PocketBase) {
         this.client = client;
         this.config = new Collection<Config>(client, "config");
-        this.notice = new Collection<Notice>(client, "notice");
+        this.notice = new NoticeCollection(client);
         this.course = new CourseCollection(client, this.notice);
     }
 }
