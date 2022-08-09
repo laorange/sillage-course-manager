@@ -17,7 +17,7 @@
     "production": "vite serve --mode production",
     "build:dev": "vue-tsc --noEmit && vite build --base=./ --mode development",
     "build:production": "vue-tsc --noEmit && vite build --base=./ --mode production",
-    "build:go": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode development",
+    "build:go": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode go",
     "preview": "vite preview"
   },
   "dependencies": {
