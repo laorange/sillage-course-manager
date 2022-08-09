@@ -22,7 +22,7 @@ const initiators = {
     }, () => message.error("系统设置加载失败"));
 
     store.api.course.list(courses => store.courses = courses, () => message.error("课程加载失败"));
-    store.api.notice.list(notices => store.notices = notices, () => message.error("课程加载失败"));
+    store.api.notice.list(notices => store.notices = notices, () => message.error("公告加载失败"));
   },
   loginStatus() {
     store.validateAuthStatus();
