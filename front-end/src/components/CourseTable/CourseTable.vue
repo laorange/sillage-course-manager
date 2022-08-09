@@ -35,26 +35,25 @@ const handlers = {
 
   <h1>{{ store.translate(store.config.content.tableName) }}</h1>
 
-  <RouteFilter v-model:courses="filteredCourses" v-model:show-grade="showGrade" v-model:notices="filteredNotices"/>
+  <RouteFilter v-model:courses="filteredCourses" v-model:show-grade="showGrade" v-model:notices="filteredNotices">
+    <template #button>
+      <n-space justify="center" align="center">
+        <n-switch v-model:value="editable" v-if="store.editor.authenticated">
+          <template #checked>管理员视图</template>
+          <template #unchecked>用户视图</template>
+        </n-switch>
 
-  <div style="margin: 15px 0">
-    <n-space justify="center" align="center">
-      <!-- 管理员视图切换 -->
-      <n-switch v-model:value="editable" v-if="store.editor.authenticated">
-        <template #checked>管理员视图</template>
-        <template #unchecked>用户视图</template>
-      </n-switch>
+        <n-switch v-model:value="whetherTwoColumns" size="large">
+          <template #checked>{{ store.translate(`双栏`) }}</template>
+          <template #unchecked>{{ store.translate(`单栏`) }}</template>
+        </n-switch>
 
-      <n-switch v-model:value="whetherTwoColumns">
-        <template #checked>{{ store.translate(`双栏`) }}</template>
-        <template #unchecked>{{ store.translate(`单栏`) }}</template>
-      </n-switch>
-
-      <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="90">
-        <n-button :dashed="true" color="#32647d" size="small" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
-      </n-badge>
-    </n-space>
-  </div>
+        <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="90">
+          <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
+        </n-badge>
+      </n-space>
+    </template>
+  </RouteFilter>
 
   <n-grid :cols="(whetherTwoColumns)?2:1" :x-gap="5">
     <n-gi>

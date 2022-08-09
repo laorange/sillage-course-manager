@@ -155,7 +155,7 @@ const handlers = {
 
 <style scoped>
 .route-filter {
-  margin-bottom: 10px;
+  margin: 15px;
 }
 
 .route-filter-drawer {

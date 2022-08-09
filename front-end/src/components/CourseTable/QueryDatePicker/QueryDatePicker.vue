@@ -49,7 +49,7 @@ const handlers = {
           </n-config-provider>
         </template>
 
-        <n-switch v-model:value="isDateModeLocal">
+        <n-switch v-model:value="isDateModeLocal" size="large">
           <template #checked>{{ store.translate(`日期`) }}</template>
           <template #unchecked>{{ store.translate(`星期`) }}</template>
         </n-switch>
@@ -66,6 +66,6 @@ const handlers = {
 
 <style scoped>
 .query-date-picker {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 </style>
