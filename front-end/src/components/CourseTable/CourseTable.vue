@@ -48,7 +48,7 @@ const handlers = {
           <template #unchecked>{{ store.translate(`单栏`) }}</template>
         </n-switch>
 
-        <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="90">
+        <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="99">
           <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
         </n-badge>
       </n-space>
