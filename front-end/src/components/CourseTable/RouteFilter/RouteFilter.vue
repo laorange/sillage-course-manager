@@ -32,7 +32,7 @@ let sources = computed(() => {
     teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_).sort() as unknown as string[],
 
     courseDecorator: new CourseDecorator(store.courses),
-    noticeDecorator: props.notices ? new NoticeDecorator(store.notices) : undefined,
+    noticeDecorator: new NoticeDecorator(store.notices),
   };
 });
 
@@ -85,7 +85,7 @@ const handlers = {
   pushWithNewFilter() {
     nextTick(() => message.success(title.value));
     showFilterDialog.value = false;
-    formModel.value.grades = formModel.value.grades.length ? formModel.value.grades : store.grades
+    formModel.value.grades = formModel.value.grades.length ? formModel.value.grades : store.grades;
 
     router.push({
       ...route,
