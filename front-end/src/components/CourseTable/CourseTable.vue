@@ -54,7 +54,7 @@ watch(() => store.editor.authenticated, newStatus => editable.value = newStatus)
     </n-gi>
   </n-grid>
 
-  <NoticeDisplay :notices="filteredNotices"/>
+  <NoticeDisplay v-if="filteredNotices.length" :notices="filteredNotices"/>
 </template>
 
 <style scoped>

@@ -106,6 +106,15 @@ const handlers = {
       message.error(`Error: ${e}`);
     }
   },
+  moveToNoticeDisplay() {
+    let noticeDisplayNode = document.getElementById("notice-display");
+    if (noticeDisplayNode) {
+      window.scrollTo({
+        behavior: "smooth",
+        top: noticeDisplayNode.offsetTop,
+      });
+    }
+  },
 };
 </script>
 
@@ -119,6 +128,10 @@ const handlers = {
       </n-button>
 
       <n-button :dashed="true" color="#32647d" @click="handlers.copyUrl()">{{ store.translate(`复制网址`) }}</n-button>
+
+      <n-badge v-if="notices.length" :value="notices.length" :max="90">
+        <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`变更日志`) }}</n-button>
+      </n-badge>
     </n-space>
   </div>
 

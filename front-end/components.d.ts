@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     LanguageEditor: typeof import('./src/components/ConfigEditor/LanguageEditor.vue')['default']
     LessonConfigEditor: typeof import('./src/components/ConfigEditor/LessonConfigEditor.vue')['default']
     LoginPage: typeof import('./src/components/LoginPage/LoginPage.vue')['default']
+    NBadge: typeof import('naive-ui')['NBadge']
     NButton: typeof import('naive-ui')['NButton']
     NCascader: typeof import('naive-ui')['NCascader']
     NColorPicker: typeof import('naive-ui')['NColorPicker']
