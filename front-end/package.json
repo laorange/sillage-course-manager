@@ -18,6 +18,7 @@
     "build:dev": "vue-tsc --noEmit && vite build --base=./ --mode development",
     "build:production": "vue-tsc --noEmit && vite build --base=./ --mode production",
     "build:go": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode go",
+    "build:go_override_dist": "vue-tsc --noEmit && del \"../back-end/dist/\" -recurse && vite build --outDir ../back-end/dist --base=./ --mode go",
     "preview": "vite preview"
   },
   "dependencies": {
