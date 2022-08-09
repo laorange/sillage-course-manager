@@ -126,7 +126,7 @@ const optionGetters = {
   },
   delete(): MenuItem {
     async function deleteAll() {
-      dialog.info({
+      dialog.warning({
         title: "提示",
         content: `这节“${props.course.info.name}”将会被删除，是否继续？`,
         positiveText: "确定",
@@ -152,15 +152,7 @@ const optionGetters = {
       children: [
         {
           label: "全部",
-          onClick: () => {
-            dialog.warning({
-              title: "请注意",
-              content: `这节“${props.course.info.name}”将会被删除，是否继续？`,
-              positiveText: "确定",
-              negativeText: "取消",
-              onPositiveClick: deleteAll,
-            });
-          },
+          onClick: deleteAll,
         },
       ],
     };
