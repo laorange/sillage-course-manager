@@ -162,7 +162,7 @@ function refreshGridData() {
 
 // region 响应式数据
 const planTableBody = ref();
-const planTableBodyObj = ref<any>(undefined);
+const planTableBodyObj = ref<DataGridXL | undefined>(undefined);
 
 const source = computed(() => {
   return {
@@ -173,6 +173,15 @@ const source = computed(() => {
 // endregion
 
 watch(() => source.value, refreshGridData, {deep: true, immediate: true});
+
+defineExpose({
+  downloadDataAsCSV() {
+    planTableBodyObj.value?.downloadDataAsCSV();
+  },
+  downloadDataAsJSON() {
+    planTableBodyObj.value?.downloadDataAsJSON();
+  },
+});
 </script>
 
 <template>

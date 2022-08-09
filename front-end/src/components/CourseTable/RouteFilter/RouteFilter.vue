@@ -119,6 +119,8 @@ const handlers = {
       </n-button>
 
       <n-button :dashed="true" color="#32647d" @click="handlers.copyUrl()">{{ store.translate(`复制网址`) }}</n-button>
+
+      <slot name="button"/>
     </n-space>
   </div>
 
