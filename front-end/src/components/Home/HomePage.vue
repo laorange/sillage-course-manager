@@ -57,12 +57,13 @@ const handlers = {
 
       <n-button type="success" @click="handlers.toPlan">{{ store.translate(`教学计划`) }}</n-button>
 
-      <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">登录(该按钮仅测试阶段可见)</n-button>
-      <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
+      <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
 
       <template v-if="store.editor.authenticated">
         <n-button type="error" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
       </template>
+
+      <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
     </n-space>
   </main>
 </template>

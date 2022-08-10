@@ -188,7 +188,7 @@ export const useStore = defineStore("store", {
                 .concat(this.teachers)
                 .concat(this.rooms)
                 .concat(["使用说明", "教学计划", "正在查看", "全部课程", "复制网址", "年级", "班级", "授课方式", "授课教师", "教室"])
-                .concat(["公告", "单列表", "双列表", "周视图"])
+                .concat(["公告", "单列表", "双列表", "周视图", "管理员入口"])
                 .concat(["名称", "上一周", "下一周", "日期", "星期"])
                 .concat(Array.from("一二三四五六天").map(w => `星期${w}`));
         },
