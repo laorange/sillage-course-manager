@@ -68,6 +68,7 @@ declare module '@vue/runtime-core' {
     VanTabbar: typeof import('vant/es')['Tabbar']
     VanTabbarItem: typeof import('vant/es')['TabbarItem']
     VanTabs: typeof import('vant/es')['Tabs']
+    WeeklyCourseTable: typeof import('./src/components/CourseTable/WeeklyCourseTable.vue')['default']
     WeekSelector: typeof import('./src/components/CourseTable/CourseEditor/WeekSelector.vue')['default']
     WhatDaySelector: typeof import('./src/components/CourseTable/CourseBox/WhatDaySelector.vue')['default']
   }

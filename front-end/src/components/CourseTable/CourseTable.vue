@@ -9,13 +9,14 @@ import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
 import {SelectOption} from "naive-ui";
 import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
+import WeeklyCourseTable from "./WeeklyCourseTable.vue";
 
 const store = useStore();
 
 const filteredCourses = ref<Course[]>([]);
 const filteredNotices = ref<Notice[]>([]);
 
-const displayMode = ref<"单列表" | "双列表" | "周视图">(document.documentElement.clientWidth < 800 ? "单列表" : "双列表");
+const displayMode = ref<"单列表" | "双列表" | "周视图">(document.documentElement.clientWidth < 800 ? "单列表" : "周视图");
 const displayColumnNum = computed(() => {
   switch (displayMode.value) {
     case "单列表":
@@ -73,7 +74,8 @@ const handlers = {
     </template>
   </RouteFilter>
 
-  <n-grid :cols="displayColumnNum" :x-gap="5">
+  <WeeklyCourseTable v-if="displayMode==='周视图'" :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
+  <n-grid v-else :cols="displayColumnNum" :x-gap="5">
     <n-gi v-for="dailyCourseTableNum of displayColumnNum" :key="`DailyCourseTable${dailyCourseTableNum}`">
       <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"
                         :query-date="formatDate(dayjs().add(dailyCourseTableNum-1, 'day'))"/>
