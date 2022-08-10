@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     CourseEditDialog: typeof import('./src/components/CourseTable/CourseEditDialog.vue')['default']
     CourseEditor: typeof import('./src/components/CourseTable/CourseEditor/CourseEditor.vue')['default']
     CourseTable: typeof import('./src/components/CourseTable/CourseTable.vue')['default']
+    DailyCourseTable: typeof import('./src/components/CourseTable/DailyCourseTable.vue')['default']
     DictionaryEditor: typeof import('./src/components/ConfigEditor/DictionaryEditor.vue')['default']
     EmptyCourseCard: typeof import('./src/components/CourseTable/CourseBox/EmptyCourseCard.vue')['default']
     GradeEditor: typeof import('./src/components/ConfigEditor/GradeEditor.vue')['default']
@@ -66,7 +67,6 @@ declare module '@vue/runtime-core' {
     VanTabbar: typeof import('vant/es')['Tabbar']
     VanTabbarItem: typeof import('vant/es')['TabbarItem']
     VanTabs: typeof import('vant/es')['Tabs']
-    WeeklyCourseTable: typeof import('./src/components/CourseTable/WeeklyCourseTable.vue')['default']
     WeekSelector: typeof import('./src/components/CourseTable/CourseEditor/WeekSelector.vue')['default']
   }
 }

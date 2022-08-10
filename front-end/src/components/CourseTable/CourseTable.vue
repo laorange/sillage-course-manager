@@ -2,7 +2,7 @@
 import {useStore} from "../../pinia/useStore";
 import {ref, watch} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
-import WeeklyCourseTable from "./WeeklyCourseTable.vue";
+import DailyCourseTable from "./DailyCourseTable.vue";
 import {Course, Notice} from "../../assets/ts/types";
 import RouteFilter from "./RouteFilter/RouteFilter.vue";
 import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
@@ -57,10 +57,10 @@ const handlers = {
 
   <n-grid :cols="(whetherTwoColumns)?2:1" :x-gap="5">
     <n-gi>
-      <WeeklyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
+      <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
     </n-gi>
     <n-gi v-if="whetherTwoColumns">
-      <WeeklyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
+      <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
     </n-gi>
   </n-grid>
 
