@@ -42,7 +42,7 @@ const handlers = {
       <h1>{{ store.translate(store.config.content.tableName) }}</h1>
       <div class="version">v{{ config.version }}<span v-if="inDevelopMode">-alpha</span></div>
 
-      <div class="language-selector">
+      <div class="language-selector" v-if="store.config.content.languages.length">
         <n-select v-model:value="store.localConfig.language" :options="languageOptions"/>
       </div>
 
