@@ -25,5 +25,6 @@ const store = useStore();
   text-align: left;
   max-width: 100vw;
   margin-left: 10px;
+  min-height: 95vh;
 }
 </style>
