@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Course, Situation} from "../../../assets/ts/types";
-import {computed} from "vue";
+import {computed, inject, Ref} from "vue";
 import {useStore} from "../../../pinia/useStore";
 import getWeeksString from "../../../assets/ts/getWeeksString";
 import {parseFontColor} from "../../../assets/ts/useColorParser";
@@ -9,9 +9,12 @@ import {useDialog, useMessage} from "naive-ui";
 import {MenuItem} from "@imengyu/vue3-context-menu";
 import {getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
+import useEmptyCourseCard from "../../../assets/ts/hooks/useEmptyCourseCard";
+import RouteFilter from "../RouteFilter/RouteFilter.vue";
+
 
 const props = withDefaults(defineProps<{
-  course: Course,
+  course: Course, isDateMode?: boolean,
   showWeeks?: boolean, showGrade?: boolean, showWhatDay?: boolean, showLessonTime?: boolean,
   editData?: { coursesExisting: Course[], queryDate: string, lessonNum: number }
 }>(), {showWeeks: true, showGrade: false, showWhatDay: false, showLessonTime: false});
@@ -19,6 +22,10 @@ const props = withDefaults(defineProps<{
 const store = useStore();
 const message = useMessage();
 const dialog = useDialog();
+
+const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
+const {contextMenuItems} = useEmptyCourseCard(routeFilter?.value?.sources?.grades ?? [], props.course.lessonNum,
+    props.editData?.queryDate ?? store.todayDate, !!props.isDateMode);
 
 function getSituationStr(situation: Situation) {
   return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join(" | ");
@@ -196,6 +203,7 @@ function onContextMenu(e: MouseEvent) {
         optionGetters.copy(),
         optionGetters.cut(),
         optionGetters.delete(),
+        ...(contextMenuItems.value ?? []),
       ],
     });
   }

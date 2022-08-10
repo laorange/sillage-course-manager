@@ -3,7 +3,7 @@ import {Config, Course, CourseInfo, LocalConfig, Notice} from "../assets/ts/type
 import dayjs from "dayjs";
 import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
-import {getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
+import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
 import {ApiHandler} from "../assets/ts/ApiHandler";
 
@@ -72,6 +72,9 @@ export const useStore = defineStore("store", {
         };
     },
     getters: {
+        todayDate(): string {
+            return formatDate(dayjs());
+        },
         semesterStartDay(): dayjs.Dayjs {
             return dayjs(this.config.content.semesterStartDate);
         },

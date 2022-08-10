@@ -20,11 +20,11 @@ defineProps<{
 
   <div class="course-box" v-else>
     <div class="course-card-container" v-for="course in courses" :key="course.id">
-      <CourseCard v-if="editable" :course="course" :show-grade="showGrade" :show-weeks="showWeeks"
+      <CourseCard v-if="editable" :course="course" :show-grade="showGrade" :show-weeks="showWeeks" :is-date-mode="isDateMode"
                   :edit-data="{coursesExisting:courses, lessonNum:lessonNum, queryDate:queryDate}"/>
-      <CourseCard v-else :course="course" :show-grade="showGrade" :show-weeks="showWeeks"/>
+      <CourseCard v-else :course="course" :show-grade="showGrade" :show-weeks="showWeeks" :is-date-mode="isDateMode"/>
     </div>
-    <div class="empty-course-card" v-if="editable">
+    <div class="empty-course-card" v-if="editable && false">
       <EmptyCourseCard :query-date="queryDate" :is-date-mode="isDateMode" :lesson-num="lessonNum" :courses-existing="courses"/>
     </div>
   </div>

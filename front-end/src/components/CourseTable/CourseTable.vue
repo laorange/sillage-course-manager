@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
-import {computed, ref, watch} from "vue";
+import {computed, provide, ref, watch} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import DailyCourseTable from "./DailyCourseTable.vue";
 import {Course, Notice} from "../../assets/ts/types";
@@ -16,6 +16,7 @@ const store = useStore();
 const routeFilter = ref<typeof RouteFilter>();
 const filteredCourses = computed<Course[]>(() => routeFilter.value?.courses ?? []);
 const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? []);
+provide("routeFilter", routeFilter)
 
 const displayMode = ref<"单列表" | "双列表" | "周视图">(document.documentElement.clientWidth < 800 ? "单列表" : "周视图");
 const displayColumnNum = computed(() => {
@@ -34,7 +35,6 @@ const displayModeOption: SelectOption[] = [
   {label: store.translate(`周视图`), value: `周视图`},
 ];
 
-const showGrade = ref<boolean>(false);
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
 
@@ -56,7 +56,7 @@ const handlers = {
 
   <h1>{{ store.translate(store.config.content.tableName) }}</h1>
 
-  <RouteFilter ref="routeFilter" v-model:courses="filteredCourses" v-model:show-grade="showGrade" v-model:notices="filteredNotices">
+  <RouteFilter ref="routeFilter">
     <template #button>
       <n-space justify="center" align="center">
         <n-switch v-model:value="editable" v-if="store.editor.authenticated">
@@ -75,10 +75,10 @@ const handlers = {
     </template>
   </RouteFilter>
 
-  <WeeklyCourseTable v-if="displayMode==='周视图'" :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
+  <WeeklyCourseTable v-if="displayMode==='周视图'" :courses="filteredCourses" :editable="editable"/>
   <n-grid v-else :cols="displayColumnNum" :x-gap="5">
     <n-gi v-for="dailyCourseTableNum of displayColumnNum" :key="`DailyCourseTable${dailyCourseTableNum}`">
-      <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"
+      <DailyCourseTable :courses="filteredCourses" :editable="editable"
                         :query-date="formatDate(dayjs().add(dailyCourseTableNum-1, 'day'))"/>
     </n-gi>
   </n-grid>
