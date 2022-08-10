@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import CourseEditDialog from "./CourseEditDialog.vue";
 import DailyCourseTable from "./DailyCourseTable.vue";
 import {Course, Notice} from "../../assets/ts/types";
 import RouteFilter from "./RouteFilter/RouteFilter.vue";
 import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
+import {SelectOption} from "naive-ui";
+import dayjs from "dayjs";
+import {formatDate} from "../../assets/ts/datetimeUtils";
 
 const store = useStore();
 
 const filteredCourses = ref<Course[]>([]);
 const filteredNotices = ref<Notice[]>([]);
 
+const displayMode = ref<"单列表" | "双列表" | "周视图">(document.documentElement.clientWidth < 800 ? "单列表" : "双列表");
+const displayColumnNum = computed(() => {
+  switch (displayMode.value) {
+    case "单列表":
+      return 1;
+    case "双列表":
+      return 2;
+    case "周视图":
+      return 7;
+  }
+});
+const displayModeOption: SelectOption[] = [
+  {label: store.translate(`单列表`), value: `单列表`},
+  {label: store.translate(`双列表`), value: `双列表`},
+  {label: store.translate(`周视图`), value: `周视图`},
+];
+
 const showGrade = ref<boolean>(false);
-const whetherTwoColumns = ref<boolean>(document.documentElement.clientWidth > 800);
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
 
@@ -43,10 +62,9 @@ const handlers = {
           <template #unchecked>用户视图</template>
         </n-switch>
 
-        <n-switch v-model:value="whetherTwoColumns" size="large">
-          <template #checked>{{ store.translate(`双栏`) }}</template>
-          <template #unchecked>{{ store.translate(`单栏`) }}</template>
-        </n-switch>
+        <n-popselect v-model:value="displayMode" :options="displayModeOption" trigger="click">
+          <n-button :dashed="true" color="#32647d">{{ store.translate(displayMode) || "弹出选择" }}</n-button>
+        </n-popselect>
 
         <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="99">
           <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
@@ -55,12 +73,10 @@ const handlers = {
     </template>
   </RouteFilter>
 
-  <n-grid :cols="(whetherTwoColumns)?2:1" :x-gap="5">
-    <n-gi>
-      <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
-    </n-gi>
-    <n-gi v-if="whetherTwoColumns">
-      <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"/>
+  <n-grid :cols="displayColumnNum" :x-gap="5">
+    <n-gi v-for="dailyCourseTableNum of displayColumnNum" :key="`DailyCourseTable${dailyCourseTableNum}`">
+      <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="showGrade"
+                        :query-date="formatDate(dayjs().add(dailyCourseTableNum-1, 'day'))"/>
     </n-gi>
   </n-grid>
 

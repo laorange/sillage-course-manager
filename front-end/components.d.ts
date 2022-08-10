@@ -47,6 +47,7 @@ declare module '@vue/runtime-core' {
     NoticeCard: typeof import('./src/components/CourseTable/NoticeDisplay/NoticeCard.vue')['default']
     NoticeDisplay: typeof import('./src/components/CourseTable/NoticeDisplay/NoticeDisplay.vue')['default']
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
+    NPopselect: typeof import('naive-ui')['NPopselect']
     NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']
     NSpin: typeof import('naive-ui')['NSpin']

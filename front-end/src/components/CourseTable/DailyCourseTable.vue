@@ -10,13 +10,13 @@ import QueryDatePicker from "./QueryDatePicker/QueryDatePicker.vue";
 import WhatDaySelector from "./CourseBox/WhatDaySelector.vue";
 
 const props = withDefaults(defineProps<{
-  courses: Course[], editable?: boolean,
+  courses: Course[], editable?: boolean, queryDate?: string,
   showGrade?: boolean, showDateSelector?: boolean, showWhatDaySelector?: boolean, showLessonTime?: boolean
 }>(), {showWhatDaySelector: true, showDateSelector: true, showLessonTime: true});
 
 const store = useStore();
 
-const queryDate = ref<string>(formatDate(dayjs()));
+const queryDate = ref<string>(props.queryDate ?? formatDate(dayjs()));
 const isDateMode = ref<boolean>(store.localConfig.isDateMode);
 watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
 
