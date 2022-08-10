@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
-import {zhCN, dateZhCN} from "naive-ui";
+import {zhCN, dateZhCN, SelectOption} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
 import {computed} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
@@ -10,14 +10,19 @@ const store = useStore();
 const props = defineProps<{ queryDate: string, isDateMode: boolean }>();
 const emits = defineEmits(["update:queryDate", "update:isDateMode"]);
 
+const dateModeOption: SelectOption[] = [
+  {label: store.translate(`日期`), value: `日期`},
+  {label: store.translate(`星期`), value: `星期`},
+];
+
 const queryDateLocal = computed<string>({
   get: () => props.queryDate,
   set: (newValue) => emits("update:queryDate", newValue),
 });
 
-const isDateModeLocal = computed<boolean>({
-  get: () => props.isDateMode,
-  set: (newValue) => emits("update:isDateMode", newValue),
+const dateMode = computed<string>({
+  get: () => props.isDateMode ? `日期` : `星期`,
+  set: (newDateMode) => emits("update:isDateMode", (newDateMode === `日期`)),
 });
 
 const weekStr = computed<string>(() => {
@@ -45,19 +50,18 @@ const handlers = {
           <n-config-provider :locale="store.localConfig.language===`中文`?zhCN:undefined"
                              :date-locale="store.localConfig.language===`中文`?dateZhCN:undefined">
             <n-date-picker v-model:formatted-value="queryDateLocal" value-format="yyyy-MM-dd" type="date"
-                           placement="bottom" :input-readonly="true" :first-day-of-week="0" :disabled="!isDateModeLocal"/>
+                           placement="bottom" :input-readonly="true" :first-day-of-week="0" :disabled="dateMode!==`日期`"/>
           </n-config-provider>
         </template>
 
-        <n-switch v-model:value="isDateModeLocal" size="large">
-          <template #checked>{{ store.translate(`日期`) }}</template>
-          <template #unchecked>{{ store.translate(`星期`) }}</template>
-        </n-switch>
+        <n-popselect v-model:value="dateMode" :options="dateModeOption" trigger="click">
+          <n-button :dashed="true" color="#32647d">{{ store.translate(dateMode) || "弹出选择" }}</n-button>
+        </n-popselect>
 
         <n-space justify="center" align="center">
-          <n-button type="info" size="small" @click="handlers.lastWeek()" v-if="isDateModeLocal">{{ store.translate(`上一周`) }}</n-button>
+          <n-button type="info" size="small" @click="handlers.lastWeek()" v-if="dateMode=== `日期`">{{ store.translate(`上一周`) }}</n-button>
           <div v-if="weekStr">{{ weekStr }}</div>
-          <n-button type="info" size="small" @click="handlers.nextWeek()" v-if="isDateModeLocal">{{ store.translate(`下一周`) }}</n-button>
+          <n-button type="info" size="small" @click="handlers.nextWeek()" v-if="dateMode=== `日期`">{{ store.translate(`下一周`) }}</n-button>
         </n-space>
       </n-space>
     </n-space>
