@@ -33,6 +33,11 @@ const courseDecoratorOfThisWeeklyTable = computed<CourseDecorator>(() => {
     <n-gi span="1"></n-gi>
     <n-gi span="3" v-for="whatDayStr in [...`一二三四五六天`]" :key="`星期${whatDayStr}`">{{ store.translate(`星期${whatDayStr}`) }}</n-gi>
 
+    <template v-if="isDateMode">
+      <n-gi span="1">{{ store.translate(`日期`) }}</n-gi>
+      <n-gi span="3" v-for="whatDay in 7" :key="`whatDay-date-${whatDay}`">{{ formatDate(queryDay.add(whatDay - queryWhatDay, "day")) }}</n-gi>
+    </template>
+
     <template v-for="(lessonConfig, lessonIndex) of store.config.content.lessonConfigs" :key="`weeklyLesson${lessonIndex}`">
       <n-gi span="1">
         <div class="lesson-start-end-time">
