@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {Course} from "../../assets/ts/types";
 import RouteFilter from "../CourseTable/RouteFilter/RouteFilter.vue";
 import PlanTableBody from "./PlanTableBody.vue";
@@ -8,8 +8,9 @@ import {ShareOutline} from "@vicons/ionicons5";
 
 const store = useStore();
 
-const showGrade = ref<boolean>(false);
-const filteredCourses = ref<Course[]>([]);
+const routeFilter = ref<typeof RouteFilter>();
+
+const filteredCourses = computed<Course[]>(() => routeFilter?.value?.courses ?? []);
 
 const planTableBody = ref<typeof PlanTableBody>();
 
@@ -25,7 +26,7 @@ const handlers = {
 
 <template>
   <h1>{{ store.translate(`教学计划`) }}</h1>
-  <RouteFilter v-model:courses="filteredCourses" v-model:show-grade="showGrade">
+  <RouteFilter ref="routeFilter">
     <template #button>
       <n-space justify="center" align="center">
         <n-button :dashed="true" color="#32647d" @click="handlers.downloadDataAsCSV()">
