@@ -20,7 +20,7 @@
     "build:production": "vue-tsc --noEmit && vite build --base=./ --mode production",
     "build:go": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode go",
     "build:go_release": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode release",
-    "delete:dist": "del \"../back-end/dist/assets/\" -recurse",
+    "delete:dist": "del \"../back-end/dist/assets/\"",
     "preview": "vite preview"
   },
   "dependencies": {
