@@ -113,7 +113,7 @@ export const useStore = defineStore("store", {
         },
         rooms(): string[] {
             // 从预设中导入
-            const _rooms: string[] = roomArray;
+            const _rooms: string[] = (import.meta.env.MODE !== "release") ? roomArray : [];
 
             // 从已有课程中遍历出已有教室
             for (const courses of this.courses) {
@@ -128,7 +128,7 @@ export const useStore = defineStore("store", {
         },
         teachers(): string[] {
             // 从预设中导入
-            let _teachers: string[] = teacherArray;
+            let _teachers: string[] = (import.meta.env.MODE !== "release") ? teacherArray : [];
 
             // 从已有课程中遍历出已有授课教师
             for (const courses of this.courses) {
@@ -142,7 +142,7 @@ export const useStore = defineStore("store", {
         },
         methods(): string[] {
             // 从预设中导入
-            let _methods: string[] = methodArray;
+            let _methods: string[] = (import.meta.env.MODE !== "release") ? methodArray : [];
             // 从已有课程中遍历出现有授课方式
             for (const courses of this.courses) {
                 if (!!courses.method && _methods.indexOf(courses.method) === -1) {
@@ -164,8 +164,11 @@ export const useStore = defineStore("store", {
             }
 
             // 再从json文件中导入预设的课程信息，如果已有某节课的信息，不会覆盖旧信息
-            for (const courseInfo of (courseInfoArray as CourseInfo[])) {
-                if (!courseInfoDict[courseInfo.name]) courseInfoDict[courseInfo.name] = courseInfo;
+            if (import.meta.env.MODE !== "release") {
+                console.log("preset");
+                for (const courseInfo of (courseInfoArray as CourseInfo[])) {
+                    if (!courseInfoDict[courseInfo.name]) courseInfoDict[courseInfo.name] = courseInfo;
+                }
             }
 
             return courseInfoDict;

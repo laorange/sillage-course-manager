@@ -3,7 +3,7 @@
   "private": false,
   "author": "laorange",
   "license": "AGPL-3.0",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/laorange/sillage-course-manager.git"
@@ -15,10 +15,12 @@
   "scripts": {
     "dev": "vite serve --mode development",
     "production": "vite serve --mode production",
+    "release": "vite serve --mode release",
     "build:dev": "vue-tsc --noEmit && vite build --base=./ --mode development",
     "build:production": "vue-tsc --noEmit && vite build --base=./ --mode production",
     "build:go": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode go",
-    "build:go_override_dist": "vue-tsc --noEmit && del \"../back-end/dist/\" -recurse && vite build --outDir ../back-end/dist --base=./ --mode go",
+    "build:go_release": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode release",
+    "delete:dist": "del \"../back-end/dist/\" -recurse",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "dayjs": "^1.11.3",
     "pinia": "^2.0.14",
     "pocketbase": "^0.2.1",
+    "vant": "^3.5.4",
     "vue": "^3.2.25",
     "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.1.1",
@@ -39,7 +42,6 @@
     "naive-ui": "^2.32.1",
     "typescript": "^4.5.4",
     "unplugin-vue-components": "^0.21.0",
-    "vant": "^3.5.4",
     "vite": "^2.9.9",
     "vue-tsc": "^0.34.7"
   }
