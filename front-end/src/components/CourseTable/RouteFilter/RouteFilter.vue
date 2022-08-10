@@ -10,14 +10,15 @@ import GradeGroupSelect from "./GradeGroupSelect.vue";
 import useClipboard from "vue-clipboard3";
 import {NoticeDecorator} from "../../../assets/ts/noticeToolkit";
 
-const props = defineProps<{ courses: Course[], showGrade: boolean, notices?: Notice[] }>();
-const emits = defineEmits(["update:courses", "update:showGrade", "update:notices"]);
-
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const message = useMessage();
 const {toClipboard} = useClipboard();
+
+const courses = ref<Course[]>([]);
+const showGrade = ref<boolean>(false);
+const notices = ref<Notice[]>([]);
 
 const showFilterDialog = ref<boolean>(false);
 
@@ -46,8 +47,7 @@ const title = computed<string>(() => {
 
 // 监视路由中年级的数量，当且仅当年级数量为1时，不"显示年级"
 watch(() => sources.value.grades, (grades) => {
-  if (grades.length === 1) emits("update:showGrade", false);
-  else emits("update:showGrade", true);
+  showGrade.value = grades.length !== 1;
 }, {deep: true});
 
 
@@ -66,7 +66,7 @@ watch(() => sources.value, (src) => {
     if (src.groups.length) targetGradeGroups = targetGradeGroups.concat(src.groups);
 
     if (targetGradeGroups.length) noticesFilter = noticesFilter.ofGradeGroups(targetGradeGroups as GradeGroupArray[]);
-    emits("update:notices", noticesFilter.value);
+    notices.value = noticesFilter.value;
   }
 
   // 日期模式：不限制是当前学期；星期模式：必须为当前学期
@@ -77,7 +77,7 @@ watch(() => sources.value, (src) => {
   if (src.teachers.length) decorator = decorator.ofTeachers(src.teachers);
   if (src.groups.length) decorator = decorator.ofGradeGroups(src.groups);
   formModel.value = {...src};
-  emits("update:courses", decorator.value);
+  courses.value = decorator.value;
 }, {deep: true, immediate: true});
 
 
@@ -107,6 +107,12 @@ const handlers = {
     }
   },
 };
+
+defineExpose({
+  sources,
+  courses,
+  notices,
+});
 </script>
 
 <template>

@@ -13,8 +13,9 @@ import WeeklyCourseTable from "./WeeklyCourseTable.vue";
 
 const store = useStore();
 
-const filteredCourses = ref<Course[]>([]);
-const filteredNotices = ref<Notice[]>([]);
+const routeFilter = ref<typeof RouteFilter>();
+const filteredCourses = computed<Course[]>(() => routeFilter.value?.courses ?? []);
+const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? []);
 
 const displayMode = ref<"单列表" | "双列表" | "周视图">(document.documentElement.clientWidth < 800 ? "单列表" : "周视图");
 const displayColumnNum = computed(() => {
@@ -55,7 +56,7 @@ const handlers = {
 
   <h1>{{ store.translate(store.config.content.tableName) }}</h1>
 
-  <RouteFilter v-model:courses="filteredCourses" v-model:show-grade="showGrade" v-model:notices="filteredNotices">
+  <RouteFilter ref="routeFilter" v-model:courses="filteredCourses" v-model:show-grade="showGrade" v-model:notices="filteredNotices">
     <template #button>
       <n-space justify="center" align="center">
         <n-switch v-model:value="editable" v-if="store.editor.authenticated">
