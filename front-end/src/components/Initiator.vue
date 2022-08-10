@@ -36,7 +36,8 @@ const initiators = {
   },
   localStorage() {
     // 从 localStorage 读取本地设置
-    store.localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY) ?? store.localConfig;
+    let localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY) ?? store.localConfig;
+    store.localConfig = {...store.localConfig, ...localConfig}
   },
   async addTextData() {
     let newCourse: Course = {

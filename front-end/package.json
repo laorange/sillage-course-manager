@@ -3,7 +3,7 @@
   "private": false,
   "author": "laorange",
   "license": "AGPL-3.0",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/laorange/sillage-course-manager.git"
@@ -20,7 +20,7 @@
     "build:production": "vue-tsc --noEmit && vite build --base=./ --mode production",
     "build:go": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode go",
     "build:go_release": "vue-tsc --noEmit && vite build --outDir ../back-end/dist --base=./ --mode release",
-    "delete:dist": "del \"../back-end/dist/\" -recurse",
+    "delete:dist": "del \"../back-end/dist/assets/\" -recurse",
     "preview": "vite preview"
   },
   "dependencies": {
