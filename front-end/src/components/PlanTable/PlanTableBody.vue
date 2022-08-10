@@ -152,10 +152,10 @@ function refreshGridData() {
       }
     }
   }
-  nextTick(() => {
-    planTableBodyObj.value = new DataGridXL(planTableBody.value, getOptions(_gridDataArray));
-    Object.assign(document.body, {dataGridObj: planTableBody.value});
-  });
+
+  // 生成新的表格数据
+  planTableBodyObj.value = new DataGridXL(planTableBody.value, getOptions(_gridDataArray));
+  Object.assign(document.body, {dataGridObj: planTableBody.value});
 }
 
 // endregion
@@ -172,7 +172,7 @@ const source = computed(() => {
 });
 // endregion
 
-watch(() => source.value, refreshGridData, {deep: true, immediate: true});
+watch(() => source.value, () => nextTick(refreshGridData), {deep: true, immediate: true});
 
 defineExpose({
   downloadDataAsCSV() {
