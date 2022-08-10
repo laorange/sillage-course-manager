@@ -27,10 +27,10 @@ let sources = computed(() => {
   return {
     // formModel data
     grades: (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[],
-    groups: (route.query.groups instanceof Array ? route.query.groups : [route.query.groups]).filter(_ => !!_).map(_ => JSON.parse(_ as string)).sort() as GradeGroupArray[],
-    rooms: (route.query.rooms instanceof Array ? route.query.rooms : [route.query.rooms]).filter(_ => !!_).sort() as unknown as string[],
-    methods: (route.query.methods instanceof Array ? route.query.methods : [route.query.methods]).filter(_ => !!_).sort() as unknown as string[],
-    teachers: (route.query.teachers instanceof Array ? route.query.teachers : [route.query.teachers]).filter(_ => !!_).sort() as unknown as string[],
+    groups: (route.query.group instanceof Array ? route.query.group : [route.query.group]).filter(_ => !!_).map(_ => JSON.parse(_ as string)).sort() as GradeGroupArray[],
+    rooms: (route.query.room instanceof Array ? route.query.room : [route.query.room]).filter(_ => !!_).sort() as unknown as string[],
+    methods: (route.query.method instanceof Array ? route.query.method : [route.query.method]).filter(_ => !!_).sort() as unknown as string[],
+    teachers: (route.query.teacher instanceof Array ? route.query.teacher : [route.query.teacher]).filter(_ => !!_).sort() as unknown as string[],
 
     courseDecorator: new CourseDecorator(store.courses),
     noticeDecorator: new NoticeDecorator(store.notices),
@@ -91,10 +91,10 @@ const handlers = {
       ...route,
       query: {
         grade: formModel.value.grades,
-        rooms: formModel.value.rooms.length ? formModel.value.rooms : undefined,
-        methods: formModel.value.methods.length ? formModel.value.methods : undefined,
-        teachers: formModel.value.teachers.length ? formModel.value.teachers : undefined,
-        groups: formModel.value.groups.length ? formModel.value.groups.map(g => JSON.stringify(g)) : undefined,
+        room: formModel.value.rooms.length ? formModel.value.rooms : undefined,
+        method: formModel.value.methods.length ? formModel.value.methods : undefined,
+        teacher: formModel.value.teachers.length ? formModel.value.teachers : undefined,
+        group: formModel.value.groups.length ? formModel.value.groups.map(g => JSON.stringify(g)) : undefined,
       },
     });
   },
