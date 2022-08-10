@@ -16,11 +16,10 @@ const store = useStore();
 const routeFilter = ref<typeof RouteFilter>();
 const filteredCourses = computed<Course[]>(() => routeFilter.value?.courses ?? []);
 const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? []);
-provide("routeFilter", routeFilter)
+provide("routeFilter", routeFilter);
 
-const displayMode = ref<"单列表" | "双列表" | "周视图">(document.documentElement.clientWidth < 800 ? "单列表" : "周视图");
 const displayColumnNum = computed(() => {
-  switch (displayMode.value) {
+  switch (store.localConfig.displayMode) {
     case "单列表":
       return 1;
     case "双列表":
@@ -64,8 +63,8 @@ const handlers = {
           <template #unchecked>用户视图</template>
         </n-switch>
 
-        <n-popselect v-model:value="displayMode" :options="displayModeOption" trigger="click">
-          <n-button :dashed="true" color="#32647d">{{ store.translate(displayMode) || "弹出选择" }}</n-button>
+        <n-popselect v-model:value="store.localConfig.displayMode" :options="displayModeOption" trigger="click">
+          <n-button :dashed="true" color="#32647d">{{ store.translate(store.localConfig.displayMode) || "弹出选择" }}</n-button>
         </n-popselect>
 
         <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="99">
@@ -75,7 +74,7 @@ const handlers = {
     </template>
   </RouteFilter>
 
-  <WeeklyCourseTable v-if="displayMode==='周视图'" :courses="filteredCourses" :editable="editable"/>
+  <WeeklyCourseTable v-if="store.localConfig.displayMode==='周视图'" :courses="filteredCourses" :editable="editable"/>
   <n-grid v-else :cols="displayColumnNum" :x-gap="5">
     <n-gi v-for="dailyCourseTableNum of displayColumnNum" :key="`DailyCourseTable${dailyCourseTableNum}`">
       <DailyCourseTable :courses="filteredCourses" :editable="editable"

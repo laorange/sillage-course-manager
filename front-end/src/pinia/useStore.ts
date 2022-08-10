@@ -58,6 +58,7 @@ export const useStore = defineStore("store", {
             localConfig: {
                 language: "中文",
                 isDateMode: false,
+                displayMode: (document.documentElement.clientWidth < 1150) ? "单列表" : "周视图",
             },
 
             editor: {

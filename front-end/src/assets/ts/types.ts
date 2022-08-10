@@ -88,6 +88,7 @@ export interface Notice extends PocketBaseModel {
 export interface LocalConfig {
     language: string;
     isDateMode: boolean;
+    displayMode: "单列表" | "双列表" | "周视图";
 }
 
 export type GradeGroupArray = [string, string]
