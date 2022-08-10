@@ -2,12 +2,27 @@
 import {inject, Ref} from "vue";
 import useEmptyCourseCard from "../../../assets/ts/hooks/useEmptyCourseCard";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
+import ContextMenu from "@imengyu/vue3-context-menu";
+import {useStore} from "../../../pinia/useStore";
 
 const props = defineProps<{ lessonNum: number, queryDate: string, isDateMode: boolean }>();
 
+const store = useStore();
+
 const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
 
-const {onContextMenu} = useEmptyCourseCard(routeFilter?.value?.sources?.grades ?? [], props.lessonNum, props.queryDate, props.isDateMode);
+const {getContextMenuItems} = useEmptyCourseCard();
+
+function onContextMenu(e: MouseEvent) {
+  e.preventDefault();
+  store.editor.lessonNum = props.lessonNum;
+
+  ContextMenu.showContextMenu({
+    x: e.pageX,
+    y: e.pageY,
+    items: getContextMenuItems(routeFilter?.value?.sources?.grades ?? [], props.lessonNum, props.queryDate, props.isDateMode),
+  });
+}
 </script>
 
 <template>

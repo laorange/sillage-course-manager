@@ -24,8 +24,7 @@ const message = useMessage();
 const dialog = useDialog();
 
 const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
-const {contextMenuItems} = useEmptyCourseCard(routeFilter?.value?.sources?.grades ?? [], props.course.lessonNum,
-    props.editData?.queryDate ?? store.todayDate, !!props.isDateMode);
+const {getContextMenuItems} = useEmptyCourseCard();
 
 function getSituationStr(situation: Situation) {
   return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join(" | ");
@@ -203,7 +202,8 @@ function onContextMenu(e: MouseEvent) {
         optionGetters.copy(),
         optionGetters.cut(),
         optionGetters.delete(),
-        ...(contextMenuItems.value ?? []),
+        ...(getContextMenuItems(routeFilter?.value?.sources?.grades ?? [], props.course.lessonNum,
+            props.editData?.queryDate ?? store.todayDate, !!props.isDateMode) ?? []),
       ],
     });
   }

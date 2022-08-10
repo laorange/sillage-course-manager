@@ -11,9 +11,9 @@ import QueryDatePicker from "./QueryDatePicker/QueryDatePicker.vue";
 const props = defineProps<{ courses: Course[], editable?: boolean, queryDate?: string, showGrade?: boolean }>();
 
 const store = useStore();
-const queryDate = ref<string>(props.queryDate ?? formatDate(dayjs()));
-const queryDay = computed(() => dayjs(queryDate.value));
-const queryWhatDay = computed<number>(() => getIsoWeekDay(queryDay.value));
+const queryDateLocal = ref<string>(props.queryDate ?? formatDate(dayjs()));
+const queryDayLocal = computed(() => dayjs(queryDateLocal.value));
+const queryWhatDayLocal = computed<number>(() => getIsoWeekDay(queryDayLocal.value));
 
 const isDateMode = ref<boolean>(store.localConfig.isDateMode);
 watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
@@ -22,12 +22,12 @@ const courseDecoratorOfThisWeeklyTable = computed<CourseDecorator>(() => {
   // 非日期模式，则返回当前学期的所有课
   if (!isDateMode.value) return new CourseDecorator(props.courses);
   // 日期模式，则返回当前周的课
-  return (new CourseDecorator(props.courses)).isInSameWeek(dayjs(queryDate.value));
+  return (new CourseDecorator(props.courses)).isInSameWeek(dayjs(queryDateLocal.value));
 });
 </script>
 
 <template>
-  <QueryDatePicker v-model:is-date-mode="isDateMode" v-model:query-date="queryDate"/>
+  <QueryDatePicker v-model:is-date-mode="isDateMode" v-model:query-date="queryDateLocal"/>
 
   <n-grid cols="22" x-gap="2" y-gap="2">
     <n-gi span="1"></n-gi>
@@ -35,7 +35,7 @@ const courseDecoratorOfThisWeeklyTable = computed<CourseDecorator>(() => {
 
     <template v-if="isDateMode">
       <n-gi span="1">{{ store.translate(`日期`) }}</n-gi>
-      <n-gi span="3" v-for="whatDay in 7" :key="`whatDay-date-${whatDay}`">{{ formatDate(queryDay.add(whatDay - queryWhatDay, "day")) }}</n-gi>
+      <n-gi span="3" v-for="whatDay in 7" :key="`whatDay-date-${whatDay}`">{{ formatDate(queryDayLocal.add(whatDay - queryWhatDayLocal, "day")) }}</n-gi>
     </template>
 
     <template v-for="(lessonConfig, lessonIndex) of store.config.content.lessonConfigs" :key="`weeklyLesson${lessonIndex}`">
@@ -47,7 +47,7 @@ const courseDecoratorOfThisWeeklyTable = computed<CourseDecorator>(() => {
       </n-gi>
 
       <n-gi span="3" v-for="whatDay of 7" :key="`whatDay${whatDay}lessonIndex${lessonIndex}`">
-        <CourseBox :query-date="formatDate(queryDay.add(whatDay-queryWhatDay, 'day'))"
+        <CourseBox :query-date="formatDate(queryDayLocal.add(whatDay-queryWhatDayLocal, 'day'))"
                    :is-date-mode="isDateMode"
                    :lesson-num="lessonIndex+1"
                    :editable="editable"
