@@ -211,16 +211,19 @@ function onContextMenu(e: MouseEvent) {
 
 const getWeekStrWithUnit = computed<string>(() => {
   let validWeeks = props.course.dates.map(d => store.getWeekNumOfSomeDate(d)).filter(w => (w > 0 && w <= store.config.content.maxWeekNum));
-  let weekZhStr = getWeeksString(validWeeks);
-  let _weekUnitStr = store.translate("星期");
-  let weekStr = (_weekUnitStr === "星期") ? `第${weekZhStr}周` : `${_weekUnitStr} ${weekZhStr}`;
+  let weekStr = "";
+  if (validWeeks.length) {
+    let weekZhStr = getWeeksString(validWeeks);
+    let _weekUnitStr = store.translate("星期");
+    weekStr = (_weekUnitStr === "星期") ? `第${weekZhStr}周` : `${_weekUnitStr} ${weekZhStr}`;
+  }
 
   let invalidDates = props.course.dates.filter(d => {
     let week = store.getWeekNumOfSomeDate(d);
     return week <= 0 || week > store.config.content.maxWeekNum;
   });
 
-  return invalidDates.length ? invalidDates.concat([weekStr]).join(",") : weekStr;
+  return invalidDates.concat([weekStr]).filter(_ => !!_).join(",");
 });
 
 const whatDayStr = computed<string>(() => store.translate(store.getWhatDayStr(getIsoWeekDay(dayjs(props.course.dates[0]) ?? dayjs()))));
