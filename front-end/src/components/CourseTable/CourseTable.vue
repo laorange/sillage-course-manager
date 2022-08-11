@@ -10,12 +10,14 @@ import {SelectOption} from "naive-ui";
 import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
+import {NoticeDecorator} from "../../assets/ts/noticeToolkit";
 
 const store = useStore();
 
 const routeFilter = ref<typeof RouteFilter>();
 const filteredCourses = computed<Course[]>(() => routeFilter.value?.courses ?? []);
 const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? []);
+const noticeWithinPast7Days = computed<Notice[]>(() => (new NoticeDecorator(filteredNotices.value)).inThePastFewDays(7).value);
 provide("routeFilter", routeFilter);
 
 const displayColumnNum = computed(() => {
@@ -82,7 +84,7 @@ const handlers = {
     </n-gi>
   </n-grid>
 
-  <NoticeDisplay v-if="filteredNotices.length" :notices="filteredNotices"/>
+  <NoticeDisplay v-if="noticeWithinPast7Days.length" :notices="noticeWithinPast7Days"/>
 </template>
 
 <style scoped>

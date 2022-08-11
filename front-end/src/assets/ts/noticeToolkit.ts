@@ -1,4 +1,5 @@
 import {GradeGroupArray, Notice} from "./types";
+import dayjs from "dayjs";
 
 type NoticeFilter = (n: Notice) => boolean
 
@@ -11,6 +12,15 @@ export class NoticeDecorator {
 
     filter(filterFunc: NoticeFilter) {
         return new NoticeDecorator(this.value.filter(filterFunc));
+    }
+
+    inThePastFewDays(dayNum: number) {
+        const filterFunc: NoticeFilter = n => {
+            let result = dayjs(n.updated).isAfter(dayjs().add(-dayNum, "day"), "minute")
+            console.log(result);
+            return result
+        };
+        return this.filter(filterFunc);
     }
 
     ofGradeGroups(targetGradeGroups: GradeGroupArray[]) {
