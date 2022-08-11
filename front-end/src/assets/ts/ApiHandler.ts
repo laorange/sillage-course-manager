@@ -69,6 +69,10 @@ class CourseCollection extends Collection<Course> {
     }
 
     getCleanData(rawData: Course): Course {
+        for (const situation of rawData.situations) {
+            situation.groups.sort((a: string, b: string) => a > b ? 1 : -1);
+        }
+
         return {
             ...rawData,
             dates: rawData.dates.slice().sort((a, b) => {
