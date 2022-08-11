@@ -10,7 +10,7 @@ const props = defineProps<{ notice: Notice }>();
 
 const noticeTimeDisplay = computed(() => {
   // PocketBase自动生成的update有时差！需要加8小时到北京时间
-  return formatDatetime(dayjs(props.notice.created).add(8, "hour"));
+  return formatDatetime(dayjs(props.notice.updated).add(8, "hour"));
 });
 
 type TypeName = "info" | "success" | "warning" | "error" | "none"
@@ -46,19 +46,30 @@ const typeName = computed<TypeName>(() => {
     </template>
     <template #default>
       <div class="notice-card-content">
-        <n-grid x-gap="30" :cols="[notice.to, notice.from].filter(_=>!!_).length">
-          <!--  <n-gi v-if="typeName==='info'">-->
-          <!--    <div class="notice-card-content-text">{{ notice.content }}</div>-->
-          <!--  </n-gi>-->
+        <!--新增课程-->
+        <template v-if="!!notice.to && !notice.from">
+          <CourseCard :course="notice.to" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
+        </template>
 
-          <n-gi v-if="notice.to">
-            <CourseCard :course="notice.to" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
-          </n-gi>
+        <!--删除课程-->
+        <template v-if="!notice.to && !!notice.from">
+          <CourseCard :course="notice.from" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
+        </template>
 
-          <n-gi v-if="notice.from">
-            <CourseCard :course="notice.from" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
-          </n-gi>
-        </n-grid>
+        <!--更新课程-->
+        <template v-if="!!notice.to && !!notice.from">
+          <n-grid cols="21">
+            <n-gi span="10">
+              <CourseCard :course="notice.from" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
+            </n-gi>
+            <n-gi span="1">
+              <div style="display: flex; justify-content: center; align-items: center; height: 100%">→</div>
+            </n-gi>
+            <n-gi span="10">
+              <CourseCard :course="notice.to" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
+            </n-gi>
+          </n-grid>
+        </template>
       </div>
     </template>
   </n-timeline-item>
@@ -67,14 +78,5 @@ const typeName = computed<TypeName>(() => {
 <style scoped>
 .notice-card-content {
   overflow-x: auto;
-}
-
-.notice-card-content-text {
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  justify-items: center;
-  align-items: center;
-  align-content: center;
 }
 </style>
