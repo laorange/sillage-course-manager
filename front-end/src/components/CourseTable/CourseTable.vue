@@ -15,6 +15,7 @@ import {NoticeDecorator} from "../../assets/ts/noticeToolkit";
 const store = useStore();
 
 const routeFilter = ref<typeof RouteFilter>();
+const grades = computed<string[]>(() => routeFilter.value?.sources?.value?.grades ?? []);
 const filteredCourses = computed<Course[]>(() => routeFilter.value?.courses ?? []);
 const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? []);
 const noticeWithinPast7Days = computed<Notice[]>(() => (new NoticeDecorator(filteredNotices.value)).inThePastFewDays(7).value);
@@ -76,10 +77,10 @@ const handlers = {
     </template>
   </RouteFilter>
 
-  <WeeklyCourseTable v-if="store.localConfig.displayMode==='周视图'" :courses="filteredCourses" :editable="editable"/>
+  <WeeklyCourseTable v-if="store.localConfig.displayMode==='周视图'" :show-grade="grades.length !== 1" :courses="filteredCourses" :editable="editable"/>
   <n-grid v-else :cols="displayColumnNum" :x-gap="5">
     <n-gi v-for="dailyCourseTableNum of displayColumnNum" :key="`DailyCourseTable${dailyCourseTableNum}`">
-      <DailyCourseTable :courses="filteredCourses" :editable="editable"
+      <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="grades.length !== 1"
                         :query-date="formatDate(dayjs().add(dailyCourseTableNum-1, 'day'))"/>
     </n-gi>
   </n-grid>
