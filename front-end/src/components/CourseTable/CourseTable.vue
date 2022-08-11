@@ -16,7 +16,7 @@ import ThinkTwiceSwitch from "./ThinkTwiceSwitch.vue";
 const store = useStore();
 
 const routeFilter = ref<typeof RouteFilter>();
-const grades = computed<string[]>(() => routeFilter.value?.sources?.value?.grades ?? []);
+const grades = computed<string[]>(() => routeFilter.value?.sources?.grades ?? []);
 const filteredCourses = computed<Course[]>(() => routeFilter.value?.courses ?? []);
 const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? []);
 const noticeWithinPast7Days = computed<Notice[]>(() => (new NoticeDecorator(filteredNotices.value)).inThePastFewDays(7).value);
