@@ -1,6 +1,7 @@
 import PocketBase from "pocketbase";
 import {Config, Course, GradeGroupArray, Notice, PocketBaseModel, RawPocketBaseData} from "./types";
 import axios, {AxiosPromise} from "axios";
+import dayjs from "dayjs";
 
 
 function getGradeGroupArrayOfCourse(course: Course | Course[]): GradeGroupArray[] {
@@ -67,6 +68,15 @@ class CourseCollection extends Collection<Course> {
         this.noticeHandler = noticeHandler;
     }
 
+    getCleanData(rawData: Course): Course {
+        return {
+            ...rawData,
+            dates: rawData.dates.slice().sort((a, b) => {
+                return dayjs(a).isAfter(dayjs(b), "day") ? 1 : -1;
+            }),
+        };
+    }
+
     async list(successHook?: (results: Course[]) => any, errorHook?: (e: Error) => any) {
         try {
             let pioneer = (await axios(this.client.baseUrl + "/api/collections/course/records", {
@@ -103,6 +113,8 @@ class CourseCollection extends Collection<Course> {
     }
 
     async create(newRecord: Course, successHook?: (result: Course) => any, errorHook?: (e: Error) => any) {
+        newRecord = this.getCleanData(newRecord);
+
         let newSuccessHook = (result: Course) => {
             this.noticeHandler.create({
                 id: "",
@@ -117,6 +129,8 @@ class CourseCollection extends Collection<Course> {
     }
 
     async update(oldRecord: Course, newRecord: Course, successHook?: (result: Course) => any, errorHook?: (e: Error) => any) {
+        newRecord = this.getCleanData(newRecord);
+
         let newSuccessHook = (result: Course) => {
             this.noticeHandler.create({
                 id: "",
@@ -172,8 +186,8 @@ class NoticeCollection extends Collection<Notice> {
 export class ApiHandler {
     client: PocketBase;
     config: Collection<Config>;
-    notice: Collection<Notice>;
-    course: Collection<Course>;
+    notice: NoticeCollection;
+    course: CourseCollection;
 
     constructor(client: PocketBase) {
         this.client = client;
