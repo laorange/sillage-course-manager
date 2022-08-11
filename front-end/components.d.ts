@@ -64,6 +64,7 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SituationEditor: typeof import('./src/components/CourseTable/CourseEditor/SituationEditor.vue')['default']
     TabBar: typeof import('./src/components/TabBar.vue')['default']
+    ThinkTwiceSwitch: typeof import('./src/components/CourseTable/ThinkTwiceSwitch.vue')['default']
     VanTab: typeof import('vant/es')['Tab']
     VanTabbar: typeof import('vant/es')['Tabbar']
     VanTabbarItem: typeof import('vant/es')['TabbarItem']

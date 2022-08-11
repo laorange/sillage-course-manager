@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
 import {NoticeDecorator} from "../../assets/ts/noticeToolkit";
+import ThinkTwiceSwitch from "./ThinkTwiceSwitch.vue";
 
 const store = useStore();
 
@@ -65,6 +66,8 @@ const handlers = {
           <template #checked>管理员视图</template>
           <template #unchecked>用户视图</template>
         </n-switch>
+
+        <ThinkTwiceSwitch/>
 
         <n-popselect v-model:value="store.localConfig.displayMode" :options="displayModeOption" trigger="click">
           <n-button :dashed="true" color="#32647d">{{ store.translate(store.localConfig.displayMode) || "弹出选择" }}</n-button>

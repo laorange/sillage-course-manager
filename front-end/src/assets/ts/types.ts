@@ -89,6 +89,7 @@ export interface LocalConfig {
     language: string;
     isDateMode: boolean;
     displayMode: "单列表" | "双列表" | "周视图";
+    thinkTwice: boolean;
 }
 
 export type GradeGroupArray = [string, string]
