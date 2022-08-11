@@ -21,8 +21,14 @@ const isDateMode = ref<boolean>(store.localConfig.isDateMode);
 watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
 
 const coursesOfWhatDay = computed<CourseDecorator>(() => {
-  let _cd = (new CourseDecorator(props.courses).ofWhatDay(getIsoWeekDay(dayjs(queryDate.value))));
-  return isDateMode.value ? _cd.isInSameWeek(dayjs(queryDate.value)) : _cd;
+  let coursesFilteredByWhatDay = (new CourseDecorator(props.courses).ofWhatDay(getIsoWeekDay(dayjs(queryDate.value))));
+  if (isDateMode.value) {
+    // 日期模式：筛选与查询日期同一周的课程
+    return coursesFilteredByWhatDay.isInSameWeek(dayjs(queryDate.value));
+  } else {
+    // 星期模式：筛选当前学期的课程
+    return store.filterCurrentSemesterCourses(coursesFilteredByWhatDay);
+  }
 });
 </script>
 

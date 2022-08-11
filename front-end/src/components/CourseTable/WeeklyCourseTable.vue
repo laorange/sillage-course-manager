@@ -20,7 +20,7 @@ watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode)
 
 const courseDecoratorOfThisWeeklyTable = computed<CourseDecorator>(() => {
   // 非日期模式，则返回当前学期的所有课
-  if (!isDateMode.value) return new CourseDecorator(props.courses);
+  if (!isDateMode.value) return store.filterCurrentSemesterCourses(new CourseDecorator(props.courses));
   // 日期模式，则返回当前周的课
   return (new CourseDecorator(props.courses)).isInSameWeek(dayjs(queryDateLocal.value));
 });
@@ -35,7 +35,10 @@ const courseDecoratorOfThisWeeklyTable = computed<CourseDecorator>(() => {
 
     <template v-if="isDateMode">
       <n-gi span="1">{{ store.translate(`日期`) }}</n-gi>
-      <n-gi span="3" v-for="whatDay in 7" :key="`whatDay-date-${whatDay}`">{{ formatDate(queryDayLocal.add(whatDay - queryWhatDayLocal, "day")) }}</n-gi>
+      <n-gi span="3" v-for="whatDay in 7" :key="`whatDay-date-${whatDay}`">{{
+          formatDate(queryDayLocal.add(whatDay - queryWhatDayLocal, "day"))
+        }}
+      </n-gi>
     </template>
 
     <template v-for="(lessonConfig, lessonIndex) of store.config.content.lessonConfigs" :key="`weeklyLesson${lessonIndex}`">

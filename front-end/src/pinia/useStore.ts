@@ -255,5 +255,9 @@ export const useStore = defineStore("store", {
         getWhatDayStr(whatDay: number) {
             return `星期${Array.from("一二三四五六天")[whatDay - 1]}`;
         },
+        filterCurrentSemesterCourses(courseDecorator: CourseDecorator): CourseDecorator {
+            return courseDecorator.isSameOrAfter(this.semesterStartDay)
+                .before(this.semesterStartDay.add(this.config.content.maxWeekNum, "week"));
+        },
     },
 });
