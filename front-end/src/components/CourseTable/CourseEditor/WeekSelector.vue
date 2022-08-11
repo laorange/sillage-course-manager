@@ -17,7 +17,7 @@ const store = useStore();
 const weeks = computed<number[]>({
   get: () => props.dates.map(d => store.getWeekNumOfSomeDate(d)),
   set: (newWeeks) => emits("update:dates",
-      Array.from(new Set(newWeeks)).map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorFromWhatDay - 1, "day")))),
+      Array.from(new Set(newWeeks)).sort().map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorFromWhatDay - 1, "day")))),
 });
 
 const weekOptions = computed<SelectOption[]>(() => {
