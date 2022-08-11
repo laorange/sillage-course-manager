@@ -26,16 +26,17 @@ function isNotMonday(d: string) {
 
 onBeforeRouteLeave((to) => {
   if (!to.params.force) {
-    dialog.info({
+    const onPositiveClick = () => {
+      handlers.restoreData();
+      router.push({...to, params: {...to.params, force: "true"}});
+    };
+    store.localConfig.thinkTwice ? dialog.info({
       title: "提示",
       content: `当前页面未保存的信息将会丢失，是否继续？`,
       positiveText: "确定",
       negativeText: "取消",
-      onPositiveClick: () => {
-        handlers.restoreData();
-        router.push({...to, params: {...to.params, force: "true"}});
-      },
-    });
+      onPositiveClick,
+    }) : onPositiveClick();
     return false;
   }
 });
@@ -43,13 +44,13 @@ onBeforeRouteLeave((to) => {
 const handlers = {
   thinkTwiceIfDataChanged(hook: () => any, content: string, title: string = "提示", noChangeHook: (() => any) | undefined = undefined) {
     if (whetherChanged.value) {
-      dialog.info({
+      store.localConfig.thinkTwice ? dialog.info({
         title: title,
         content: content,
         positiveText: "确定",
         negativeText: "取消",
-        onPositiveClick: () => hook(),
-      });
+        onPositiveClick: hook,
+      }) : hook();
     } else {
       noChangeHook ? noChangeHook() : hook();
     }

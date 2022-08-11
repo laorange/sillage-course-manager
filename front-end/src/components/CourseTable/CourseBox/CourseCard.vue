@@ -132,18 +132,19 @@ const optionGetters = {
   },
   delete(): MenuItem {
     async function deleteAll() {
-      dialog.warning({
+      const onPositiveClick = async () => {
+        await store.api.course.delete(props.course, () => {
+          store.courses = store.courses.filter(c => c.id !== props.course.id);
+          message.success("删除成功");
+        }, () => message.error("删除失败，请检查网络连接"));
+      };
+      store.localConfig.thinkTwice ? dialog.warning({
         title: "提示",
         content: `这节“${props.course.info.name}”将会被删除，是否继续？`,
         positiveText: "确定",
         negativeText: "取消",
-        onPositiveClick: async () => {
-          await store.api.course.delete(props.course, () => {
-            store.courses = store.courses.filter(c => c.id !== props.course.id);
-            message.success("删除成功");
-          }, () => message.error("删除失败，请检查网络连接"));
-        },
-      });
+        onPositiveClick,
+      }) : await onPositiveClick();
     }
 
     if (props.course.dates.length === 1) {
@@ -170,18 +171,19 @@ const optionGetters = {
           store.editor.fromDates = [date];
           let restDates = props.course.dates.filter(d => store.editor.fromDates.indexOf(d) === -1);
           if (restDates) {
-            dialog.warning({
+            const onPositiveClick = async () => {
+              await store.api.course.update(props.course, {...props.course, dates: restDates}, (newCourse) => {
+                store.courses = store.courses.filter(c => c.id !== props.course.id).concat([newCourse]);
+                message.success("删除成功");
+              }, () => message.error("删除失败，请检查网络连接"));
+            };
+            store.localConfig.thinkTwice ? dialog.warning({
               title: "请注意",
               content: `${date}(第${store.getWeekNumOfSomeDate(date)}周)第${props.course.lessonNum}节的“${props.course.info.name}”将会被删除，是否继续？`,
               positiveText: "确定",
               negativeText: "取消",
-              onPositiveClick: async () => {
-                await store.api.course.update(props.course, {...props.course, dates: restDates}, (newCourse) => {
-                  store.courses = store.courses.filter(c => c.id !== props.course.id).concat([newCourse]);
-                  message.success("删除成功");
-                }, () => message.error("删除失败，请检查网络连接"));
-              },
-            });
+              onPositiveClick,
+            }) : onPositiveClick();
           }
         },
       });

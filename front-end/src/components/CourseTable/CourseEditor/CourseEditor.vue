@@ -35,13 +35,13 @@ const handlers = {
   },
   thinkTwiceIfDataChanged(hook: () => any, content: string, title: string = "提示") {
     if (whetherChanged.value) {
-      dialog.info({
+      store.localConfig.thinkTwice ? dialog.info({
         title: title,
         content: content,
         positiveText: "确定",
         negativeText: "取消",
-        onPositiveClick: () => hook(),
-      });
+        onPositiveClick: hook,
+      }) : hook();
     } else {
       hook();
     }
@@ -123,7 +123,6 @@ watch(() => courseLocal.value.info.name, (name) => {
     courseLocal.value.info.bgc = store.courseInfoDict[name].bgc;
   }
 });
-
 
 
 const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));
