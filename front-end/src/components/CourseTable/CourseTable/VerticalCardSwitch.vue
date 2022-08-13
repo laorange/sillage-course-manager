@@ -10,7 +10,7 @@ const verticalCardOption: SelectOption[] = [
   {label: store.translate(`水平显示`), value: `水平显示`},
 ];
 
-const verticalCardStr = ref<"竖直显示" | "水平显示">("水平显示");
+const verticalCardStr = ref<"竖直显示" | "水平显示">(store.localConfig.verticalCard ? `竖直显示` : `水平显示`);
 watch(() => verticalCardStr.value, (s) => store.localConfig.verticalCard = (s === "竖直显示"));
 </script>
 
