@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useStore} from "../../pinia/useStore";
+import {useStore} from "../../../pinia/useStore";
 import {useMessage} from "naive-ui";
 import {watch} from "vue";
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {useStore} from "../../pinia/useStore";
+import {useStore} from "../../../pinia/useStore";
 import {computed} from "vue";
-import CourseEditor from "./CourseEditor/CourseEditor.vue";
+import CourseEditor from "../CourseEditor/CourseEditor.vue";
 
 const store = useStore();
 

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
 import {computed, provide, ref, watch} from "vue";
-import CourseEditDialog from "./CourseEditDialog.vue";
-import DailyCourseTable from "./DailyCourseTable.vue";
+import CourseEditDialog from "./CourseTable/CourseEditDialog.vue";
+import DailyCourseTable from "./CourseTable/DailyCourseTable.vue";
 import {Course, Notice} from "../../assets/ts/types";
 import RouteFilter from "./RouteFilter/RouteFilter.vue";
 import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
 import {SelectOption} from "naive-ui";
 import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
-import WeeklyCourseTable from "./WeeklyCourseTable.vue";
+import WeeklyCourseTable from "./CourseTable/WeeklyCourseTable.vue";
 import {NoticeDecorator} from "../../assets/ts/noticeToolkit";
-import ThinkTwiceSwitch from "./ThinkTwiceSwitch.vue";
+import ThinkTwiceSwitch from "./CourseTable/ThinkTwiceSwitch.vue";
 import VerticalCardSwitch from "./CourseTable/VerticalCardSwitch.vue";
 
 const store = useStore();

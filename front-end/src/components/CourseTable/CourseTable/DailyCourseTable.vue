@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {Course} from "../../assets/ts/types";
-import {useStore} from "../../pinia/useStore";
+import {Course} from "../../../assets/ts/types";
+import {useStore} from "../../../pinia/useStore";
 import {computed, ref, watch} from "vue";
-import CourseBox from "./CourseBox/CourseBox.vue";
-import {CourseDecorator} from "../../assets/ts/courseToolkit";
-import {formatDate, getIsoWeekDay} from "../../assets/ts/datetimeUtils";
+import CourseBox from "../CourseBox/CourseBox.vue";
+import {CourseDecorator} from "../../../assets/ts/courseToolkit";
+import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
-import QueryDatePicker from "./QueryDatePicker/QueryDatePicker.vue";
-import WhatDaySelector from "./CourseBox/WhatDaySelector.vue";
+import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
+import WhatDaySelector from "../CourseBox/WhatDaySelector.vue";
 
 const props = withDefaults(defineProps<{
   courses: Course[], editable?: boolean, queryDate?: string,
