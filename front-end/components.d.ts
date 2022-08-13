@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     CourseTable: typeof import('./src/components/CourseTable/CourseTable.vue')['default']
     DailyCourseTable: typeof import('./src/components/CourseTable/CourseTable/DailyCourseTable.vue')['default']
     DictionaryEditor: typeof import('./src/components/ConfigEditor/DictionaryEditor.vue')['default']
+    DisplayModeSelector: typeof import('./src/components/CourseTable/CourseTable/DisplayModeSelector.vue')['default']
     EmptyCourseCard: typeof import('./src/components/CourseTable/CourseBox/EmptyCourseCard.vue')['default']
     GradeEditor: typeof import('./src/components/ConfigEditor/GradeEditor.vue')['default']
     GradeGroupSelect: typeof import('./src/components/CourseTable/RouteFilter/GradeGroupSelect.vue')['default']

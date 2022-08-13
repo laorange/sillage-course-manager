@@ -6,13 +6,13 @@ import DailyCourseTable from "./CourseTable/DailyCourseTable.vue";
 import {Course, Notice} from "../../assets/ts/types";
 import RouteFilter from "./RouteFilter/RouteFilter.vue";
 import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
-import {SelectOption} from "naive-ui";
 import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
 import WeeklyCourseTable from "./CourseTable/WeeklyCourseTable.vue";
 import {NoticeDecorator} from "../../assets/ts/noticeToolkit";
 import ThinkTwiceSwitch from "./CourseTable/ThinkTwiceSwitch.vue";
 import VerticalCardSwitch from "./CourseTable/VerticalCardSwitch.vue";
+import DisplayModeSelector from "./CourseTable/DisplayModeSelector.vue";
 
 const store = useStore();
 
@@ -23,21 +23,8 @@ const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? [
 const noticeWithinPast7Days = computed<Notice[]>(() => (new NoticeDecorator(filteredNotices.value)).inThePastFewDays(7).value);
 provide("routeFilter", routeFilter);
 
-const displayColumnNum = computed(() => {
-  switch (store.localConfig.displayMode) {
-    case "单列表":
-      return 1;
-    case "双列表":
-      return 2;
-    case "周视图":
-      return 7;
-  }
-});
-const displayModeOption: SelectOption[] = [
-  {label: store.translate(`单列表`), value: `单列表`},
-  {label: store.translate(`双列表`), value: `双列表`},
-  {label: store.translate(`周视图`), value: `周视图`},
-];
+const displayModeSelector = ref<typeof DisplayModeSelector>();
+const displayColumnNum = computed<number>(() => displayModeSelector.value?.displayColumnNum ?? 1);
 
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
@@ -72,9 +59,7 @@ const handlers = {
 
         <VerticalCardSwitch/>
 
-        <n-popselect v-model:value="store.localConfig.displayMode" :options="displayModeOption" trigger="click">
-          <n-button :dashed="true" color="#32647d">{{ store.translate(store.localConfig.displayMode) || "弹出选择" }}</n-button>
-        </n-popselect>
+        <DisplayModeSelector ref="displayModeSelector"/>
 
         <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="99">
           <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
