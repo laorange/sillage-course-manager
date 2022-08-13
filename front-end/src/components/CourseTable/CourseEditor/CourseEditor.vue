@@ -172,7 +172,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
 
       <div aria-label="备注">
         <n-divider :dashed="true">备注</n-divider>
-        <n-input v-model:value="courseLocal.note" placeholder="请输入备注信息（选填）"/>
+        <n-input v-model:value="courseLocal.note" placeholder="请输入备注信息（选填）" type="textarea" :autosize="true"/>
       </div>
     </div>
   </div>

@@ -259,7 +259,7 @@ const lessonTimeStr = computed<string>(() => {
       </div>
     </template>
 
-    <div v-if="course.note">{{ course.note }}</div>
+    <div v-if="course.note" :style="{whiteSpace: 'pre-wrap'}">{{ course.note }}</div>
   </div>
 </template>
 
