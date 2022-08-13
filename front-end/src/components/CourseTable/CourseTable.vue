@@ -12,6 +12,7 @@ import {formatDate} from "../../assets/ts/datetimeUtils";
 import WeeklyCourseTable from "./WeeklyCourseTable.vue";
 import {NoticeDecorator} from "../../assets/ts/noticeToolkit";
 import ThinkTwiceSwitch from "./ThinkTwiceSwitch.vue";
+import VerticalCardSwitch from "./CourseTable/VerticalCardSwitch.vue";
 
 const store = useStore();
 
@@ -68,6 +69,8 @@ const handlers = {
         </n-switch>
 
         <ThinkTwiceSwitch/>
+
+        <VerticalCardSwitch/>
 
         <n-popselect v-model:value="store.localConfig.displayMode" :options="displayModeOption" trigger="click">
           <n-button :dashed="true" color="#32647d">{{ store.translate(store.localConfig.displayMode) || "弹出选择" }}</n-button>
