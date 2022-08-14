@@ -55,7 +55,8 @@ const handlers = {
         {{ store.translate(grade) }}
       </n-button>
 
-      <n-button type="success" @click="handlers.toPlan">{{ store.translate(`教学计划`) }}</n-button>
+      <n-button type="success" @click="router.push({name:`course`})" v-if="store.courses.length">{{ store.translate(`全部课程`) }}</n-button>
+      <n-button type="success" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
 
       <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
 
