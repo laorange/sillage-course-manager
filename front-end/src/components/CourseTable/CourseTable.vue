@@ -49,22 +49,20 @@ const handlers = {
 
   <RouteFilter ref="routeFilter">
     <template #button>
-      <n-space justify="center" align="center">
-        <n-switch v-model:value="editable" v-if="store.editor.authenticated">
-          <template #checked>管理员视图</template>
-          <template #unchecked>用户视图</template>
-        </n-switch>
+      <n-switch v-model:value="editable" v-if="store.editor.authenticated">
+        <template #checked>管理员视图</template>
+        <template #unchecked>用户视图</template>
+      </n-switch>
 
-        <ThinkTwiceSwitch/>
+      <ThinkTwiceSwitch v-if="store.editor.authenticated"/>
 
-        <VerticalCardSwitch/>
+      <VerticalCardSwitch/>
 
-        <DisplayModeSelector ref="displayModeSelector"/>
+      <DisplayModeSelector ref="displayModeSelector"/>
 
-        <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="99">
-          <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
-        </n-badge>
-      </n-space>
+      <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="99">
+        <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
+      </n-badge>
     </template>
   </RouteFilter>
 

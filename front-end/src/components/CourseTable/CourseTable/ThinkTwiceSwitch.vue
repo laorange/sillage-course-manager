@@ -13,7 +13,7 @@ watch(() => store.localConfig.thinkTwice, (whetherThinkTwice) => {
 </script>
 
 <template>
-  <n-switch v-model:value="store.localConfig.thinkTwice" v-if="store.editor.authenticated">
+  <n-switch v-model:value="store.localConfig.thinkTwice">
     <template #checked>二次确认：开</template>
     <template #unchecked>二次确认：关</template>
   </n-switch>
