@@ -231,7 +231,7 @@ const getWeekStrWithUnit = computed<string>(() => {
 const whatDayStr = computed<string>(() => store.translate(store.getWhatDayStr(getIsoWeekDay(dayjs(props.course.dates[0]) ?? dayjs()))));
 const lessonTimeStr = computed<string>(() => {
   let lessonConfig = store.config.content.lessonConfigs[props.course.lessonNum - 1];
-  return `${lessonConfig.start}~${lessonConfig.end}`;
+  return [`${lessonConfig.start}`, `${lessonConfig.end}`].filter(_ => !!_).join("~");
 });
 </script>
 
@@ -244,7 +244,7 @@ const lessonTimeStr = computed<string>(() => {
     <div v-if="showGrade">{{ store.translate(course.grade) }}</div>
     <div v-if="showWeeks">{{ getWeekStrWithUnit }}</div>
     <div v-if="showWhatDay">{{ whatDayStr }}</div>
-    <div v-if="showLessonTime">{{ lessonTimeStr }}</div>
+    <div v-if="showLessonTime && lessonTimeStr">{{ lessonTimeStr }}</div>
 
     <!--  situations  -->
     <template v-if="course.situations.length===1">
