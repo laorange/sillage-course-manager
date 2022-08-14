@@ -101,7 +101,7 @@ const handlers = {
   async copyUrl() {
     try {
       await toClipboard(window.location.href);
-      message.success(`${store.translate("复制网址")}: ${route.fullPath}`);
+      message.success(`${store.translate("复制网址")}: ${store.translate("完成")}`);
     } catch (e) {
       message.error(`Error: ${e}`);
     }
@@ -151,8 +151,8 @@ defineExpose({
 
       <template #footer>
         <n-space>
-          <n-button size="large" @click="handlers.pushWithNewFilter">✅</n-button>
-          <n-button size="large" @click="showFilterDialog=false">❌</n-button>
+          <n-button size="large" @click="handlers.pushWithNewFilter">{{ store.translate(`确定`) }}</n-button>
+          <n-button size="large" @click="showFilterDialog=false">{{ store.translate(`取消`) }}</n-button>
         </n-space>
       </template>
     </n-drawer-content>
