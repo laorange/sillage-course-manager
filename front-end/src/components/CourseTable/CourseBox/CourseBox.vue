@@ -4,6 +4,7 @@ import CourseCard from "./CourseCard.vue";
 import EmptyCourseCard from "./EmptyCourseCard.vue";
 import {computed} from "vue";
 import dayjs from "dayjs";
+import {useStore} from "../../../pinia/useStore";
 
 const props = defineProps<{
   courses: Course[], queryDate: string, isDateMode: boolean, lessonNum: number,
@@ -11,8 +12,6 @@ const props = defineProps<{
 }>();
 
 // region 以 store.localConfig.verticalCard 来判断是否垂直显示课程。
-import {useStore} from "../../../pinia/useStore";
-
 const store = useStore();
 const verticalLocal = computed<boolean>(() => store.localConfig.verticalCard);
 // endregion
