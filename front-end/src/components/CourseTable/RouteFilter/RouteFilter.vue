@@ -31,6 +31,7 @@ let sources = computed(() => {
     rooms: (route.query.room instanceof Array ? route.query.room : [route.query.room]).filter(_ => !!_).sort() as unknown as string[],
     methods: (route.query.method instanceof Array ? route.query.method : [route.query.method]).filter(_ => !!_).sort() as unknown as string[],
     teachers: (route.query.teacher instanceof Array ? route.query.teacher : [route.query.teacher]).filter(_ => !!_).sort() as unknown as string[],
+    courseNames: (route.query.subject instanceof Array ? route.query.subject : [route.query.subject]).filter(_ => !!_).sort() as unknown as string[],
 
     courseDecorator: new CourseDecorator(store.courses),
     noticeDecorator: new NoticeDecorator(store.notices),
@@ -52,8 +53,8 @@ watch(() => sources.value.grades, (grades) => {
 
 
 // 每次显示/关闭抽屉时，将路由的参数同步到formModel
-const formModel = ref<{ grades: string[], groups: GradeGroupArray[], rooms: string[], methods: string[], teachers: string[] }>({
-  grades: [], groups: [], rooms: [], methods: [], teachers: [],
+const formModel = ref<{ grades: string[], groups: GradeGroupArray[], rooms: string[], methods: string[], teachers: string[], courseNames: string[] }>({
+  grades: [], groups: [], rooms: [], methods: [], teachers: [], courseNames: [],
 });
 watch(() => showFilterDialog.value, () => formModel.value = {...sources.value});
 
@@ -76,6 +77,7 @@ watch(() => sources.value, (src) => {
   if (src.methods.length) decorator = decorator.ofMethods(src.methods);
   if (src.teachers.length) decorator = decorator.ofTeachers(src.teachers);
   if (src.groups.length) decorator = decorator.ofGradeGroups(src.groups);
+  if (src.courseNames.length) decorator = decorator.ofCourseNames(src.courseNames);
   formModel.value = {...src};
   courses.value = decorator.value;
 }, {deep: true, immediate: true});
@@ -95,6 +97,7 @@ const handlers = {
         method: formModel.value.methods.length ? formModel.value.methods : undefined,
         teacher: formModel.value.teachers.length ? formModel.value.teachers : undefined,
         group: formModel.value.groups.length ? formModel.value.groups.map(g => JSON.stringify(g)) : undefined,
+        subject: formModel.value.courseNames.length ? formModel.value.courseNames : undefined,
       },
     });
   },
@@ -146,6 +149,7 @@ defineExpose({
           <RouteFilterSelect v-model:value="formModel.methods" :option-str-array="store.methods" :placeholder="store.translate(`授课方式`)"/>
           <RouteFilterSelect v-model:value="formModel.teachers" :option-str-array="store.teachers" :placeholder="store.translate(`授课教师`)"/>
           <RouteFilterSelect v-model:value="formModel.rooms" :option-str-array="store.rooms" :placeholder="store.translate(`教室`)"/>
+          <RouteFilterSelect v-model:value="formModel.courseNames" :option-str-array="store.courseNames" :placeholder="store.translate(`课程名称`)"/>
         </n-form>
       </div>
 

@@ -144,6 +144,18 @@ export class CourseDecorator {
         };
         return this.getNewProxyThroughFilter(filter);
     }
+
+    ofCourseNames(courseNames: string[]) {
+        const filter: CourseFilter = c => {
+            for (const courseName of courseNames) {
+                if (c.info.name.indexOf(courseName) !== -1) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        return this.getNewProxyThroughFilter(filter);
+    }
 }
 
 export function isValidCourse(course: Course): boolean {
@@ -151,7 +163,7 @@ export function isValidCourse(course: Course): boolean {
         && !!course.dates.length
         && !!course.lessonNum
         && !!course.info.name
-        && !!course.info.bgc
+        && !!course.info.bgc;
 }
 
 export function getEmptyCourse(): Course {
