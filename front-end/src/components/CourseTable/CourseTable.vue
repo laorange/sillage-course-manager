@@ -60,7 +60,7 @@ const handlers = {
 
       <DisplayModeSelector ref="displayModeSelector"/>
 
-      <n-badge v-if="filteredNotices.length" :value="filteredNotices.length" :max="99">
+      <n-badge v-if="noticeWithinPast7Days.length" :value="noticeWithinPast7Days.length" :max="99">
         <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
       </n-badge>
     </template>
