@@ -171,7 +171,6 @@ export const useStore = defineStore("store", {
 
             // 再从json文件中导入预设的课程信息，如果已有某节课的信息，不会覆盖旧信息
             if (import.meta.env.MODE !== "release") {
-                console.log("preset");
                 for (const courseInfo of (courseInfoArray as CourseInfo[])) {
                     if (!courseInfoDict[courseInfo.name]) courseInfoDict[courseInfo.name] = courseInfo;
                 }

@@ -16,9 +16,7 @@ export class NoticeDecorator {
 
     inThePastFewDays(dayNum: number) {
         const filterFunc: NoticeFilter = n => {
-            let result = dayjs(n.updated).isAfter(dayjs().add(-dayNum, "day"), "minute")
-            console.log(result);
-            return result
+            return dayjs(n.updated).isAfter(dayjs().add(-dayNum, "day"), "minute")
         };
         return this.filter(filterFunc);
     }
