@@ -25,7 +25,14 @@ const dateMode = computed<"日期模式" | "星期模式">({
 });
 
 const weekStr = computed<string>(() => {
-  let week = store.getWeekNumOfSomeDate(queryDateLocal.value);
+  let week: number
+  if (props.isDateMode) {
+    // 日期模式下，显示查询日期是第几周
+    week = store.getWeekNumOfSomeDate(queryDateLocal.value);
+  } else {
+    // 星期模式下，显示当天是第几周
+    week = store.getWeekNumOfSomeDate(dayjs());
+  }
   if (week > store.config.content.maxWeekNum || week <= 0) return "";
   let _weekUnitStr = store.translate("星期");
   return _weekUnitStr === "星期" ? `第${week}周` : `${_weekUnitStr} ${week}`;
