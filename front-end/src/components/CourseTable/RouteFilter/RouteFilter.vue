@@ -42,6 +42,7 @@ const title = computed<string>(() => {
   return formModel.value.grades
       .concat(formModel.value.groups.map(gg => `${store.translate(gg[0])}:${store.translate(gg[1])}`))
       .concat(formModel.value.teachers).concat(formModel.value.methods).concat(formModel.value.rooms)
+      .concat(formModel.value.courseNames)
       .map((s: string) => store.translate(s)).filter(_ => !!_).join(` `);
 });
 
@@ -155,8 +156,8 @@ defineExpose({
 
       <template #footer>
         <n-space>
-          <n-button size="large" @click="handlers.pushWithNewFilter">{{ store.translate(`确定`) }}</n-button>
-          <n-button size="large" @click="showFilterDialog=false">{{ store.translate(`取消`) }}</n-button>
+          <n-button size="large" @click="handlers.pushWithNewFilter" type="success">{{ store.translate(`确定`) }}</n-button>
+          <n-button size="large" @click="showFilterDialog=false" type="info">{{ store.translate(`取消`) }}</n-button>
         </n-space>
       </template>
     </n-drawer-content>
