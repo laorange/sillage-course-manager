@@ -163,6 +163,7 @@ export function isValidCourse(course: Course): boolean {
         && !!course.dates.length
         && !!course.lessonNum
         && !!course.info.name
+        && course.info.name !== `请输入课程名称`
         && !!course.info.bgc;
 }
 
