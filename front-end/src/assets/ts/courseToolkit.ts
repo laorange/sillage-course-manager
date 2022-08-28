@@ -103,8 +103,8 @@ export class CourseDecorator {
 
     isInSameWeek(someDay: dayjs.Dayjs): CourseDecorator {
         let whatDay = getIsoWeekDay(dayjs(someDay));
-        return this.isSameOrAfter(someDay.add(1 - whatDay, "day"))
-            .isSameOrBefore(someDay.add(7 - whatDay, "day"));
+        return this.byDate((date: string) =>
+            dayjs(date).isSameOrBefore(someDay, "day") && dayjs(date).isSameOrAfter(someDay.add(1 - whatDay, "day")));
     }
 
     ofDate(someDate: string): CourseDecorator {
