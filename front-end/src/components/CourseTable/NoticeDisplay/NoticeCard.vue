@@ -5,6 +5,7 @@ import {AlertCircleOutline, Trash, AddCircleOutline, CreateOutline} from "@vicon
 import dayjs from "dayjs";
 import {formatDatetime} from "../../../assets/ts/datetimeUtils";
 import CourseCard from "../CourseBox/CourseCard.vue";
+import BulletinCard from "./BulletinCard.vue";
 
 const props = defineProps<{ notice: Notice }>();
 
@@ -34,8 +35,10 @@ const typeName = computed<TypeName>(() => {
 <template>
   <n-timeline-item v-if="typeName!=='none'"
                    :type="typeName"
-                   :title="notice.content"
                    :time="noticeTimeDisplay">
+    <template #header v-if="notice.content">
+      <BulletinCard :content="notice.content"/>
+    </template>
     <template #icon v-if="typeName!=='none'">
       <n-icon size="30">
         <AlertCircleOutline v-if="typeName==='info'"/>
