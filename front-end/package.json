@@ -34,6 +34,7 @@
     "vue": "^3.2.25",
     "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.1.1",
+    "vue3-markdown-it": "^1.0.10",
     "vue3-storage": "^0.1.11"
   },
   "devDependencies": {
