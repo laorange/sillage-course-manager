@@ -103,3 +103,5 @@ dist
 .tern-port
 /.idea/
 yarn-error.log
+
+components.d.ts
