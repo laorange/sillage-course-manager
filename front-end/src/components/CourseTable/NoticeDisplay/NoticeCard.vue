@@ -37,7 +37,7 @@ const typeName = computed<TypeName>(() => {
                    :type="typeName"
                    :time="noticeTimeDisplay">
     <template #header v-if="notice.content">
-      <BulletinCard :content="notice.content"/>
+      <BulletinCard :content="`${notice.content}`"/>
     </template>
     <template #icon v-if="typeName!=='none'">
       <n-icon size="30">
