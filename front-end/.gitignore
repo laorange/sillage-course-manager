@@ -105,3 +105,4 @@ dist
 yarn-error.log
 
 components.d.ts
+src/components/AboutPage/privateInfo.json
