@@ -204,7 +204,7 @@ function onContextMenu(e: MouseEvent) {
         optionGetters.copy(),
         optionGetters.cut(),
         optionGetters.delete(),
-        ...(getContextMenuItems(routeFilter?.value?.sources?.grades ?? [], props.course.lessonNum,
+        ...(getContextMenuItems(routeFilter?.value?.sources?.grades ?? store.grades, props.course.lessonNum,
             props.editData?.queryDate ?? store.todayDate, !!props.isDateMode) ?? []),
       ],
     });
