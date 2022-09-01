@@ -88,12 +88,11 @@ const handlers = {
   pushWithNewFilter() {
     nextTick(() => message.success(title.value));
     showFilterDialog.value = false;
-    formModel.value.grades = formModel.value.grades.length ? formModel.value.grades : store.grades;
 
     router.push({
       ...route,
       query: {
-        grade: formModel.value.grades,
+        grade: formModel.value.grades.length ? formModel.value.grades : undefined,
         room: formModel.value.rooms.length ? formModel.value.rooms : undefined,
         method: formModel.value.methods.length ? formModel.value.methods : undefined,
         teacher: formModel.value.teachers.length ? formModel.value.teachers : undefined,
