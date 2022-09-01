@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
         path: "/course/",
         name: "course",
         component: CourseTable,
-        beforeEnter: noGradeToAllGrades,
+        // beforeEnter: noGradeToAllGrades,
     },
     {
         path: "/login/",
