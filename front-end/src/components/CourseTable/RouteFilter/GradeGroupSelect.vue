@@ -9,6 +9,8 @@ const emits = defineEmits(["update:groups"]);
 
 const store = useStore();
 
+const whetherDeviceIsWideEnough = computed(() => document.body.clientWidth > 800);
+
 const cascaderValue = computed<null | string[]>({
   get: () => {
     if (!props.groups) {
@@ -57,7 +59,7 @@ const cascaderOptions = computed<CascaderOption[]>(() => {
         :cascade="true"
         :show-path="true"
         check-strategy="child"
-        :filterable="true"
+        :filterable="whetherDeviceIsWideEnough"
         :clear-filter-after-select="true"
     />
   </n-form-item>

@@ -7,6 +7,8 @@ const emits = defineEmits(["update:value"]);
 
 const store = useStore();
 
+const whetherDeviceIsWideEnough = computed(() => document.body.clientWidth > 800);
+
 const valueLocal = computed<string[]>({
   get: () => props.value,
   set: (newValue) => emits("update:value", newValue),
@@ -17,10 +19,10 @@ const valueLocal = computed<string[]>({
   <n-form-item :label="placeholder">
     <n-select
         v-model:value="valueLocal"
-        :filterable="true"
+        :filterable="whetherDeviceIsWideEnough"
         :multiple="true"
-        :tag="true"
-        :clearable="true"
+        :tag="whetherDeviceIsWideEnough"
+        :clearable="whetherDeviceIsWideEnough"
         max-tag-count="responsive"
         :placeholder="placeholder"
         :options="optionStrArray.map(_=>{return {label: store.translate(_), value: _}})"
