@@ -7,18 +7,18 @@ const store = useStore();
 
 const displayColumnNum = computed(() => {
   switch (store.localConfig.displayMode) {
-    case "单列表":
+    case "一天":
       return 1;
     case "双列表":
       return 2;
-    case "周视图":
+    case "一周":
       return 7;
   }
 });
 const displayModeOption: SelectOption[] = [
-  {label: store.translate(`单列表`), value: `单列表`},
-  {label: store.translate(`双列表`), value: `双列表`},
-  {label: store.translate(`周视图`), value: `周视图`},
+  {label: store.translate(`一天`), value: `一天`},
+  // {label: store.translate(`双列表`), value: `双列表`},
+  {label: store.translate(`一周`), value: `一周`},
 ];
 
 defineExpose({

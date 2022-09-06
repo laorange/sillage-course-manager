@@ -66,7 +66,7 @@ const handlers = {
     <template #formTop>
       <n-grid cols="1 400:2 800:4">
         <n-gi>
-          <n-form-item :label="store.translate(`显示模式`)">
+          <n-form-item :label="store.translate(`显示内容`)">
             <DisplayModeSelector ref="displayModeSelector"/>
           </n-form-item>
         </n-gi>
@@ -95,7 +95,7 @@ const handlers = {
     </template>
   </RouteFilter>
 
-  <WeeklyCourseTable v-if="store.localConfig.displayMode==='周视图'" :show-grade="grades.length !== 1" :courses="filteredCourses" :editable="editable"/>
+  <WeeklyCourseTable v-if="store.localConfig.displayMode==='一周'" :show-grade="grades.length !== 1" :courses="filteredCourses" :editable="editable"/>
   <n-grid v-else :cols="displayColumnNum" :x-gap="5">
     <n-gi v-for="dailyCourseTableNum of displayColumnNum" :key="`DailyCourseTable${dailyCourseTableNum}`">
       <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="grades.length !== 1"
