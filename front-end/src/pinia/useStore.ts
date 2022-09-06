@@ -57,7 +57,7 @@ export const useStore = defineStore("store", {
 
             localConfig: {
                 language: "中文",
-                isDateMode: false,
+                isDateMode: true,
                 verticalCard: true,
                 displayMode: "周视图",
                 thinkTwice: true,
