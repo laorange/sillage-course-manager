@@ -49,20 +49,40 @@ const handlers = {
 
   <RouteFilter ref="routeFilter">
     <template #button>
-      <n-switch v-model:value="editable" v-if="store.editor.authenticated">
-        <template #checked>管理员视图</template>
-        <template #unchecked>用户视图</template>
-      </n-switch>
-
-      <ThinkTwiceSwitch v-if="store.editor.authenticated"/>
-
-      <VerticalCardSwitch/>
-
-      <DisplayModeSelector ref="displayModeSelector"/>
-
       <n-badge v-if="noticeWithinPast7Days.length" :value="noticeWithinPast7Days.length" :max="99">
         <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
       </n-badge>
+    </template>
+
+    <template #formTop>
+      <n-grid cols="1 400:2 800:4">
+        <n-gi>
+          <n-form-item :label="store.translate(`显示模式`)">
+            <DisplayModeSelector ref="displayModeSelector"/>
+          </n-form-item>
+        </n-gi>
+
+        <n-gi>
+          <n-form-item :label="store.translate(`堆叠方向`)">
+            <VerticalCardSwitch/>
+          </n-form-item>
+        </n-gi>
+
+        <n-gi v-if="store.editor.authenticated">
+          <n-form-item label="管理视图">
+            <n-switch v-model:value="editable">
+              <template #checked>开</template>
+              <template #unchecked>关</template>
+            </n-switch>
+          </n-form-item>
+        </n-gi>
+
+        <n-gi v-if="store.editor.authenticated">
+          <n-form-item label="二次确认">
+            <ThinkTwiceSwitch/>
+          </n-form-item>
+        </n-gi>
+      </n-grid>
     </template>
   </RouteFilter>
 

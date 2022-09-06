@@ -14,8 +14,8 @@ watch(() => store.localConfig.thinkTwice, (whetherThinkTwice) => {
 
 <template>
   <n-switch v-model:value="store.localConfig.thinkTwice">
-    <template #checked>二次确认：开</template>
-    <template #unchecked>二次确认：关</template>
+    <template #checked>开</template>
+    <template #unchecked>关</template>
   </n-switch>
 </template>
 

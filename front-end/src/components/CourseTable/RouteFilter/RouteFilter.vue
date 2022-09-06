@@ -86,7 +86,7 @@ watch(() => sources.value, (src) => {
 
 const handlers = {
   pushWithNewFilter() {
-    nextTick(() => message.success(title.value));
+    nextTick(() => message.success(title.value ? title.value : store.translate(`全部课程`)));
     showFilterDialog.value = false;
 
     router.push({
@@ -120,21 +120,23 @@ defineExpose({
 
 <template>
   <div class="route-filter">
-    <n-space justify="center" align="center" wrap="wrap">
-      <n-button :dashed="true" color="#32647d" @click="showFilterDialog=true">
-        <n-ellipsis style="max-width: 80vw">
-          {{ store.translate(`正在查看`) }}: {{ title ? title : store.translate(`全部课程`) }}
-        </n-ellipsis>
-      </n-button>
+    <n-space :vertical="true" :size="15">
+      <n-ellipsis style="max-width: 80vw" v-if="title">{{ title }}</n-ellipsis>
 
-      <n-button :dashed="true" color="#32647d" @click="handlers.copyUrl()">{{ store.translate(`复制网址`) }}</n-button>
+      <n-space justify="center" align="center" wrap="wrap">
+        <n-button :dashed="true" color="#32647d" @click="handlers.copyUrl()">{{ store.translate(`复制网址`) }}</n-button>
 
-      <slot name="button"/>
+        <n-button :dashed="true" color="#32647d" @click="showFilterDialog=true">
+          {{ store.translate(`偏好设置`) }}
+        </n-button>
+
+        <slot name="button"/>
+      </n-space>
     </n-space>
   </div>
 
   <n-drawer v-model:show="showFilterDialog" height="80%" placement="top">
-    <n-drawer-content :title="store.translate(`正在查看`)" :closable="true" :footer-style="{justifyContent:'space-around'}">
+    <n-drawer-content :title="store.translate(`偏好设置`)" :closable="true" :footer-style="{justifyContent:'space-around'}">
       <div class="route-filter-drawer">
         <n-form
             ref="formRef"
@@ -143,6 +145,8 @@ defineExpose({
             label-width="auto"
             require-mark-placement="right-hanging"
         >
+          <slot name="formTop"/>
+
           <!--"年级", "班级", "授课方式", "授课教师", "教室"-->
           <RouteFilterSelect v-model:value="formModel.grades" :option-str-array="store.grades" :placeholder="store.translate(`年级`)"/>
           <GradeGroupSelect v-model:groups="formModel.groups" :placeholder="store.translate(`班级`)"/>
@@ -150,6 +154,8 @@ defineExpose({
           <RouteFilterSelect v-model:value="formModel.teachers" :option-str-array="store.teachers" :placeholder="store.translate(`授课教师`)"/>
           <RouteFilterSelect v-model:value="formModel.rooms" :option-str-array="store.rooms" :placeholder="store.translate(`教室`)"/>
           <RouteFilterSelect v-model:value="formModel.courseNames" :option-str-array="store.courseNames" :placeholder="store.translate(`课程名称`)"/>
+
+          <slot name="formBottom"/>
         </n-form>
       </div>
 

@@ -22,7 +22,7 @@ const valueLocal = computed<string[]>({
         :filterable="whetherDeviceIsWideEnough"
         :multiple="true"
         :tag="whetherDeviceIsWideEnough"
-        :clearable="whetherDeviceIsWideEnough"
+        :clearable="true"
         max-tag-count="responsive"
         :placeholder="placeholder"
         :options="optionStrArray.map(_=>{return {label: store.translate(_), value: _}})"
