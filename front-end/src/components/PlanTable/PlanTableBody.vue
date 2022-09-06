@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // @ts-ignore
 import DataGridXL from "@datagridxl/datagridxl2";
-import {computed, nextTick, ref, watch} from "vue";
+import {computed, ComputedRef, inject, nextTick, ref, watch} from "vue";
 import {Course} from "../../assets/ts/types";
 import {useStore} from "../../pinia/useStore";
 
@@ -182,16 +182,20 @@ defineExpose({
     planTableBodyObj.value?.downloadDataAsJSON();
   },
 });
+
+// 如果遇上缩放的情况，则调整表格高度，尽可能提高屏幕利用率；如果没有缩放，默认缩放值为1
+const adaptiveContainerWithFixedPixel: any = inject("adaptiveContainerWithFixedPixel");
+const containerScaleNum = computed(() => adaptiveContainerWithFixedPixel?.value?.containerScaleNum ?? 1 as number);
 </script>
 
 <template>
   <div class="plan-table-body">
-    <div ref="planTableBody" class="grid"></div>
+    <div ref="planTableBody" class="grid" :style="{height: `${70/containerScaleNum}vh`}"></div>
   </div>
 </template>
 
 <style scoped>
 .grid {
-  height: 80vh;
+
 }
 </style>

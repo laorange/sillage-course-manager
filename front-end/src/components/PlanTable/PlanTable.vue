@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
-import {computed, ref} from "vue";
+import {computed, provide, ref} from "vue";
 import {Course} from "../../assets/ts/types";
 import RouteFilter from "../CourseTable/RouteFilter/RouteFilter.vue";
 import PlanTableBody from "./PlanTableBody.vue";
 import {ShareOutline} from "@vicons/ionicons5";
+import AdaptiveContainerWithFixedPixel from "../common/AdaptiveContainerWithFixedPixel.vue";
 
 const store = useStore();
 
@@ -22,6 +23,9 @@ const handlers = {
     planTableBody.value?.downloadDataAsJSON();
   },
 };
+
+const adaptiveContainerWithFixedPixel = ref<typeof AdaptiveContainerWithFixedPixel>();
+provide("adaptiveContainerWithFixedPixel", adaptiveContainerWithFixedPixel);
 </script>
 
 <template>
@@ -48,7 +52,9 @@ const handlers = {
       </n-space>
     </template>
   </RouteFilter>
-  <PlanTableBody ref="planTableBody" :courses="filteredCourses"/>
+  <AdaptiveContainerWithFixedPixel :width="1200" ref="adaptiveContainerWithFixedPixel">
+    <PlanTableBody ref="planTableBody" :courses="filteredCourses"/>
+  </AdaptiveContainerWithFixedPixel>
 </template>
 
 <style scoped>
