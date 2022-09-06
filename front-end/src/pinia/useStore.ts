@@ -61,6 +61,7 @@ export const useStore = defineStore("store", {
                 verticalCard: (document.documentElement.clientWidth > 1150), // 电脑端很适合课程盒的垂直显示
                 displayMode: (document.documentElement.clientWidth < 1150) ? "单列表" : "周视图",
                 thinkTwice: true,
+                version: "0.0.0"
             },
 
             editor: {

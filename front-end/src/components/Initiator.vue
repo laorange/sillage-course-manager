@@ -6,10 +6,24 @@ import {useStorage} from "vue3-storage";
 import {Course, LocalConfig} from "../assets/ts/types";
 import {useMessage} from "naive-ui";
 
+import {version} from "../../package.json";
+
 const store = useStore();
 const storage = useStorage();
 const message = useMessage();
 const LOCAL_CONFIG_STORAGE_KEY = "local_config";
+
+
+function isLatestVersion(localVersion: string, latestVersion: string): boolean {
+  // 版本号格式：x.y.z
+  const localVersionMatchResult = localVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
+  const latestVersionMatchResult = latestVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
+  for (let i = 1; i <= 3; i++) {
+    // x, y, z 任何一个比现有版本的低，则不是最新版本
+    if (localVersionMatchResult[i] < latestVersionMatchResult[i]) return false;
+  }
+  return true;
+}
 
 
 const initiators = {
@@ -36,8 +50,18 @@ const initiators = {
   },
   localStorage() {
     // 从 localStorage 读取本地设置
-    let localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY) ?? store.localConfig;
-    store.localConfig = {...store.localConfig, ...localConfig}
+    let localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY);
+
+    // // let isNewComer: boolean = !!localConfig;  // 如果需要判断是否是第一次来到迹云课表时可用此判断
+
+    localConfig = {...store.localConfig, ...localConfig} ?? store.localConfig;
+
+    // TODO: v0.8跨版本升级需要 —— 如果不是最新的版本，向localstorage中存入新的默认数据。完成迁移后请删除本段代码。
+    if (!isLatestVersion(localConfig.version, version)) {
+      store.localConfig = {...store.localConfig, version: version}; // 向localstorage中存入新的默认数据
+    } else {
+      store.localConfig = {...localConfig, version: version};
+    }
   },
   async addTextData() {
     let newCourse: Course = {

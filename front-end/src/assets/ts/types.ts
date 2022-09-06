@@ -91,6 +91,7 @@ export interface LocalConfig {
     displayMode: "单列表" | "双列表" | "周视图";
     verticalCard: boolean;
     thinkTwice: boolean;
+    version: string;
 }
 
 export type GradeGroupArray = [string, string]
