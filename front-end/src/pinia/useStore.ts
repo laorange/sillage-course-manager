@@ -62,6 +62,7 @@ export const useStore = defineStore("store", {
                 displayMode: "周视图",
                 thinkTwice: true,
                 version: "0.0.0",
+                readNotices: [],
             },
 
             editor: {

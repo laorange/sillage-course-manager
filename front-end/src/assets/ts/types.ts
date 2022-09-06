@@ -92,6 +92,7 @@ export interface LocalConfig {
     verticalCard: boolean;
     thinkTwice: boolean;
     version: string;
+    readNotices: string[];
 }
 
 export type GradeGroupArray = [string, string]
