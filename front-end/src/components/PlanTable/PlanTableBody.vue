@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // @ts-ignore
 import DataGridXL from "@datagridxl/datagridxl2";
-import {computed, ComputedRef, inject, nextTick, ref, watch} from "vue";
+import {computed, inject, nextTick, ref, watch} from "vue";
 import {Course} from "../../assets/ts/types";
 import {useStore} from "../../pinia/useStore";
 

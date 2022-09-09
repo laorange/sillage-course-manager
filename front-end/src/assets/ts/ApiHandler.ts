@@ -24,7 +24,7 @@ class Collection<T extends PocketBaseModel> {
 
     public async create(newRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
         try {
-            let result = await this.client.Records.create(this.collectionName, newRecord) as unknown as T;
+            let result = await this.client.records.create(this.collectionName, newRecord) as unknown as T;
             if (successHook) successHook(result);
         } catch (e) {
             if (errorHook) errorHook(e as Error);
@@ -33,7 +33,7 @@ class Collection<T extends PocketBaseModel> {
 
     async list(successHook?: (results: T[]) => any, errorHook?: (e: Error) => any) {
         try {
-            let results = await this.client.Records.getFullList(this.collectionName, 200, {sort: "-updated"}) as unknown as T[];
+            let results = await this.client.records.getFullList(this.collectionName, 200, {sort: "-updated"}) as unknown as T[];
             if (successHook) successHook(results);
         } catch (e) {
             if (errorHook) errorHook(e as Error);
@@ -42,7 +42,7 @@ class Collection<T extends PocketBaseModel> {
 
     async update(oldRecord: T, newRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
         try {
-            let result = await this.client.Records.update(this.collectionName, oldRecord.id, newRecord) as unknown as T;
+            let result = await this.client.records.update(this.collectionName, oldRecord.id, newRecord) as unknown as T;
             if (successHook) successHook(result);
         } catch (e) {
             if (errorHook) errorHook(e as Error);
@@ -51,7 +51,7 @@ class Collection<T extends PocketBaseModel> {
 
     async delete(oldRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
         try {
-            let result = await this.client.Records.delete(this.collectionName, oldRecord.id) as unknown as T;
+            let result = await this.client.records.delete(this.collectionName, oldRecord.id) as unknown as T;
             if (successHook) successHook(result);
         } catch (e) {
             if (errorHook) errorHook(e as Error);
