@@ -11,6 +11,7 @@ import {getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import useEmptyCourseCard from "../../../assets/ts/hooks/useEmptyCourseCard";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
+import useClipboard from "vue-clipboard3";
 
 
 const props = withDefaults(defineProps<{
@@ -22,6 +23,7 @@ const props = withDefaults(defineProps<{
 const store = useStore();
 const message = useMessage();
 const dialog = useDialog();
+const {toClipboard} = useClipboard();
 
 const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
 const {getContextMenuItems} = useEmptyCourseCard();
@@ -84,6 +86,9 @@ const optionGetters = {
         },
       });
     }
+
+    // 添加 ""
+    copyOption.children?.push(optionGetters.copyJson());
 
     return copyOption;
   },
@@ -150,12 +155,14 @@ const optionGetters = {
     if (props.course.dates.length === 1) {
       return {
         label: "删除",
+        divided: true,
         onClick: deleteAll,
       };
     }
 
     const deleteOption: MenuItem = {
       label: "删除",
+      divided: true,
       children: [
         {
           label: "全部",
@@ -191,11 +198,21 @@ const optionGetters = {
 
     return deleteOption;
   },
+  copyJson(): MenuItem {
+    return {
+      label: "Json(数据库中的原始数据)",
+      onClick: async () => {
+        await toClipboard(JSON.stringify(props.course));
+        message.info("已复制到剪切板");
+      },
+    };
+  },
 };
 
 function onContextMenu(e: MouseEvent) {
   if (props.editData) {
     e.preventDefault();
+    e.stopPropagation();
     ContextMenu.showContextMenu({
       x: e.pageX,
       y: e.pageY,
