@@ -20,7 +20,6 @@ const courseLocal = ref<Course>(JSON.parse(JSON.stringify(operatingCourse.value)
 watch(() => operatingCourse.value, (oc) => {
   courseLocal.value = {
     ...JSON.parse(JSON.stringify(oc)),
-    grade: (route.query.grade instanceof Array ? route.query.grade[0] : route.query.grade) ?? null,
   };
 });
 
@@ -160,7 +159,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
 
       <div aria-label="班级（小组）">
         <n-divider :dashed="true">教学计划</n-divider>
-        <SituationEditor v-model:situations="courseLocal.situations"/>
+        <SituationEditor v-model:situations="courseLocal.situations" :grade="courseLocal.grade"/>
       </div>
 
       <div aria-label="课程颜色">

@@ -5,7 +5,7 @@ import {SelectOption} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
 import {useRoute} from "vue-router";
 
-const props = defineProps<{ situations: Situation[] }>();
+const props = defineProps<{ situations: Situation[], grade: string }>();
 const emits = defineEmits(["update:situations"]);
 
 const store = useStore();
@@ -28,7 +28,7 @@ const teacherOptions = computed<SelectOption[]>(() => store.teachers.map(t => {
   return {label: t, value: t};
 }));
 
-const groupOptions = computed<SelectOption[]>(() => (store.groupDict[route.query.grade as string] ?? []).map(g => {
+const groupOptions = computed<SelectOption[]>(() => (store.groupDict[props.grade] ?? []).map(g => {
   return {label: g, value: g};
 }));
 
