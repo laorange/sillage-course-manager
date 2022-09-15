@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 type NoticeFilter = (n: Notice) => boolean
 
-export class NoticeDecorator {
+export class NoticesHandler {
     value: Notice[];
 
     constructor(notices: Notice[]) {
@@ -11,7 +11,7 @@ export class NoticeDecorator {
     }
 
     filter(filterFunc: NoticeFilter) {
-        return new NoticeDecorator(this.value.filter(filterFunc));
+        return new NoticesHandler(this.value.filter(filterFunc));
     }
 
     inThePastFewDays(dayNum: number) {

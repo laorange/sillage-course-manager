@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {Course, GradeGroupArray, Notice} from "../../../assets/ts/types";
 import {computed, nextTick, ref, watch} from "vue";
-import {CourseDecorator} from "../../../assets/ts/courseToolkit";
+import {CoursesHandler} from "../../../assets/ts/courseToolkit";
 import {useRoute, useRouter} from "vue-router";
 import {useStore} from "../../../pinia/useStore";
 import RouteFilterSelect from "./RouteFilterSelect.vue";
 import {useMessage} from "naive-ui";
 import GradeGroupSelect from "./GradeGroupSelect.vue";
 import useClipboard from "vue-clipboard3";
-import {NoticeDecorator} from "../../../assets/ts/noticeToolkit";
+import {NoticesHandler} from "../../../assets/ts/noticeToolkit";
 
 const store = useStore();
 const route = useRoute();
@@ -33,8 +33,8 @@ let sources = computed(() => {
     teachers: (route.query.teacher instanceof Array ? route.query.teacher : [route.query.teacher]).filter(_ => !!_).sort() as unknown as string[],
     courseNames: (route.query.subject instanceof Array ? route.query.subject : [route.query.subject]).filter(_ => !!_).sort() as unknown as string[],
 
-    courseDecorator: new CourseDecorator(store.courses),
-    noticeDecorator: new NoticeDecorator(store.notices),
+    courseDecorator: new CoursesHandler(store.courses),
+    noticeDecorator: new NoticesHandler(store.notices),
   };
 });
 
@@ -72,7 +72,7 @@ watch(() => sources.value, (src) => {
   }
 
   // 日期模式：不限制是当前学期；星期模式：必须为当前学期
-  let decorator: CourseDecorator = src.courseDecorator;
+  let decorator: CoursesHandler = src.courseDecorator;
   if (src.grades.length) decorator = decorator.ofGrades(src.grades);
   if (src.rooms.length) decorator = decorator.ofRooms(src.rooms);
   if (src.methods.length) decorator = decorator.ofMethods(src.methods);

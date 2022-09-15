@@ -9,48 +9,48 @@ dayjs.extend(isSameOrBefore);
 
 type CourseFilter = (c: Course) => boolean
 
-export class CourseDecorator {
+export class CoursesHandler {
     value: Course[];
 
-    constructor(source: Course[] | CourseDecorator) {
-        if (source instanceof CourseDecorator) {
+    constructor(source: Course[] | CoursesHandler) {
+        if (source instanceof CoursesHandler) {
             this.value = source.value.slice();
         } else {
             this.value = source;
         }
     }
 
-    getNewProxyThroughFilter(filter: CourseFilter) {
-        return new CourseDecorator(this.value.filter(filter));
+    filter(filter: CourseFilter) {
+        return new CoursesHandler(this.value.filter(filter));
     }
 
-    ofWhatDay(whatDay: number): CourseDecorator {
+    ofWhatDay(whatDay: number): CoursesHandler {
         const filter: CourseFilter = c => {
             if (c.dates.length === 0) {
                 return false;
             }
             return getIsoWeekDay(dayjs(c.dates[0])) === whatDay;
         };
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
-    ofLessonNum(lessonNum: number): CourseDecorator {
+    ofLessonNum(lessonNum: number): CoursesHandler {
         const filter: CourseFilter = c => {
             return c.lessonNum === lessonNum;
         };
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
-    ofGrade(grade: string): CourseDecorator {
+    ofGrade(grade: string): CoursesHandler {
         return this.ofGrades([grade]);
     }
 
-    ofGrades(grades: string[]): CourseDecorator {
+    ofGrades(grades: string[]): CoursesHandler {
         const filter: CourseFilter = c => grades.indexOf(c.grade) > -1;
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
-    ofGradeGroups(ggs: GradeGroupArray[]): CourseDecorator {
+    ofGradeGroups(ggs: GradeGroupArray[]): CoursesHandler {
         const grades = Array.from(new Set(ggs.map(gg => gg[0])));
         const gradeGroupDict: { [grade: string]: string[] } = {};
         for (const gg of ggs) {
@@ -58,7 +58,7 @@ export class CourseDecorator {
         }
 
         // 先通过年级过滤
-        return this.ofGrades(grades).getNewProxyThroughFilter(course => {
+        return this.ofGrades(grades).filter(course => {
             for (const situation of course.situations) {
                 if (situation.groups.length === 0) {
                     // 如果某节课没有指定“班级/小组”，则按年级，则符合条件
@@ -73,7 +73,7 @@ export class CourseDecorator {
         });
     }
 
-    byDate(datePassJudge: (date: string) => boolean): CourseDecorator {
+    byDate(datePassJudge: (date: string) => boolean): CoursesHandler {
         const filter: CourseFilter = c => {
             for (const date of c.dates) {
                 if (datePassJudge(date)) {
@@ -82,43 +82,43 @@ export class CourseDecorator {
             }
             return false;
         };
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
-    before(someDay: dayjs.Dayjs): CourseDecorator {
+    before(someDay: dayjs.Dayjs): CoursesHandler {
         return this.byDate((date: string) => dayjs(date).isBefore(someDay, "day"));
     }
 
-    after(someDay: dayjs.Dayjs): CourseDecorator {
+    after(someDay: dayjs.Dayjs): CoursesHandler {
         return this.byDate((date: string) => dayjs(date).isAfter(someDay, "day"));
     }
 
-    isSameOrAfter(someDay: dayjs.Dayjs): CourseDecorator {
+    isSameOrAfter(someDay: dayjs.Dayjs): CoursesHandler {
         return this.byDate((date: string) => dayjs(date).isSameOrAfter(someDay, "day"));
     }
 
-    isSameOrBefore(someDay: dayjs.Dayjs): CourseDecorator {
+    isSameOrBefore(someDay: dayjs.Dayjs): CoursesHandler {
         return this.byDate((date: string) => dayjs(date).isSameOrBefore(someDay, "day"));
     }
 
-    isInSameWeek(someDay: dayjs.Dayjs): CourseDecorator {
+    isInSameWeek(someDay: dayjs.Dayjs): CoursesHandler {
         let whatDay = getIsoWeekDay(dayjs(someDay));
         return this.byDate((date: string) =>
             dayjs(date).isSameOrBefore(someDay.add(7 - whatDay, "day"), "day") && dayjs(date).isSameOrAfter(someDay.add(1 - whatDay, "day")));
     }
 
-    ofDate(someDate: string): CourseDecorator {
+    ofDate(someDate: string): CoursesHandler {
         return this.ofDates([someDate]);
     }
 
-    ofDates(dates: string[]): CourseDecorator {
+    ofDates(dates: string[]): CoursesHandler {
         let filter: CourseFilter = c => c.dates.filter(cd => dates.indexOf(cd) > -1).length > 0;
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
-    ofMethods(methods: string[], allowCourseWithoutMethod: boolean = false): CourseDecorator {
+    ofMethods(methods: string[], allowCourseWithoutMethod: boolean = false): CoursesHandler {
         const filter: CourseFilter = c => c.method ? (methods.indexOf(c.method) > -1) : allowCourseWithoutMethod;
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
     ofTeachers(teachers: string[], allowCourseWithoutTeacher: boolean = false) {
@@ -130,7 +130,7 @@ export class CourseDecorator {
             }
             return false;
         };
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
     ofRooms(rooms: string[], allowCourseWithoutRoom: boolean = false) {
@@ -142,7 +142,7 @@ export class CourseDecorator {
             }
             return false;
         };
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 
     ofCourseNames(courseNames: string[]) {
@@ -154,7 +154,7 @@ export class CourseDecorator {
             }
             return false;
         };
-        return this.getNewProxyThroughFilter(filter);
+        return this.filter(filter);
     }
 }
 

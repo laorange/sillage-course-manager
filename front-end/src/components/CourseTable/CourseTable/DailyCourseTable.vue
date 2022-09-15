@@ -3,7 +3,7 @@ import {Course} from "../../../assets/ts/types";
 import {useStore} from "../../../pinia/useStore";
 import {computed, ref, watch} from "vue";
 import CourseBox from "../CourseBox/CourseBox.vue";
-import {CourseDecorator} from "../../../assets/ts/courseToolkit";
+import {CoursesHandler} from "../../../assets/ts/courseToolkit";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
@@ -20,8 +20,8 @@ const queryDate = ref<string>(props.queryDate ?? formatDate(dayjs()));
 const isDateMode = ref<boolean>(store.localConfig.isDateMode);
 watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
 
-const coursesOfWhatDay = computed<CourseDecorator>(() => {
-  let coursesFilteredByWhatDay = (new CourseDecorator(props.courses).ofWhatDay(getIsoWeekDay(dayjs(queryDate.value))));
+const coursesOfWhatDay = computed<CoursesHandler>(() => {
+  let coursesFilteredByWhatDay = (new CoursesHandler(props.courses).ofWhatDay(getIsoWeekDay(dayjs(queryDate.value))));
   if (isDateMode.value) {
     // 日期模式：筛选与查询日期同一周的课程
     return coursesFilteredByWhatDay.isInSameWeek(dayjs(queryDate.value));

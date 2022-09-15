@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {Config, Course, CourseInfo, LocalConfig, Notice} from "../assets/ts/types";
 import dayjs from "dayjs";
-import {CourseConflictDetector, CourseDecorator, getEmptyCourse} from "../assets/ts/courseToolkit";
+import {CourseConflictDetector, CoursesHandler, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
 import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
@@ -196,15 +196,15 @@ export const useStore = defineStore("store", {
                 .concat(["确定", "取消", "成功", "完成", "失败"])
                 .concat(Array.from("一二三四五六天").map(w => `星期${w}`));
         },
-        courseOfCurrentSemester(): CourseDecorator {
-            return (new CourseDecorator(this.courses))
+        courseOfCurrentSemester(): CoursesHandler {
+            return (new CoursesHandler(this.courses))
                 .isSameOrAfter(this.semesterStartDay)
                 .before(this.semesterStartDay.add(this.config.content.maxWeekNum, "week"));
         },
         gradeCourseDictOfAll(): { [grade: string]: Course[] } {
             const _dict: { [grade: string]: Course[] } = {};
             for (const grade of this.grades) {
-                _dict[grade] = (new CourseDecorator(this.courses)).ofGrade(grade).value;
+                _dict[grade] = (new CoursesHandler(this.courses)).ofGrade(grade).value;
             }
             return _dict;
         },
@@ -233,7 +233,7 @@ export const useStore = defineStore("store", {
             return result ? result : word;
         },
         getConflictOfCourse(targetCourse: Course): string {
-            let existingCourses: Course[] = (new CourseDecorator(this.courses))
+            let existingCourses: Course[] = (new CoursesHandler(this.courses))
                 .ofLessonNum(targetCourse.lessonNum).ofDates(targetCourse.dates).value;
             if (this.editor.mode === "copy" || this.editor.mode === "cut" || this.editor.mode === "add") {
                 // 复制、剪切 的时候 需要考虑 当前正在编辑课程带来的影响。新增时，id为空，无影响
@@ -259,7 +259,7 @@ export const useStore = defineStore("store", {
         getWhatDayStr(whatDay: number) {
             return `星期${Array.from("一二三四五六天")[whatDay - 1]}`;
         },
-        filterCurrentSemesterCourses(courseDecorator: CourseDecorator): CourseDecorator {
+        filterCurrentSemesterCourses(courseDecorator: CoursesHandler): CoursesHandler {
             return courseDecorator.isSameOrAfter(this.semesterStartDay)
                 .before(this.semesterStartDay.add(this.config.content.maxWeekNum, "week"));
         },

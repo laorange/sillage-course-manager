@@ -33,13 +33,13 @@ const typeName = computed<TypeName>(() => {
 </script>
 
 <template>
-  <n-timeline-item v-if="typeName!=='none'"
+  <n-timeline-item v-if="typeName!==`none`"
                    :type="typeName"
                    :time="noticeTimeDisplay">
     <template #header v-if="notice.content">
       <BulletinCard :content="`${notice.content}`"/>
     </template>
-    <template #icon v-if="typeName!=='none'">
+    <template #icon>
       <n-icon size="30">
         <AlertCircleOutline v-if="typeName==='info'"/>
         <AddCircleOutline v-if="typeName==='success'"/>
