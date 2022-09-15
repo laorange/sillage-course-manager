@@ -24,7 +24,7 @@ class Collection<T extends PocketBaseModel> {
 
     public async create(newRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
         try {
-            let result = await this.client.records.create(this.collectionName, newRecord) as unknown as T;
+            let result = await this.client.records.create(this.collectionName, {...newRecord, id: ""}) as unknown as T;
             if (successHook) successHook(result);
         } catch (e) {
             if (errorHook) errorHook(e as Error);
