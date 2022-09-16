@@ -6,6 +6,7 @@ import PocketBase from "pocketbase";
 import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
 import {ApiHandler} from "../assets/ts/ApiHandler";
+import {getArrayWithUniqueItem} from "../assets/ts/useCommonUtils";
 
 type State = {
     isLoading: boolean
@@ -121,31 +122,20 @@ export const useStore = defineStore("store", {
         },
         rooms(): string[] {
             // 从预设中导入
-            const _rooms: string[] = (import.meta.env.MODE !== "release") ? roomArray : [];
+            let _rooms: string[] = (import.meta.env.MODE !== "release") ? roomArray : [];
 
             // 从已有课程中遍历出已有教室
-            for (const courses of this.courses) {
-                for (const situation of courses.situations) {
-                    if (!!situation.room && _rooms.indexOf(situation.room) === -1) {
-                        _rooms.push(situation.room);
-                    }
-                }
-            }
+            _rooms = _rooms.concat((new CoursesHandler(this.courses)).getSituItems().rooms);
 
-            return _rooms.sort();
+            return getArrayWithUniqueItem(_rooms).sort();
         },
         teachers(): string[] {
             // 从预设中导入
             let _teachers: string[] = (import.meta.env.MODE !== "release") ? teacherArray : [];
 
             // 从已有课程中遍历出已有授课教师
-            for (const courses of this.courses) {
-                for (const situation of courses.situations) {
-                    if (!!situation.teacher && _teachers.indexOf(situation.teacher) === -1) {
-                        _teachers.push(situation.teacher);
-                    }
-                }
-            }
+            _teachers = _teachers.concat((new CoursesHandler(this.courses)).getSituItems().teachers);
+
             return _teachers.sort();
         },
         methods(): string[] {
