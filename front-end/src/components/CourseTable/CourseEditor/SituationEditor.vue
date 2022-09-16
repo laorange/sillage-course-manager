@@ -18,8 +18,8 @@ const situationsLocal = computed<Situation[]>({
 
 function createSituation(): Situation {
   return {
-    teacher: null,
-    room: null,
+    teachers: [],
+    rooms: [],
     groups: [],
   };
 }
@@ -47,10 +47,10 @@ const roomOptions = computed<SelectOption[]>(() => store.rooms.map(r => {
         <div class="situation-editor__single-situation">
           <n-select v-model:value="value.groups" :options="groupOptions" placeholder="班级名 / 小组名"
                     :filterable="true" :tag="true" :clearable="true" :multiple="true"/>
-          <n-select v-model:value="value.teacher" :options="teacherOptions" placeholder="教师(选填)"
-                    :filterable="true" :tag="true" :clearable="true"/>
-          <n-select v-model:value="value.room" :options="roomOptions" placeholder="地点(选填)"
-                    :filterable="true" :tag="true" :clearable="true"/>
+          <n-select v-model:value="value.teachers" :options="teacherOptions" placeholder="教师(选填)"
+                    :filterable="true" :tag="true" :clearable="true" :multiple="true"/>
+          <n-select v-model:value="value.rooms" :options="roomOptions" placeholder="地点(选填)"
+                    :filterable="true" :tag="true" :clearable="true" :multiple="true"/>
         </div>
       </template>
     </n-dynamic-input>
@@ -64,10 +64,6 @@ const roomOptions = computed<SelectOption[]>(() => store.rooms.map(r => {
 }
 
 .situation-editor__single-situation > * {
-  flex: 0 25%;
-}
-
-.situation-editor__single-situation > *:first-child {
-  flex: 0 50%;
+  flex: 1;
 }
 </style>
