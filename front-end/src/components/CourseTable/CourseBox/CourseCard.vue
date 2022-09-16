@@ -29,7 +29,11 @@ const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
 const {getContextMenuItems} = useEmptyCourseCard();
 
 function getSituationStr(situation: Situation) {
-  return [situation.groups.map(g => store.translate(g)).join("&"), store.translate(situation.teacher), store.translate(situation.room)].filter(s => !!s).join(" | ");
+  return [
+    situation?.groups?.map(_ => store.translate(_)).join("&"),
+    situation?.teachers?.map(_ => store.translate(_)).join("&"),
+    situation?.rooms?.map(_ => store.translate(_)).join("&"),
+  ].filter(s => !!s).join(" | ");
 }
 
 const optionGetters = {
@@ -265,9 +269,9 @@ const lessonTimeStr = computed<string>(() => {
 
     <!--  situations  -->
     <template v-if="course.situations.length===1">
-      <div v-if="course.situations[0].groups.length">{{ course.situations[0].groups.map(g => store.translate(g)).join("&") }}</div>
-      <div v-if="course.situations[0].teacher">{{ store.translate(course.situations[0].teacher) }}</div>
-      <div v-if="course.situations[0].room">{{ store.translate(course.situations[0].room) }}</div>
+      <div v-if="course.situations[0]?.groups?.length">{{ course.situations[0].groups.map(g => store.translate(g)).join("&") }}</div>
+      <div v-if="course.situations[0]?.teachers?.length">{{ course.situations[0].teachers.map(_ => store.translate(_)).join("&") }}</div>
+      <div v-if="course.situations[0]?.rooms?.length">{{ course.situations[0].rooms.map(_ => store.translate(_)).join("&") }}</div>
     </template>
     <template v-if="course.situations.length>=2">
       <div class="course-card-situations" v-for="(situation, index) in course.situations"
