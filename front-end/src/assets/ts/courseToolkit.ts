@@ -12,11 +12,13 @@ type CourseFilter = (c: Course) => boolean
 export class CoursesHandler {
     value: Course[];
 
-    constructor(source: Course[] | CoursesHandler) {
+    constructor(source: Course | Course[] | CoursesHandler) {
         if (source instanceof CoursesHandler) {
             this.value = source.value.slice();
-        } else {
+        } else if (source instanceof Array) {
             this.value = source;
+        } else {
+            this.value = [source];
         }
     }
 
