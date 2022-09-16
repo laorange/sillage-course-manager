@@ -16,11 +16,11 @@ export interface PocketBaseModel {
 
 //<editor-fold desc="Course">
 export interface Situation {
-    // "teacher"?: string | null;
-    // "room"?: string | null;
-    "groups"?: string[];
-    "teachers"?: string[];
-    "rooms"?: string[];
+    "teacher"?: string | null;
+    "room"?: string | null;
+    "groups": string[];
+    "teachers": string[];
+    "rooms": string[];
 }
 
 export interface CourseInfo {

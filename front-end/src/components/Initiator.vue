@@ -85,11 +85,11 @@ const initiators = {
     let handleNum = 0;
     for (const course of store.courses) {
       if (course.situations.length) {
-        let newSituations: typeof course.situations = course.situations.filter(s => s.teacher || s.room || s.groups.length).map(s => {
+        let newSituations: typeof course.situations = course.situations.map(s => {
           return {
             groups: s.groups,
-            teachers: s.teacher ? [s.teacher] : [],
-            rooms: s.room ? [s.room] : [],
+            teachers: s?.teacher ? [s.teacher] : [],
+            rooms: s?.room ? [s.room] : [],
           };
         });
         if (newSituations.length) {

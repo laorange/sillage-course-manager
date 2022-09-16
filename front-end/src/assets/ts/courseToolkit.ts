@@ -3,15 +3,12 @@ import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import {getIsoWeekDay} from "./datetimeUtils";
+import {getArrayWithUniqueItem, whetherTwoArraysHaveSameElement} from "./useCommonUtils";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 type CourseFilter = (c: Course) => boolean
-
-function getArrayWithUniqueItem<T>(ls: T[]): T[] {
-    return Array.from(new Set(ls));
-}
 
 export class CoursesHandler {
     value: Course[];
@@ -56,26 +53,26 @@ export class CoursesHandler {
         return this.filter(filter);
     }
 
-    ofGradeGroups(ggs: GradeGroupArray[]): CoursesHandler {
+    ofGradeGroups(ggs: GradeGroupArray[], allowCourseWithoutGroup: boolean = true): CoursesHandler {
         const grades = Array.from(new Set(ggs.map(gg => gg[0])));
-        const gradeGroupDict: { [grade: string]: string[] } = {};
-        for (const gg of ggs) {
-            gradeGroupDict[gg[0]] ? gradeGroupDict[gg[0]].push(gg[1]) : (gradeGroupDict[gg[0]] = [gg[1]]);
-        }
 
         // 先通过年级过滤
-        return this.ofGrades(grades).filter(course => {
-            for (const situation of course.situations) {
-                if (situation.groups.length === 0) {
-                    // 如果某节课没有指定“班级/小组”，则按年级，则符合条件
-                    return true;
-                }
-                // 如果该课程的某 situation.groups 与需要的 groups 有重叠，则符合条件
-                else if (gradeGroupDict[course.grade].filter(groupNeeded => situation.groups.indexOf(groupNeeded) > -1).length > 0) {
-                    return true;
-                }
+        return this.ofGrades(grades).filter(c => {
+            let courseHandler = new CoursesHandler(c);
+
+            // 如果某节课没有指定“班级/小组”，则按年级，则符合条件
+            if (!(courseHandler.getSituItems().groups.filter(_ => !!_).length)) {
+                console.log(courseHandler.getSituItems().groups);
+                return true;
             }
-            return false;
+
+            // 如果该课程的某 situation.groups 与需要的 groups 有重叠，则符合条件
+            let groupsNeededForThisGrade = ggs.filter(gg => gg[0] === c.grade).map(gg => gg[1]);
+
+            console.log((new CoursesHandler(c)).getSituItems().groups, (allowCourseWithoutGroup ? groupsNeededForThisGrade.concat("") : groupsNeededForThisGrade));
+
+            return whetherTwoArraysHaveSameElement((new CoursesHandler(c)).getSituItems().groups,
+                allowCourseWithoutGroup ? groupsNeededForThisGrade.concat("") : groupsNeededForThisGrade);
         });
     }
 
@@ -129,24 +126,14 @@ export class CoursesHandler {
 
     ofTeachers(teachers: string[], allowCourseWithoutTeacher: boolean = false) {
         let filter: CourseFilter = c => {
-            for (const situation of c.situations) {
-                if (situation.teacher ? teachers.indexOf(situation.teacher) > -1 : allowCourseWithoutTeacher) {
-                    return true;
-                }
-            }
-            return false;
+            return whetherTwoArraysHaveSameElement((new CoursesHandler(c)).getSituItems().teachers, allowCourseWithoutTeacher ? teachers.concat("") : teachers);
         };
         return this.filter(filter);
     }
 
     ofRooms(rooms: string[], allowCourseWithoutRoom: boolean = false) {
         let filter: CourseFilter = c => {
-            for (const situation of c.situations) {
-                if (situation.room ? rooms.indexOf(situation.room) > -1 : allowCourseWithoutRoom) {
-                    return true;
-                }
-            }
-            return false;
+            return whetherTwoArraysHaveSameElement((new CoursesHandler(c)).getSituItems().rooms, allowCourseWithoutRoom ? rooms.concat("") : rooms);
         };
         return this.filter(filter);
     }
@@ -164,15 +151,27 @@ export class CoursesHandler {
     }
 
     getSituItems() {
+        function decorate(strArray: string[] | undefined | null, course?: any) {
+            if (typeof (strArray) === "undefined") {
+                console.log("v0.7以前的数据:", course, strArray);
+                return [];
+            } else if (strArray === null || strArray.length === 0) {
+                return [""];
+            } else {
+                return strArray;
+            }
+        }
+
         let teachers: string[] = [];
         let groups: string[] = [];
         let rooms: string[] = [];
 
         for (const course of this.value) {
             for (const situation of course.situations) {
-                teachers.concat(situation.teachers);
-                groups.concat(situation.groups);
-                rooms.concat(situation.rooms);
+                // 空数组的话，就补个空字符串（例如判断年级/分组的时候，兴许有用）
+                teachers = teachers.concat(decorate(situation?.teachers, course));
+                groups = groups.concat(decorate(situation?.groups, course));
+                rooms = rooms.concat(decorate(situation?.rooms, course));
             }
         }
 
@@ -240,28 +239,28 @@ export class CourseConflictDetector {
     }
 
     detectTeacherConflict(): string {
-        // 有某位老师在本时段是否有别的课
-        for (const ec of this.ecs) {
-            let teachersOfDc = this.dc.situations.map(dcs => dcs.teacher).filter(teacher => !!teacher) as string[];
-            let teachersOfEc = ec.situations.map(ecs => ecs.teacher).filter(teacher => !!teacher) as string[];
-            let intersectionTeachers = teachersOfDc.filter(teacher => teachersOfEc.indexOf(teacher) > -1);
-            if (intersectionTeachers.length > 0) {
-                return `${intersectionTeachers.join("&")}已有一节${ec.info.name}`;
-            }
-        }
+        // // 有某位老师在本时段是否有别的课
+        // for (const ec of this.ecs) {
+        //     let teachersOfDc = this.dc.situations.map(dcs => dcs.teacher).filter(teacher => !!teacher) as string[];
+        //     let teachersOfEc = ec.situations.map(ecs => ecs.teacher).filter(teacher => !!teacher) as string[];
+        //     let intersectionTeachers = teachersOfDc.filter(teacher => teachersOfEc.indexOf(teacher) > -1);
+        //     if (intersectionTeachers.length > 0) {
+        //         return `${intersectionTeachers.join("&")}已有一节${ec.info.name}`;
+        //     }
+        // }
         return "";
     }
 
     detectRoomConflict(): string {
-        // 有某教室在本时段是否有别的课
-        for (const ec of this.ecs) {
-            let roomsOfDc = this.dc.situations.map(dcSituation => dcSituation.room).filter(room => !!room) as string[];
-            let roomsOfEc = ec.situations.map(ecSituation => ecSituation.room).filter(room => !!room) as string[];
-            let intersectionRooms = roomsOfDc.filter(room => roomsOfEc.indexOf(room) > -1);
-            if (intersectionRooms.length > 0) {
-                return `${intersectionRooms.join("&")}已有一节${ec.info.name}`;
-            }
-        }
+        // // 有某教室在本时段是否有别的课
+        // for (const ec of this.ecs) {
+        //     let roomsOfDc = this.dc.situations.map(dcSituation => dcSituation.room).filter(room => !!room) as string[];
+        //     let roomsOfEc = ec.situations.map(ecSituation => ecSituation.room).filter(room => !!room) as string[];
+        //     let intersectionRooms = roomsOfDc.filter(room => roomsOfEc.indexOf(room) > -1);
+        //     if (intersectionRooms.length > 0) {
+        //         return `${intersectionRooms.join("&")}已有一节${ec.info.name}`;
+        //     }
+        // }
         return "";
     }
 
