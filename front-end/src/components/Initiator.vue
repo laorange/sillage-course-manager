@@ -72,13 +72,38 @@ const initiators = {
       "lessonNum": 1,
       "method": "",
       "note": "",
-      "situations": [{"groups": [], "room": "320", "teacher": ""}],
+      "situations": [],
     };
     for (let i = 0; i < 1000; i++) {
       await store.api.course.create(newCourse, () => {
         if (i % 10 === 0) message.success(`${i}`);
       });
     }
+  },
+  async migrate07_08() {
+    let i = 0;
+    let handleNum = 0;
+    for (const course of store.courses) {
+      if (course.situations.length) {
+        let newSituations: typeof course.situations = course.situations.filter(s => s.teacher || s.room || s.groups.length).map(s => {
+          return {
+            groups: s.groups,
+            teachers: s.teacher ? [s.teacher] : [],
+            rooms: s.room ? [s.room] : [],
+          };
+        });
+        if (newSituations.length) {
+          await store.api.course.update(course, {
+            ...course,
+            situations: newSituations,
+          });
+          handleNum += 1;
+        }
+      }
+      i += 1;
+      console.log(`${i}/${store.courses.length}, handle: ${handleNum}`);
+    }
+    console.log("done");
   },
 };
 
