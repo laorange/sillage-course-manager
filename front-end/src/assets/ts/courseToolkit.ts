@@ -9,6 +9,10 @@ dayjs.extend(isSameOrBefore);
 
 type CourseFilter = (c: Course) => boolean
 
+function getArrayWithUniqueItem<T>(ls: T[]): T[] {
+    return Array.from(new Set(ls));
+}
+
 export class CoursesHandler {
     value: Course[];
 
@@ -157,6 +161,26 @@ export class CoursesHandler {
             return false;
         };
         return this.filter(filter);
+    }
+
+    getSituItems() {
+        let teachers: string[] = [];
+        let groups: string[] = [];
+        let rooms: string[] = [];
+
+        for (const course of this.value) {
+            for (const situation of course.situations) {
+                teachers.concat(situation.teachers);
+                groups.concat(situation.groups);
+                rooms.concat(situation.rooms);
+            }
+        }
+
+        return {
+            teachers: getArrayWithUniqueItem<string>(teachers),
+            groups: getArrayWithUniqueItem<string>(groups),
+            rooms: getArrayWithUniqueItem<string>(rooms),
+        };
     }
 }
 
