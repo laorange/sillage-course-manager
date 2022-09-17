@@ -88,8 +88,10 @@ const initiators = {
         let newSituations: typeof course.situations = course.situations.map(s => {
           return {
             groups: s.groups,
-            teachers: s?.teacher ? [s.teacher] : [],
-            rooms: s?.room ? [s.room] : [],
+            // @ts-ignore
+            teachers: [s?.teacher].concat(s.teachers).filter(_ => !!_),
+            // @ts-ignore
+            rooms: [s?.room].concat(s.rooms).filter(_ => !!_),
           };
         });
         if (newSituations.length) {
@@ -108,11 +110,12 @@ const initiators = {
 };
 
 
-onBeforeMount(() => {
-  initiators.pageTitle();
-  initiators.api();
-  initiators.loginStatus();
+onBeforeMount(async () => {
   initiators.localStorage();
+  initiators.loginStatus();
+  await initiators.api();
+  initiators.pageTitle();
+  // await initiators.migrate07_08();
 });
 
 // onMounted(() => initiators.test());
