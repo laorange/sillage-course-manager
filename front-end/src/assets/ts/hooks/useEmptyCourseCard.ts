@@ -191,6 +191,13 @@ export default function useEmptyCourseCard() {
                     }) : onPositiveClick();
                 },
             },
+            copyAndEdit() {
+                store.editor.mode = "add";
+                store.editor.show = true;
+                store.editor.courseAdding = handlers.notDateMode.getNewCourse(store.editor.courseEditing.grade);
+                store.editor.fromDates = store.editor.courseAdding.dates;
+                store.editor.lessonNum = store.editor.courseAdding.lessonNum;
+            },
         };
 
 
@@ -209,13 +216,23 @@ export default function useEmptyCourseCard() {
                 };
             },
         }));
+
+        if (store.editor.mode === "copy") {
+            items.push({
+                label: "新增课程(以复制的课程为模板)",
+                onClick: () => {
+                    handlers.copyAndEdit();
+                },
+            });
+        }
+
         (grades.length ? grades : store.grades).map(grade => {
             let hasConflict: boolean = store.hasConflictOfCourse(
                 isDateMode ? handlers.isDateMode.getNewCourse(grade) : handlers.notDateMode.getNewCourse(grade),
             );
 
             items.push({
-                label: `粘贴到${grade}${hasConflict?'(与现有课程冲突)':''}`,
+                label: `粘贴到${grade}${hasConflict ? "(与现有课程冲突)" : ""}`,
                 disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy") || hasConflict,
                 onClick: () => {
                     if (isDateMode && store.editor.mode === "cut") handlers.isDateMode.cut(grade);
