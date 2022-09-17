@@ -62,14 +62,11 @@ export class CoursesHandler {
 
             // 如果某节课没有指定“班级/小组”，则按年级，则符合条件
             if (!(courseHandler.getSituItems().groups.filter(_ => !!_).length)) {
-                console.log(courseHandler.getSituItems().groups);
-                return true;
+                return allowCourseWithoutGroup;
             }
 
             // 如果该课程的某 situation.groups 与需要的 groups 有重叠，则符合条件
             let groupsNeededForThisGrade = ggs.filter(gg => gg[0] === c.grade).map(gg => gg[1]);
-
-            console.log((new CoursesHandler(c)).getSituItems().groups, (allowCourseWithoutGroup ? groupsNeededForThisGrade.concat("") : groupsNeededForThisGrade));
 
             return whetherTwoArraysHaveSameElement((new CoursesHandler(c)).getSituItems().groups,
                 allowCourseWithoutGroup ? groupsNeededForThisGrade.concat("") : groupsNeededForThisGrade);
@@ -176,10 +173,33 @@ export class CoursesHandler {
         }
 
         return {
-            teachers: getArrayWithUniqueItem<string>(teachers),
-            groups: getArrayWithUniqueItem<string>(groups),
-            rooms: getArrayWithUniqueItem<string>(rooms),
+            teachers: getArrayWithUniqueItem<string>(teachers).filter(item=>!!item),
+            groups: getArrayWithUniqueItem<string>(groups).filter(item=>!!item),
+            rooms: getArrayWithUniqueItem<string>(rooms).filter(item=>!!item),
         };
+    }
+
+    hasConflictTeachers(dates: string[], lessonNum: number, teachers: string[]): boolean {
+        if (!teachers.length) return false;  // 没有需求，那就没有冲突
+        return !!this.ofDates(dates).ofLessonNum(lessonNum).ofTeachers(teachers, false).value.length;
+    }
+
+    hasConflictGradeGroups(dates: string[], lessonNum: number, gradeGroupArrays: GradeGroupArray[]): boolean {
+        if (!gradeGroupArrays.length) return false;  // 没有需求，那就没有冲突
+        // allowCourseWithoutGroup: false，否则若有一节未指定小组的课程将导致所有小组被禁用
+        return !!this.ofDates(dates).ofLessonNum(lessonNum).ofGradeGroups(gradeGroupArrays, false).value.length;
+    }
+
+    hasConflictRooms(dates: string[], lessonNum: number, rooms: string[]) {
+        if (!rooms.length) return false;  // 没有需求，那就没有冲突
+        return !!this.ofDates(dates).ofLessonNum(lessonNum).ofRooms(rooms, false).value.length;
+    }
+
+    hasConflictCourse(dates: string[], lessonNum: number, queryCourse: Course) {
+        let situItems = new CoursesHandler(queryCourse).getSituItems();
+        return this.hasConflictRooms(dates, lessonNum, situItems.rooms)
+            || this.hasConflictTeachers(dates, lessonNum, situItems.teachers)
+            || this.hasConflictGradeGroups(dates, lessonNum, situItems.groups.map(g => [queryCourse.grade, g]));
     }
 }
 
@@ -207,85 +227,4 @@ export function getEmptyCourse(): Course {
         "method": null,
         "situations": [],
     };
-}
-
-export class CourseConflictDetector {
-    /**
-     * 判断"目标课程"是否与"现有课程"冲突。当两个课程有相交的日期、LessonNum 时，以下情况会产生冲突：
-     * 1. 若某位老师有别的课，视为冲突
-     * 2. 若某个小组有别的课，视为冲突
-     * 3. 若有课程是以大组(年级)为单位，且该年级有别的课，视为冲突
-     * 4. 若包含相同的教室，视为冲突
-     * 如果有冲突，返回 冲突的文字描述，否则返回 空字符串
-     * */
-
-    dc: Course;
-    ecs: Course[];
-
-    constructor(detectedCourse: Course, existingCourses: Course[]) {
-        this.dc = detectedCourse;
-        this.ecs = this.getEcsHavingIntersectionWithDc(existingCourses);
-    }
-
-    getEcsHavingIntersectionWithDc(existingCourses: Course[]): Course[] {
-        // 找到与检测课程lessonNum相等的现有课程
-        return existingCourses.filter(ec => ec.lessonNum === this.dc.lessonNum)
-            // 找到与检测课程有日期交集的现有课程
-            .filter(ec => ec.dates.filter(ecd => this.dc.dates.indexOf(ecd) > -1).length > 0);
-    }
-
-    getConflictString(): string {
-        return [this.detectTeacherConflict(), this.detectRoomConflict(), this.detectGroupConflict()].filter(c => !!c).join("、");
-    }
-
-    detectTeacherConflict(): string {
-        // // 有某位老师在本时段是否有别的课
-        // for (const ec of this.ecs) {
-        //     let teachersOfDc = this.dc.situations.map(dcs => dcs.teacher).filter(teacher => !!teacher) as string[];
-        //     let teachersOfEc = ec.situations.map(ecs => ecs.teacher).filter(teacher => !!teacher) as string[];
-        //     let intersectionTeachers = teachersOfDc.filter(teacher => teachersOfEc.indexOf(teacher) > -1);
-        //     if (intersectionTeachers.length > 0) {
-        //         return `${intersectionTeachers.join("&")}已有一节${ec.info.name}`;
-        //     }
-        // }
-        return "";
-    }
-
-    detectRoomConflict(): string {
-        // // 有某教室在本时段是否有别的课
-        // for (const ec of this.ecs) {
-        //     let roomsOfDc = this.dc.situations.map(dcSituation => dcSituation.room).filter(room => !!room) as string[];
-        //     let roomsOfEc = ec.situations.map(ecSituation => ecSituation.room).filter(room => !!room) as string[];
-        //     let intersectionRooms = roomsOfDc.filter(room => roomsOfEc.indexOf(room) > -1);
-        //     if (intersectionRooms.length > 0) {
-        //         return `${intersectionRooms.join("&")}已有一节${ec.info.name}`;
-        //     }
-        // }
-        return "";
-    }
-
-    detectGroupConflict(): string {
-        for (const ec of this.ecs) {
-            // 如果年级相同
-            if (ec.grade === this.dc.grade) {
-                let groupsOfEc: string[] = ec.situations.map(s => s.groups)
-                    .reduce((result, item) => result.concat(item), []);
-                let groupsOfDc: string[] = this.dc.situations.map(s => s.groups)
-                    .reduce((result, item) => result.concat(item), []);
-
-                // 有某个 Situation 没有设置 Group，因此“只要此处有相同年级，则视为冲突”
-                if (groupsOfEc.length !== groupsOfEc.filter(g => !!g).length
-                    && groupsOfDc.length !== groupsOfDc.filter(g => !!g).length) {
-                    return `${ec.grade}已有一节${ec.info.name}（${ec.grade}没有所属小组）`;
-                }
-
-                // 年级有分组，则以分组若有交集，则视为冲突
-                let intersectionGroups: string[] = groupsOfEc.filter(ge => groupsOfDc.indexOf(ge) > -1);
-                if (intersectionGroups.length > 0) {
-                    return `${intersectionGroups.sort().join("&")}已有一节${ec.info.name}`;
-                }
-            }
-        }
-        return "";
-    }
 }

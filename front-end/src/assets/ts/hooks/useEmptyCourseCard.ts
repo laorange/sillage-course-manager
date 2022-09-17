@@ -17,18 +17,17 @@ export default function useEmptyCourseCard() {
 
 
         const handlers = {
-            ensureNoConflict(course: Course) {
-                // 如有冲突，阻止 并弹出警告
-                let conflict = store.getConflictOfCourse(course);
-                if (conflict) {
-                    message.error(conflict);
-                    throw Error(conflict);
-                }
-                return course;
-            },
+            // ensureNoConflict(course: Course) {
+            //     // 如有冲突，阻止 并弹出警告
+            //     if (store.hasConflictOfCourse(course)) {
+            //         message.error("检测到操作中的课程与已有课程冲突！");
+            //         throw Error(`冲突: ${course}`);
+            //     }
+            //     return course;
+            // },
             notDateMode: {
                 getNewCourse(grade: string): Course {
-                    return handlers.ensureNoConflict({
+                    return {
                         ...store.editor.courseEditing,
                         lessonNum: lessonNum,
                         grade: grade,
@@ -36,7 +35,7 @@ export default function useEmptyCourseCard() {
                             const preDate = dayjs(d);
                             return formatDate(preDate.add(queryWhatDay - getIsoWeekDay(preDate), "day"));
                         }),
-                    });
+                    };
                 },
                 cut(grade: string) {
                     let newCourse = handlers.notDateMode.getNewCourse(grade);
@@ -115,12 +114,12 @@ export default function useEmptyCourseCard() {
                     console.error(e);
                 },
                 getNewCourse(grade: string): Course {
-                    return handlers.ensureNoConflict({
+                    return {
                         ...store.editor.courseEditing,
                         lessonNum: lessonNum,
                         grade: grade,
                         dates: [queryDate],
-                    });
+                    };
                 },
                 cut(grade: string) {
                     let newCourse = handlers.isDateMode.getNewCourse(grade);
@@ -210,16 +209,22 @@ export default function useEmptyCourseCard() {
                 };
             },
         }));
-        (grades.length ? grades : store.grades).map(grade => items.push({
-            label: `粘贴到${grade}`,
-            disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy"),
-            onClick: () => {
-                if (isDateMode && store.editor.mode === "cut") handlers.isDateMode.cut(grade);
-                else if (isDateMode && store.editor.mode === "copy") handlers.isDateMode.copy(grade);
-                else if (!isDateMode && store.editor.mode === "cut") handlers.notDateMode.cut(grade);
-                else if (!isDateMode && store.editor.mode === "copy") handlers.notDateMode.copy(grade);
-            },
-        }));
+        (grades.length ? grades : store.grades).map(grade => {
+            let hasConflict: boolean = store.hasConflictOfCourse(
+                isDateMode ? handlers.isDateMode.getNewCourse(grade) : handlers.notDateMode.getNewCourse(grade),
+            );
+
+            items.push({
+                label: `粘贴到${grade}${hasConflict?'(与现有课程冲突)':''}`,
+                disabled: !(store.editor.mode === "cut" || store.editor.mode === "copy") || hasConflict,
+                onClick: () => {
+                    if (isDateMode && store.editor.mode === "cut") handlers.isDateMode.cut(grade);
+                    else if (isDateMode && store.editor.mode === "copy") handlers.isDateMode.copy(grade);
+                    else if (!isDateMode && store.editor.mode === "cut") handlers.notDateMode.cut(grade);
+                    else if (!isDateMode && store.editor.mode === "copy") handlers.notDateMode.copy(grade);
+                },
+            });
+        });
         return items;
     }
 

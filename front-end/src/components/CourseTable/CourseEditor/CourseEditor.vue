@@ -5,7 +5,7 @@ import WeekSelector from "./WeekSelector.vue";
 import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption, useMessage, useDialog} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
-import {isValidCourse} from "../../../assets/ts/courseToolkit";
+import {CoursesHandler, isValidCourse} from "../../../assets/ts/courseToolkit";
 import {useRoute} from "vue-router";
 import {whetherTwoObjNotEqual} from "../../../assets/ts/whetherTwoObjNotEqual";
 
@@ -15,6 +15,7 @@ const message = useMessage();
 const dialog = useDialog();
 
 const operatingCourse = computed<Course>(() => store.editor.mode === "add" ? store.editor.courseAdding : store.editor.courseEditing);
+const existingCoursesHandler = computed<CoursesHandler>(() => store.getExistingCoursesOfCourse(operatingCourse.value));
 
 const courseLocal = ref<Course>(JSON.parse(JSON.stringify(operatingCourse.value)));
 watch(() => operatingCourse.value, (oc) => {
@@ -59,12 +60,6 @@ const handlers = {
       message.info("因为没有更改，所以无事发生");
       this.restore();
     } else {
-      // 如有冲突，阻止 并弹出警告
-      let conflict = store.getConflictOfCourse(courseLocal.value);
-      if (conflict) {
-        return message.error(conflict);
-      }
-
       this.thinkTwiceIfDataChanged(() => {
         store.api.course.update(operatingCourse.value, courseLocal.value,
             () => {
@@ -82,12 +77,6 @@ const handlers = {
     if (!whetherCourseIsValid) {
       message.error("请将数据补充完整(红色边框代表必填项)");
     } else {
-      // 如有冲突，阻止 并弹出警告
-      let conflict = store.getConflictOfCourse(courseLocal.value);
-      if (conflict) {
-        return message.error(conflict);
-      }
-
       this.thinkTwiceIfDataChanged(() => {
         store.api.course.create(courseLocal.value,
             record => {
@@ -159,7 +148,9 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
 
       <div aria-label="班级（小组）">
         <n-divider :dashed="true">教学计划</n-divider>
-        <SituationEditor v-model:situations="courseLocal.situations" :grade="courseLocal.grade"/>
+        <SituationEditor v-model:situations="courseLocal.situations" :grade="courseLocal.grade"
+                         :selected-dates="courseLocal.dates" :selected-lesson-num="courseLocal.lessonNum"
+                         :existing-courses-handler="existingCoursesHandler"/>
       </div>
 
       <div aria-label="课程颜色">

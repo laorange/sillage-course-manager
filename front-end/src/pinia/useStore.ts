@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {Config, Course, CourseInfo, LocalConfig, Notice} from "../assets/ts/types";
 import dayjs from "dayjs";
-import {CourseConflictDetector, CoursesHandler, getEmptyCourse} from "../assets/ts/courseToolkit";
+import {CoursesHandler, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
 import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
@@ -98,7 +98,7 @@ export const useStore = defineStore("store", {
                     _grades.push(courses.grade);
                 }
             }
-            return _grades.sort();
+            return getArrayWithUniqueItem(_grades).sort();
         },
         groupDict(): { [grade: string]: string[] } {
             const _groupDict: { [grade: string]: string[] } = {};
@@ -136,7 +136,7 @@ export const useStore = defineStore("store", {
             // 从已有课程中遍历出已有授课教师
             _teachers = _teachers.concat((new CoursesHandler(this.courses)).getSituItems().teachers);
 
-            return _teachers.sort();
+            return getArrayWithUniqueItem(_teachers).sort();
         },
         methods(): string[] {
             // 从预设中导入
@@ -147,7 +147,7 @@ export const useStore = defineStore("store", {
                     _methods.push(courses.method);
                 }
             }
-            return _methods.sort();
+            return getArrayWithUniqueItem(_methods).sort();
         },
         courseNames(): string[] {
             return Object.keys(this.courseInfoDict).sort();
@@ -222,16 +222,19 @@ export const useStore = defineStore("store", {
             }
             return result ? result : word;
         },
-        getConflictOfCourse(targetCourse: Course): string {
-            let existingCourses: Course[] = (new CoursesHandler(this.courses))
-                .ofLessonNum(targetCourse.lessonNum).ofDates(targetCourse.dates).value;
-            if (this.editor.mode === "copy" || this.editor.mode === "cut" || this.editor.mode === "add") {
+        getExistingCoursesOfCourse(targetCourse: Course): CoursesHandler {
+            let ecs = (new CoursesHandler(this.courses)).ofLessonNum(targetCourse.lessonNum).ofDates(targetCourse.dates);
+
+            if (this.editor.mode !== "copy" && this.editor.mode !== "cut" && this.editor.mode !== "add") {
                 // 复制、剪切 的时候 需要考虑 当前正在编辑课程带来的影响。新增时，id为空，无影响
-            } else {
                 // 编辑(更新) 时 不需要考虑 当前正在编辑课程带来的影响
-                existingCourses = existingCourses.filter((c: Course) => c.id !== targetCourse.id);
+                ecs = ecs.filter((c: Course) => c.id !== targetCourse.id);
             }
-            return (new CourseConflictDetector(targetCourse, existingCourses)).getConflictString();
+
+            return ecs;
+        },
+        hasConflictOfCourse(targetCourse: Course) {
+            return this.getExistingCoursesOfCourse(targetCourse).hasConflictCourse(targetCourse.dates, targetCourse.lessonNum, targetCourse);
         },
         validateAuthStatus() {
             if (localStorage.getItem("pocketbase_auth")) {

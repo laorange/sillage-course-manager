@@ -4,8 +4,12 @@ import {computed} from "vue";
 import {SelectOption} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
 import {useRoute} from "vue-router";
+import {CoursesHandler} from "../../../assets/ts/courseToolkit";
 
-const props = defineProps<{ situations: Situation[], grade: string }>();
+const props = defineProps<{
+  situations: Situation[], grade: string,
+  selectedDates: string[], selectedLessonNum: number, existingCoursesHandler: CoursesHandler
+}>();
 const emits = defineEmits(["update:situations"]);
 
 const store = useStore();
@@ -24,16 +28,25 @@ function createSituation(): Situation {
   };
 }
 
-const teacherOptions = computed<SelectOption[]>(() => store.teachers.map(t => {
-  return {label: t, value: t};
+const teacherOptions = computed<SelectOption[]>(() => store.teachers.map(teacher => {
+  return {
+    label: teacher, value: teacher,
+    disabled: props.existingCoursesHandler.hasConflictTeachers(props.selectedDates, props.selectedLessonNum, [teacher]),
+  };
 }));
 
-const groupOptions = computed<SelectOption[]>(() => (store.groupDict[props.grade] ?? []).map(g => {
-  return {label: g, value: g};
+const groupOptions = computed<SelectOption[]>(() => (store.groupDict[props.grade] ?? []).map(group => {
+  return {
+    label: group, value: group,
+    disabled: props.existingCoursesHandler.hasConflictGradeGroups(props.selectedDates, props.selectedLessonNum, [[props.grade, group]]),
+  };
 }));
 
-const roomOptions = computed<SelectOption[]>(() => store.rooms.map(r => {
-  return {label: r, value: r};
+const roomOptions = computed<SelectOption[]>(() => store.rooms.map(room => {
+  return {
+    label: room, value: room,
+    disabled: props.existingCoursesHandler.hasConflictRooms(props.selectedDates, props.selectedLessonNum, [room]),
+  };
 }));
 </script>
 
