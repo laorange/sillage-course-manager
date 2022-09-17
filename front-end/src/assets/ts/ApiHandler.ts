@@ -75,6 +75,7 @@ class CourseCollection extends Collection<Course> {
 
         return {
             ...rawData,
+            situations: rawData.situations.filter(s => s.groups.length || s.rooms.length || s.teachers.length),  // 过滤无效的教学计划
             dates: rawData.dates.slice().sort((a, b) => {
                 return dayjs(a).isAfter(dayjs(b), "day") ? 1 : -1;
             }),
