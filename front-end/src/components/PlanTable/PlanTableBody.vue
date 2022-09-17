@@ -125,10 +125,10 @@ function refreshGridData() {
       for (const situation of course.situations) {
         if (situation.groups.length) {
           for (const group of situation.groups) {
-            addRecord(gradeNameRecord[course.grade][course.info.name], course.method ?? "", situation.teacher ?? "", group, course.dates);
+            addRecord(gradeNameRecord[course.grade][course.info.name], course.method ?? "", situation.teachers.join("&"), group, course.dates);
           }
         } else {
-          addRecord(gradeNameRecord[course.grade][course.info.name], course.method ?? "", situation.teacher ?? "", "", course.dates);
+          addRecord(gradeNameRecord[course.grade][course.info.name], course.method ?? "", situation.teachers.join("&"), "", course.dates);
         }
       }
     } else {
