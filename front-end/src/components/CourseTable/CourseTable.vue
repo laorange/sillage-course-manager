@@ -13,6 +13,8 @@ import {NoticesHandler} from "../../assets/ts/noticeToolkit";
 import ThinkTwiceSwitch from "./CourseTable/ThinkTwiceSwitch.vue";
 import VerticalCardSwitch from "./CourseTable/VerticalCardSwitch.vue";
 import DisplayModeSelector from "./CourseTable/DisplayModeSelector.vue";
+import {onBeforeRouteUpdate} from "vue-router";
+import {recordLastVisitPath} from "../../router/router";
 
 const store = useStore();
 
@@ -49,6 +51,8 @@ const handlers = {
     store.localConfig.readNotices = Array.from(new Set(store.localConfig.readNotices.concat(recentNotices.value.map(n => n.id))));
   },
 };
+
+onBeforeRouteUpdate(recordLastVisitPath)
 </script>
 
 <template>
