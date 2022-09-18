@@ -14,6 +14,16 @@
 
 使用说明：[docs.siae.top](http://docs.siae.top)
 
+
+
+目前项目有三个板块：
+
+- "[迹云课表](https://www.yuque.com/laorange/sillage/documentation)"是为了改善学院采用Excel查改课表的不便，可自定义、可拓展、具备复制、剪切、粘贴等类似Excel上的操作；
+- "[迹云钉钉](https://www.yuque.com/laorange/sillage/dingtalk-subscribe)"是一个课表推送程序，通过简单的订阅，上课之前您会收到钉钉消息提醒。
+- "[迹云知识库](https://www.yuque.com/laorange/sillage/)"是一个基于"语雀"的云端知识库，旨在分享学习资料和经验，也可参考[这篇文章](https://www.yuque.com/laorange/sillage/contribute/)进行投稿。
+
+
+
 ---
 
 ## 智能管理
@@ -26,7 +36,9 @@
 
 ## 扩展功能
 
-考试倒计时，可自习的空闲教室，课表改动通知...
+如果想要开发基于本系统的拓展程序(例如：考试倒计时，空闲教室...)，可参考[API文档](https://www.apifox.cn/apidoc/shared-07310e33-9848-415d-9d08-84ad050290c3/)。
+
+目前已有"[钉钉课程推送](https://github.com/laorange/sillage-dingtalk)"项目可供参考。
 
 
 
