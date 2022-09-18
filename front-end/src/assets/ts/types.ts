@@ -1,3 +1,5 @@
+import {RouteLocationNormalized} from "vue-router";
+
 export interface RawPocketBaseData<K> {
     "page": number,
     "perPage": number,
@@ -95,6 +97,7 @@ export interface LocalConfig {
     thinkTwice: boolean;
     version: string;
     readNotices: string[];
+    lastVisitPath: null | RouteLocationNormalized;
 }
 
 export type GradeGroupArray = [string, string]

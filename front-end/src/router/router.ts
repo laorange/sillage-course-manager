@@ -12,6 +12,18 @@ function noGradeToAllGrades(to: RouteLocationNormalized, from: RouteLocationNorm
     else next();
 }
 
+function recordLastVisitPath(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    const store = useStore();
+    store.localConfig.lastVisitPath = {...to};
+    next();
+}
+
+function goToLastVisitPage(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    const store = useStore();
+    if (store.localConfig.lastVisitPath) next(store.localConfig.lastVisitPath);
+    else next();
+}
+
 
 const routes: RouteRecordRaw[] = [
     {
@@ -26,10 +38,16 @@ const routes: RouteRecordRaw[] = [
         component: ConfigEditor,
     },
     {
+        path: "/last-visit/",
+        name: "last-visit",
+        component: CourseTable,
+        beforeEnter: goToLastVisitPage,
+    },
+    {
         path: "/course/",
         name: "course",
         component: CourseTable,
-        // beforeEnter: noGradeToAllGrades,
+        beforeEnter: recordLastVisitPath,
     },
     {
         path: "/login/",

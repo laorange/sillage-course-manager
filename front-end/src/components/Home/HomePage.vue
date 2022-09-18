@@ -21,6 +21,9 @@ const handlers = {
   toDocs() {
     window.open("http://docs.siae.top");
   },
+  toLastVisitPage() {
+    router.push({name: "last-visit"});
+  },
   toPlan() {
     router.push({name: "plan"});
   },
@@ -48,6 +51,8 @@ const handlers = {
 
       <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
+      <n-button type="success" @click="handlers.toLastVisitPage" v-if="store.localConfig.lastVisitPath">{{ store.translate(`上次访问`) }}</n-button>
+
       <n-button v-for="grade in store.grades"
                 :key="`grade${grade}`"
                 type="success"
@@ -56,7 +61,7 @@ const handlers = {
       </n-button>
 
       <n-button type="success" @click="router.push({name:`course`})" v-if="store.courses.length">{{ store.translate(`全部课程`) }}</n-button>
-      <n-button type="success" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
+      <n-button type="info" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
 
       <n-button type="warning" v-if="!store.editor.authenticated && inDevelopMode" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
 
