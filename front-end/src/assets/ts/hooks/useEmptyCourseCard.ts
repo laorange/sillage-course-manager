@@ -194,7 +194,9 @@ export default function useEmptyCourseCard() {
             copyAndEdit() {
                 store.editor.mode = "add";
                 store.editor.show = true;
-                store.editor.courseAdding = handlers.notDateMode.getNewCourse(store.editor.courseEditing.grade);
+                store.editor.courseAdding = isDateMode
+                    ? handlers.isDateMode.getNewCourse(store.editor.courseEditing.grade)
+                    : handlers.notDateMode.getNewCourse(store.editor.courseEditing.grade);
                 store.editor.fromDates = store.editor.courseAdding.dates;
                 store.editor.lessonNum = store.editor.courseAdding.lessonNum;
             },
