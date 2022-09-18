@@ -21,7 +21,7 @@ function recordLastVisitPath(to: RouteLocationNormalized, from: RouteLocationNor
 function goToLastVisitPage(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     const store = useStore();
     if (store.localConfig.lastVisitPath) next(store.localConfig.lastVisitPath);
-    else next();
+    else next({...to, name: "course"});
 }
 
 
