@@ -113,6 +113,36 @@ watch(() => courseLocal.value.info.name, (name) => {
 });
 
 
+// 在打开编辑栏时，检查当前课程是否有冲突，有的话自动去掉冲突项
+watch(() => store.editor.show, (show) => {
+  if (show) {
+    let ecs = store.getExistingCoursesOfCourse(courseLocal.value);
+
+    for (const s of courseLocal.value.situations) {
+      for (const group of s.groups) {
+        if (ecs.hasConflictGradeGroups(courseLocal.value.dates, courseLocal.value.lessonNum, [[courseLocal.value.grade, group]])) {
+          message.error(`${courseLocal.value.grade}-${group}在此时段有别的课了，请修改`);
+          s.groups = s.groups.filter(g => g !== group);
+        }
+      }
+
+      for (const teacher of s.teachers) {
+        if (ecs.hasConflictTeachers(courseLocal.value.dates, courseLocal.value.lessonNum, [teacher])) {
+          message.error(`${teacher}在此时段有别的课了，请修改`);
+          s.teachers = s.teachers.filter(t => t !== teacher);
+        }
+      }
+
+      for (const room of s.rooms) {
+        if (ecs.hasConflictRooms(courseLocal.value.dates, courseLocal.value.lessonNum, [room])) {
+          message.error(`${room}在此时段有别的课了，请修改`);
+          s.rooms = s.rooms.filter(r => r !== room);
+        }
+      }
+    }
+  }
+}, {immediate: true});
+
 const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.value));
 </script>
 
