@@ -3,6 +3,7 @@ import {useStore} from "../../pinia/useStore";
 import {useRouter} from "vue-router";
 import config from "../../../package.json";
 import {computed} from "vue";
+import CopyrightDiv from "../AboutPage/CopyrightDiv.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -18,7 +19,7 @@ const languageOptions = computed(() => ["中文"].concat(store.config.content.la
 
 const handlers = {
   toDocs() {
-    location.href = "https://laorange.github.io/sillage-docs";
+    window.open("http://docs.siae.top");
   },
   toPlan() {
     router.push({name: "plan"});
@@ -38,9 +39,8 @@ const handlers = {
 
 <template>
   <main>
-    <n-space :vertical="true" justify="center" align="center" size="large">
+    <n-space :vertical="true" justify="center" align="center" :size="15">
       <h1>{{ store.translate(store.config.content.tableName) }}</h1>
-      <div class="version">v{{ config.version }}<span v-if="inDevelopMode">-alpha</span></div>
 
       <div class="language-selector" v-if="store.config.content.languages.length">
         <n-select v-model:value="store.localConfig.language" :options="languageOptions"/>
@@ -58,7 +58,7 @@ const handlers = {
       <n-button type="success" @click="router.push({name:`course`})" v-if="store.courses.length">{{ store.translate(`全部课程`) }}</n-button>
       <n-button type="success" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
 
-      <n-button type="warning" v-if="!store.editor.authenticated" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
+      <n-button type="warning" v-if="!store.editor.authenticated && inDevelopMode" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
 
       <template v-if="store.editor.authenticated">
         <n-button type="error" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
@@ -66,12 +66,15 @@ const handlers = {
 
       <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
     </n-space>
+
+    <copyright-div project-url="https://github.com/laorange/sillage-course-manager"/>
   </main>
 </template>
 
 <style scoped>
 main {
-  height: 90vh;
+  padding-top: 30px;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -79,9 +82,6 @@ main {
 
 h1 {
   margin-bottom: 0;
-}
-
-.version {
 }
 
 .language-selector {
