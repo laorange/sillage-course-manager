@@ -15,7 +15,10 @@ const containerWidth = computed<number>(() => {
 
 const containerScaleNum = computed<number>(() => document.body.clientWidth / containerWidth.value);
 
-onMounted(() => window.addEventListener("resize", synchronizeWidth));
+onMounted(() => {
+  window.addEventListener("resize", synchronizeWidth);
+  synchronizeWidth();
+});
 onBeforeUnmount(() => window.removeEventListener("resize", synchronizeWidth));
 
 defineExpose({
@@ -25,7 +28,7 @@ defineExpose({
 </script>
 
 <template>
-  <div :style="{width: `${containerWidth}px`, zoom: containerScaleNum}">
+  <div :style="{width: `${containerWidth-1}px`, zoom: containerScaleNum}">
     <slot/>
   </div>
 </template>
