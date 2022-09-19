@@ -2,7 +2,7 @@
 import dayjs from "dayjs";
 import {zhCN, dateZhCN, SelectOption} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
-import {computed} from "vue";
+import {computed, onMounted, onUnmounted} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
 
 const store = useStore();
@@ -25,7 +25,7 @@ const dateMode = computed<"日期模式" | "星期模式">({
 });
 
 const weekStr = computed<string>(() => {
-  let week: number
+  let week: number;
   if (props.isDateMode) {
     // 日期模式下，显示查询日期是第几周
     week = store.getWeekNumOfSomeDate(queryDateLocal.value);
@@ -45,7 +45,22 @@ const handlers = {
   lastWeek() {
     queryDateLocal.value = formatDate(dayjs(queryDateLocal.value).add(-1, "week"));
   },
+  keyUpHandler(event: KeyboardEvent) {
+    console.log(event.key);
+    if (props.isDateMode) {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        handlers.lastWeek();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        handlers.nextWeek();
+      }
+    }
+  },
 };
+
+onMounted(() => document.addEventListener("keyup", handlers.keyUpHandler));
+onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
 </script>
 
 <template>
