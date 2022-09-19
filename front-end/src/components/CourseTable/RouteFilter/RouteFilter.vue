@@ -115,6 +115,7 @@ defineExpose({
   sources,
   courses,
   notices,
+  showFilterDialog,
 });
 </script>
 

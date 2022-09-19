@@ -2,14 +2,17 @@
 import dayjs from "dayjs";
 import {zhCN, dateZhCN, SelectOption, useMessage} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
-import {computed, onMounted, onUnmounted, watch} from "vue";
+import {computed, inject, onMounted, onUnmounted, Ref, watch} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
+import RouteFilter from "../RouteFilter/RouteFilter.vue";
 
 const store = useStore();
 const message = useMessage();
 
 const props = defineProps<{ queryDate: string, isDateMode: boolean }>();
 const emits = defineEmits(["update:queryDate", "update:isDateMode"]);
+
+const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
 
 const dateModeOption: SelectOption[] = ["日期模式", "星期模式"].map(mode => {
   return {label: store.translate(mode), value: mode};
@@ -50,8 +53,8 @@ const handlers = {
     queryDateLocal.value = formatDate(dayjs(queryDateLocal.value).add(-1, "week"));
   },
   keyUpHandler(event: KeyboardEvent) {
-    console.log(event.key);
-    if (props.isDateMode) {
+    // 在日期模式 && 没有打开"课程编辑器" && 没有打开"偏好设置"
+    if (props.isDateMode && !store.editor.show && !routeFilter?.value?.showFilterDialog) {
       if (event.key === "ArrowLeft") {
         event.preventDefault();
         handlers.lastWeek();
