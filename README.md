@@ -4,7 +4,7 @@
 
 <h1 align="center">迹云课表</h1>
 
-<p align="center">轻量的课程管理系统</p>
+<p align="center">单文件课程管理系统</p>
 
 ## 简介
 
