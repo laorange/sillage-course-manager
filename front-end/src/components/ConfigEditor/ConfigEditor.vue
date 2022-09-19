@@ -4,7 +4,7 @@ import {useStore} from "../../pinia/useStore";
 import LessonConfigEditor from "./LessonConfigEditor.vue";
 import GradeEditor from "./GradeEditor.vue";
 import LanguageEditor from "./LanguageEditor.vue";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import {onBeforeRouteLeave, useRouter} from "vue-router";
 import {Config} from "../../assets/ts/types";
 import {whetherTwoObjNotEqual} from "../../assets/ts/whetherTwoObjNotEqual";
@@ -15,6 +15,7 @@ const dialog = useDialog();
 const router = useRouter();
 
 let configBackUp = JSON.parse(JSON.stringify(store.config));
+watch(() => store.config, config => configBackUp = config, {deep: true});
 
 const whetherChanged = computed<boolean>(() => whetherTwoObjNotEqual(configBackUp, store.config));
 
@@ -25,6 +26,7 @@ function isNotMonday(d: string) {
 }
 
 let thinkTwiceLocal = store.localConfig.thinkTwice;
+watch(() => store.localConfig.thinkTwice, newThinkTwice => thinkTwiceLocal = newThinkTwice);
 
 onBeforeRouteLeave((to, from, next) => {
   if (thinkTwiceLocal && whetherChanged.value) {
@@ -89,7 +91,8 @@ const handlers = {
     }, "当前未保存的信息将会丢失，是否继续？");
   },
   backToHomeWithForce() {
-    router.push({name: "home", params: {force: "true"}});
+    thinkTwiceLocal = false;
+    router.push({name: "home"});
   },
 };
 </script>
