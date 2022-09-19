@@ -8,13 +8,13 @@ const route = useRoute();
 const activeIndex = ref(route.name ?? "");
 
 const lastVisitIconColor = computed(() => {
-  return route.name === "course" ? "#1989fa" : undefined;
+  return route.name === "favorites" ? "#1989fa" : undefined;
 });
 </script>
 <template>
   <van-tabbar v-model="activeIndex" placeholder route>
     <van-tabbar-item icon="wap-home" name="home" to="/"></van-tabbar-item>
-    <van-tabbar-item icon="star" name="course" to="/last-visit/">
+    <van-tabbar-item icon="star" name="favorites" to="/favorites/">
       <template #icon="props">
         <n-icon :color="lastVisitIconColor">
           <Star/>

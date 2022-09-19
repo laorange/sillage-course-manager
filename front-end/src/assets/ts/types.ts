@@ -98,6 +98,7 @@ export interface LocalConfig {
     version: string;
     readNotices: string[];
     lastVisitPath: null | RouteLocationNormalized;
+    favorites: RouteLocationNormalized[];
 }
 
 export type GradeGroupArray = [string, string]

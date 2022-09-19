@@ -4,6 +4,7 @@ import ConfigEditor from "../components/ConfigEditor/ConfigEditor.vue";
 import CourseTable from "../components/CourseTable/CourseTable.vue";
 import LoginPage from "../components/LoginPage/LoginPage.vue";
 import PlanTable from "../components/PlanTable/PlanTable.vue";
+import FavoritesPage from "../components/FavoritesPage/FavoritesPage.vue";
 import {useStore} from "../pinia/useStore";
 
 function noGradeToAllGrades(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
@@ -42,6 +43,11 @@ const routes: RouteRecordRaw[] = [
         name: "last-visit",
         component: CourseTable,
         beforeEnter: goToLastVisitPage,
+    },
+    {
+        path: "/favorites/",
+        name: "favorites",
+        component: FavoritesPage,
     },
     {
         path: "/course/",

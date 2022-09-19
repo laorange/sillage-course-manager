@@ -15,6 +15,7 @@ import VerticalCardSwitch from "./CourseTable/VerticalCardSwitch.vue";
 import DisplayModeSelector from "./CourseTable/DisplayModeSelector.vue";
 import {onBeforeRouteUpdate} from "vue-router";
 import {recordLastVisitPath} from "../../router/router";
+import FavoriteThisPageButton from "./CourseTable/FavoriteThisPageButton.vue";
 
 const store = useStore();
 
@@ -52,7 +53,7 @@ const handlers = {
   },
 };
 
-onBeforeRouteUpdate(recordLastVisitPath)
+onBeforeRouteUpdate(recordLastVisitPath);
 </script>
 
 <template>
@@ -62,6 +63,8 @@ onBeforeRouteUpdate(recordLastVisitPath)
 
   <RouteFilter ref="routeFilter">
     <template #button>
+      <FavoriteThisPageButton/>
+
       <n-badge v-if="unreadNotices.length" :value="unreadNotices.length" :max="99">
         <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
       </n-badge>

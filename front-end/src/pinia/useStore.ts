@@ -65,6 +65,7 @@ export const useStore = defineStore("store", {
                 version: "0.0.0",
                 readNotices: [],
                 lastVisitPath: null,
+                favorites: [],
             },
 
             editor: {
@@ -185,6 +186,7 @@ export const useStore = defineStore("store", {
                 .concat(["公告", "一天", "一周", "管理员入口", "水平显示", "竖直显示", "上次访问"])
                 .concat(["名称", "上一周", "下一周", "日期模式", "星期模式", "显示内容", "堆叠方向"])
                 .concat(["确定", "取消", "成功", "完成", "失败"])
+                .concat(["收藏夹", "收藏本页", "已收藏", "取消收藏", "这里空空如也", "返回首页"])
                 .concat(Array.from("一二三四五六天").map(w => `星期${w}`));
         },
         courseOfCurrentSemester(): CoursesHandler {

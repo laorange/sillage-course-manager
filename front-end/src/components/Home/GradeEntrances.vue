@@ -9,6 +9,9 @@ const handlers = {
   toLastVisitPage() {
     router.push({name: "last-visit"});
   },
+  toToFavoritesPage() {
+    router.push({name: "favorites"});
+  },
 };
 </script>
 <template>
@@ -23,8 +26,12 @@ const handlers = {
 
       <n-button class="grade-entrance" type="success" @click="router.push({name:`course`})" v-if="store.courses.length">{{ store.translate(`全部课程`) }}</n-button>
 
-      <n-button class="grade-entrance grade-entrance-full-row" type="success"
+      <n-button class="grade-entrance" type="success"
                 @click="handlers.toLastVisitPage" v-if="store.localConfig.lastVisitPath">{{ store.translate(`上次访问`) }}
+      </n-button>
+
+      <n-button class="grade-entrance" type="success"
+                @click="handlers.toToFavoritesPage()" v-if="store.localConfig.favorites.length">{{ store.translate(`收藏夹`) }}
       </n-button>
     </div>
   </div>
@@ -42,9 +49,5 @@ const handlers = {
 .grade-entrance {
   flex: 1 40%;
   margin: 15px 10px;
-}
-
-.grade-entrance-full-row {
-  flex: 1 100%;
 }
 </style>
