@@ -2,27 +2,18 @@
 import {useStore} from "../../pinia/useStore";
 import {useRouter} from "vue-router";
 import config from "../../../package.json";
-import {computed} from "vue";
 import CopyrightDiv from "../AboutPage/CopyrightDiv.vue";
+import LanguageSelector from "./LanguageSelector.vue";
+import GradeEntrances from "./GradeEntrances.vue";
 
 const store = useStore();
 const router = useRouter();
 
 const inDevelopMode: boolean = import.meta.env.MODE === "development";
 
-const languageOptions = computed(() => ["中文"].concat(store.config.content.languages).map(language => {
-  return {
-    value: language,
-    label: language,
-  };
-}));
-
 const handlers = {
   toDocs() {
     window.open("http://docs.siae.top");
-  },
-  toLastVisitPage() {
-    router.push({name: "last-visit"});
   },
   toPlan() {
     router.push({name: "plan"});
@@ -42,25 +33,14 @@ const handlers = {
 
 <template>
   <main>
-    <n-space :vertical="true" justify="center" align="center" :size="15">
+    <div class="home-page">
       <h1>{{ store.translate(store.config.content.tableName) }}</h1>
-
-      <div class="language-selector" v-if="store.config.content.languages.length">
-        <n-select v-model:value="store.localConfig.language" :options="languageOptions"/>
-      </div>
+      <LanguageSelector/>
 
       <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
-      <n-button type="success" @click="handlers.toLastVisitPage" v-if="store.localConfig.lastVisitPath">{{ store.translate(`上次访问`) }}</n-button>
+      <GradeEntrances/>
 
-      <n-button v-for="grade in store.grades"
-                :key="`grade${grade}`"
-                type="success"
-                @click="router.push({name:`course`, query:{grade}})">
-        {{ store.translate(grade) }}
-      </n-button>
-
-      <n-button type="success" @click="router.push({name:`course`})" v-if="store.courses.length">{{ store.translate(`全部课程`) }}</n-button>
       <n-button type="info" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
 
       <n-button type="warning" v-if="!store.editor.authenticated && inDevelopMode" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
@@ -70,26 +50,35 @@ const handlers = {
       </template>
 
       <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
-    </n-space>
 
-    <copyright-div project-url="https://github.com/laorange/sillage-course-manager"/>
+      <copyright-div project-url="https://github.com/laorange/sillage-course-manager"/>
+    </div>
   </main>
 </template>
 
 <style scoped>
 main {
-  padding-top: 30px;
+  display: flex;
   min-height: 90vh;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.home-page {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-wrap: wrap;
+}
+
+.home-page > * {
+  flex: 1 40%;
+  margin: 15px max(calc(40vw - 130px), 30px);
+  min-height: 34px;
 }
 
 h1 {
   margin-bottom: 0;
-}
-
-.language-selector {
-  min-width: 200px;
 }
 </style>
