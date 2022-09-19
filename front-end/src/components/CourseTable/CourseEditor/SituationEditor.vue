@@ -3,7 +3,6 @@ import {Situation} from "../../../assets/ts/types";
 import {computed} from "vue";
 import {SelectOption} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
-import {useRoute} from "vue-router";
 import {CoursesHandler} from "../../../assets/ts/courseToolkit";
 
 const props = defineProps<{
@@ -13,7 +12,6 @@ const props = defineProps<{
 const emits = defineEmits(["update:situations"]);
 
 const store = useStore();
-const route = useRoute();
 
 const situationsLocal = computed<Situation[]>({
   get: () => props.situations,

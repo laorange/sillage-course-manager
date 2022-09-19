@@ -63,7 +63,7 @@ function saveDictionaryToStore(gridObj: DataGridXL) {
     store.config.content.dictionary[row["中文"]] = store.config.content.languages.map(l => row[l] ?? "");
   }
 
-  message.success("已保存");
+  message.success(`词典已缓存到本地，还需"提交"到后台`);
   props.onCancel();
 }
 

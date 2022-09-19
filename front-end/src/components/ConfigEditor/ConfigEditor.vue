@@ -146,7 +146,7 @@ const handlers = {
       <n-divider/>
 
       <n-space justify="center" align="center">
-        <n-button type="success" size="large" @click="handlers.upload()">保存</n-button>
+        <n-button type="success" size="large" @click="handlers.upload()">提交</n-button>
         <n-button type="default" size="large" @click="handlers.resetAndLeave()">取消</n-button>
       </n-space>
     </div>
