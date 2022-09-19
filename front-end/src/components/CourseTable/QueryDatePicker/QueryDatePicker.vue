@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
-import {zhCN, dateZhCN, SelectOption} from "naive-ui";
+import {zhCN, dateZhCN, SelectOption, useMessage} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
-import {computed, onMounted, onUnmounted} from "vue";
+import {computed, onMounted, onUnmounted, watch} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
 
 const store = useStore();
+const message = useMessage();
 
 const props = defineProps<{ queryDate: string, isDateMode: boolean }>();
 const emits = defineEmits(["update:queryDate", "update:isDateMode"]);
@@ -36,6 +37,9 @@ const weekStr = computed<string>(() => {
   if (week > store.config.content.maxWeekNum || week <= 0) return "";
   let _weekUnitStr = store.translate("星期");
   return _weekUnitStr === "星期" ? `第${week}周` : `${_weekUnitStr} ${week}`;
+});
+watch(() => weekStr.value, (newWeekStr) => {
+  if (newWeekStr) message.info(newWeekStr, {duration: 1000});
 });
 
 const handlers = {
