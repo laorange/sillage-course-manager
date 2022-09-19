@@ -24,20 +24,23 @@ function isNotMonday(d: string) {
   return (new Date(d)).getDay() !== 1;
 }
 
-onBeforeRouteLeave((to) => {
-  if (!to.params.force) {
-    const onPositiveClick = () => {
-      handlers.restoreData();
-      router.push({...to, params: {...to.params, force: "true"}});
-    };
-    store.localConfig.thinkTwice ? dialog.info({
+let thinkTwiceLocal = store.localConfig.thinkTwice;
+
+onBeforeRouteLeave((to, from, next) => {
+  if (thinkTwiceLocal && whetherChanged.value) {
+    dialog.info({
       title: "提示",
       content: `当前页面未保存的信息将会丢失，是否继续？`,
       positiveText: "确定",
       negativeText: "取消",
-      onPositiveClick,
-    }) : onPositiveClick();
-    return false;
+      onPositiveClick: () => {
+        thinkTwiceLocal = false;
+        handlers.restoreData();
+        next({...to, params: {...to.params}});
+      },
+    });
+  } else {
+    next();
   }
 });
 
