@@ -4,6 +4,9 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import {getIsoWeekDay} from "./datetimeUtils";
 import {getArrayWithUniqueItem, whetherTwoArraysHaveSameElement} from "./useCommonUtils";
+import {RouteLocationNormalized} from "vue-router";
+import {useStore} from "../../pinia/useStore";
+import {UnwrapRef} from "vue";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -173,9 +176,9 @@ export class CoursesHandler {
         }
 
         return {
-            teachers: getArrayWithUniqueItem<string>(teachers).filter(item=>!!item),
-            groups: getArrayWithUniqueItem<string>(groups).filter(item=>!!item),
-            rooms: getArrayWithUniqueItem<string>(rooms).filter(item=>!!item),
+            teachers: getArrayWithUniqueItem<string>(teachers).filter(item => !!item),
+            groups: getArrayWithUniqueItem<string>(groups).filter(item => !!item),
+            rooms: getArrayWithUniqueItem<string>(rooms).filter(item => !!item),
         };
     }
 
@@ -227,4 +230,22 @@ export function getEmptyCourse(): Course {
         "method": null,
         "situations": [],
     };
+}
+
+export function parseCourseRoute(route: RouteLocationNormalized | UnwrapRef<RouteLocationNormalized>) {
+    const grades = (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[];
+    const gradeGroups = (route.query.group instanceof Array ? route.query.group : [route.query.group]).filter(_ => !!_).map(_ => JSON.parse(_ as string)).sort() as GradeGroupArray[];
+    const rooms = (route.query.room instanceof Array ? route.query.room : [route.query.room]).filter(_ => !!_).sort() as unknown as string[];
+    const methods = (route.query.method instanceof Array ? route.query.method : [route.query.method]).filter(_ => !!_).sort() as unknown as string[];
+    const teachers = (route.query.teacher instanceof Array ? route.query.teacher : [route.query.teacher]).filter(_ => !!_).sort() as unknown as string[];
+    const courseNames = (route.query.subject instanceof Array ? route.query.subject : [route.query.subject]).filter(_ => !!_).sort() as unknown as string[];
+
+    const store = useStore();
+    const title = grades
+        .concat(gradeGroups.map(gg => `${store.translate(gg[0])}:${store.translate(gg[1])}`))
+        .concat(teachers).concat(methods).concat(rooms)
+        .concat(courseNames)
+        .map((s: string) => store.translate(s)).filter(_ => !!_).join(` `);
+
+    return {grades, gradeGroups, rooms, methods, teachers, courseNames, title: title ? title : store.translate("全部课程")};
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Course, GradeGroupArray, Notice} from "../../../assets/ts/types";
 import {computed, nextTick, ref, watch} from "vue";
-import {CoursesHandler} from "../../../assets/ts/courseToolkit";
+import {CoursesHandler, parseCourseRoute} from "../../../assets/ts/courseToolkit";
 import {useRoute, useRouter} from "vue-router";
 import {useStore} from "../../../pinia/useStore";
 import RouteFilterSelect from "./RouteFilterSelect.vue";
@@ -22,30 +22,17 @@ const notices = ref<Notice[]>([]);
 
 const showFilterDialog = ref<boolean>(false);
 
-
+const courseRouteData = computed(() => parseCourseRoute(route));
+const title = computed<string>(() => courseRouteData.value.title);
 let sources = computed(() => {
-  return {
-    // formModel data
-    grades: (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[],
-    groups: (route.query.group instanceof Array ? route.query.group : [route.query.group]).filter(_ => !!_).map(_ => JSON.parse(_ as string)).sort() as GradeGroupArray[],
-    rooms: (route.query.room instanceof Array ? route.query.room : [route.query.room]).filter(_ => !!_).sort() as unknown as string[],
-    methods: (route.query.method instanceof Array ? route.query.method : [route.query.method]).filter(_ => !!_).sort() as unknown as string[],
-    teachers: (route.query.teacher instanceof Array ? route.query.teacher : [route.query.teacher]).filter(_ => !!_).sort() as unknown as string[],
-    courseNames: (route.query.subject instanceof Array ? route.query.subject : [route.query.subject]).filter(_ => !!_).sort() as unknown as string[],
+  const {grades, gradeGroups, rooms, methods, teachers, courseNames} = courseRouteData.value;
 
+  return {
+    grades, groups: gradeGroups, rooms, methods, teachers, courseNames,
     courseDecorator: new CoursesHandler(store.courses),
     noticeDecorator: new NoticesHandler(store.notices),
   };
 });
-
-const title = computed<string>(() => {
-  return formModel.value.grades
-      .concat(formModel.value.groups.map(gg => `${store.translate(gg[0])}:${store.translate(gg[1])}`))
-      .concat(formModel.value.teachers).concat(formModel.value.methods).concat(formModel.value.rooms)
-      .concat(formModel.value.courseNames)
-      .map((s: string) => store.translate(s)).filter(_ => !!_).join(` `);
-});
-
 
 // 监视路由中年级的数量，当且仅当年级数量为1时，不"显示年级"
 watch(() => sources.value.grades, (grades) => {
