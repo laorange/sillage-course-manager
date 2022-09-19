@@ -1,4 +1,4 @@
-import {Course, GradeGroupArray} from "./types";
+import {Course, GradeGroupArray, MinimalRoute} from "./types";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -232,7 +232,7 @@ export function getEmptyCourse(): Course {
     };
 }
 
-export function parseCourseRoute(route: RouteLocationNormalized | UnwrapRef<RouteLocationNormalized>) {
+export function parseCourseRoute(route: MinimalRoute | RouteLocationNormalized | UnwrapRef<RouteLocationNormalized>) {
     const grades = (route.query.grade instanceof Array ? route.query.grade : [route.query.grade]).filter(_ => !!_).sort() as unknown as string[];
     const gradeGroups = (route.query.group instanceof Array ? route.query.group : [route.query.group]).filter(_ => !!_).map(_ => JSON.parse(_ as string)).sort() as GradeGroupArray[];
     const rooms = (route.query.room instanceof Array ? route.query.room : [route.query.room]).filter(_ => !!_).sort() as unknown as string[];

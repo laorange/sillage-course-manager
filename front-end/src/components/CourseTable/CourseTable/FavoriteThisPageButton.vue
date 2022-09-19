@@ -17,7 +17,7 @@ const buttonType = computed<string>(() => isInFavorites.value ? "error" : "succe
 
 function buttonClickHandler(): void {
   if (!isInFavorites.value) {
-    store.localConfig.favorites.push(JSON.parse(JSON.stringify(route)));
+    store.localConfig.favorites.push({path: route.path, query: route.query, params: route.params, fullPath: route.fullPath});
     message.success(store.translate("已收藏"));
   } else {
     dialog.warning({

@@ -88,6 +88,13 @@ export interface Notice extends PocketBaseModel {
     groups?: GradeGroupArray[];
 }
 
+export interface MinimalRoute {
+    path: string,
+    fullPath: RouteLocationNormalized["fullPath"]
+    query: RouteLocationNormalized["query"]
+    params: RouteLocationNormalized["params"]
+}
+
 
 export interface LocalConfig {
     language: string;
@@ -97,8 +104,8 @@ export interface LocalConfig {
     thinkTwice: boolean;
     version: string;
     readNotices: string[];
-    lastVisitPath: null | RouteLocationNormalized;
-    favorites: RouteLocationNormalized[];
+    lastVisitPath: null | MinimalRoute;
+    favorites: MinimalRoute[];
 }
 
 export type GradeGroupArray = [string, string]

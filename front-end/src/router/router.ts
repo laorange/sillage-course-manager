@@ -15,7 +15,7 @@ function noGradeToAllGrades(to: RouteLocationNormalized, from: RouteLocationNorm
 
 export function recordLastVisitPath(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     const store = useStore();
-    store.localConfig.lastVisitPath = {...to};
+    store.localConfig.lastVisitPath = {path: to.path, params: to.params, query: to.query, fullPath: to.fullPath};
     next();
 }
 

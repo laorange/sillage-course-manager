@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
-import {RouteLocationNormalized, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {parseCourseRoute} from "../../assets/ts/courseToolkit";
-import {UnwrapRef} from "vue";
 import {useDialog} from "naive-ui";
 import {TrashOutline, RocketOutline} from "@vicons/ionicons5";
+import {MinimalRoute} from "../../assets/ts/types";
 
 const store = useStore();
 const router = useRouter();
@@ -14,10 +14,10 @@ const handler = {
   backToHome() {
     router.push({name: "home"});
   },
-  goToFavoriteRoute(route: UnwrapRef<RouteLocationNormalized>) {
+  goToFavoriteRoute(route: MinimalRoute) {
     router.push(route);
   },
-  deleteFavoriteRoute(route: UnwrapRef<RouteLocationNormalized>) {
+  deleteFavoriteRoute(route: MinimalRoute) {
     dialog.warning({
       title: `${store.translate("取消收藏")}?`,
       positiveText: store.translate("确定"),
