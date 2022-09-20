@@ -42,17 +42,17 @@ const handler = {
           <div class="favorite-card" v-if="store.localConfig.favorites.length > 0">
             <n-card :hoverable="true" @click="handler.goToFavoriteRoute(favoriteRoute)">
               <template #header>
-                <n-space justify="center" align="start">
-                  <n-icon size="25">
+                <div style="display: flex; justify-content: center; align-content: center">
+                  <div style="display:flex; height: 18px; justify-content: center; align-content: center; margin-right: 10px">
                     <AdsClickSharp/>
-                  </n-icon>
-                  <n-ellipsis style="max-width: 60vw">{{ parseCourseRoute(favoriteRoute).title }}</n-ellipsis>
-                </n-space>
+                  </div>
+                  <n-ellipsis style="max-width: 60vw; font-size: 12px">{{ parseCourseRoute(favoriteRoute).title }}</n-ellipsis>
+                </div>
               </template>
 
               <template #header-extra>
                 <div class="close-cross" @click="handler.deleteFavoriteRoute(favoriteRoute, $event)">
-                  <n-icon size="18">
+                  <n-icon size="25">
                     <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <g fill="currentColor" fill-rule="nonzero">
