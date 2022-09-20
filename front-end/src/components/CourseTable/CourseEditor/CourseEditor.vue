@@ -57,7 +57,7 @@ const handlers = {
     if (!whetherCourseIsValid) {
       message.error("请将数据补充完整(红色边框代表必填项)");
     } else if (!whetherChanged.value) {
-      message.info("因为没有更改，所以无事发生");
+      message.warning("因为没有更改，所以无事发生");
       this.restore();
     } else {
       this.thinkTwiceIfDataChanged(() => {

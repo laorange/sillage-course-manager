@@ -15,7 +15,6 @@ const dialog = useDialog();
 const router = useRouter();
 
 let configBackUp = JSON.parse(JSON.stringify(store.config));
-watch(() => store.config, config => configBackUp = config, {deep: true});
 
 const whetherChanged = computed<boolean>(() => whetherTwoObjNotEqual(configBackUp, store.config));
 
@@ -77,7 +76,7 @@ const handlers = {
         store.api.config.create(store.config, handlers.commitSuccess, handlers.commitFail);
       }
     }, "即将把当前数据提交到服务器，是否继续？", undefined, () => {
-      message.info("因为没有更改，所以无事发生");
+      message.warning("因为没有更改，所以无事发生");
       handlers.backToHomeWithForce();
     });
   },
@@ -146,7 +145,7 @@ const handlers = {
       <n-divider/>
 
       <n-space justify="center" align="center">
-        <n-button type="success" size="large" @click="handlers.upload()">提交</n-button>
+        <n-button type="success" size="large" @click="handlers.upload()" :disabled="!whetherChanged">提交</n-button>
         <n-button type="default" size="large" @click="handlers.resetAndLeave()">取消</n-button>
       </n-space>
     </div>
