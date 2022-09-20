@@ -37,19 +37,19 @@ const handlers = {
       <h1>{{ store.translate(store.config.content.tableName) }}</h1>
       <LanguageSelector/>
 
-      <n-button type="info" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
+      <n-button type="info" :round="true" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
       <GradeEntrances/>
 
-      <n-button type="info" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
+      <n-button type="info" :round="true" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
 
-      <n-button type="warning" v-if="!store.editor.authenticated && inDevelopMode" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
+      <n-button type="warning" :round="true" v-if="!store.editor.authenticated && inDevelopMode" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
 
       <template v-if="store.editor.authenticated">
-        <n-button type="error" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
+        <n-button type="error" :round="true" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
       </template>
 
-      <n-button type="warning" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
+      <n-button type="warning" :round="true" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
 
       <copyright-div project-url="https://github.com/laorange/sillage-course-manager"/>
     </div>

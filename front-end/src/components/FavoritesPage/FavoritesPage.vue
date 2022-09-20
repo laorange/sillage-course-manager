@@ -36,27 +36,31 @@ const handler = {
       <n-space justify="center" align="center" :vertical="true" :size="30">
         <h2 v-if="store.localConfig.favorites.length === 0">{{ store.translate(`这里空空如也`) }}</h2>
 
-        <n-grid cols="4" :x-gap="10" :y-gap="30">
-          <template v-for="favoriteRoute in store.localConfig.favorites" :key="favoriteRoute.fullPath">
-            <n-gi span="3">
-              <n-button style="min-width: 70vw" type="info" :dashed="true" @click="handler.goToFavoriteRoute(favoriteRoute)">
-                <n-ellipsis style="max-width: 50vw">{{ parseCourseRoute(favoriteRoute).title }}</n-ellipsis>
-                <template #icon>
-                  <RocketOutline/>
-                </template>
-              </n-button>
-            </n-gi>
-            <n-gi>
-              <n-button type="error" :dashed="true" @click="handler.deleteFavoriteRoute(favoriteRoute)">
-                <template #icon>
-                  <TrashOutline/>
-                </template>
-              </n-button>
-            </n-gi>
-          </template>
-        </n-grid>
+        <div class="favorite-grid-items" v-if="store.localConfig.favorites.length > 0">
+          <n-grid cols="4" :x-gap="10" :y-gap="30">
+            <template v-for="favoriteRoute in store.localConfig.favorites" :key="favoriteRoute.fullPath">
+              <n-gi span="3">
+                <n-button style="min-width: 70vw" type="info" :round="true" @click="handler.goToFavoriteRoute(favoriteRoute)">
+                  <n-ellipsis style="max-width: 50vw">{{ parseCourseRoute(favoriteRoute).title }}</n-ellipsis>
+                  <template #icon>
+                    <RocketOutline/>
+                  </template>
+                </n-button>
+              </n-gi>
+              <n-gi>
+                <n-button type="error" :round="true" @click="handler.deleteFavoriteRoute(favoriteRoute)">
+                  <template #icon>
+                    <TrashOutline/>
+                  </template>
+                </n-button>
+              </n-gi>
+            </template>
+          </n-grid>
+        </div>
 
-        <n-button type="primary" @click="handler.backToHome" :dashed="true">{{ store.translate(`返回首页`) }}</n-button>
+        <n-button type="primary" :dashed="true" :round="true" @click="handler.backToHome">
+          {{ store.translate(`返回首页`) }}
+        </n-button>
       </n-space>
     </div>
   </div>
@@ -73,5 +77,10 @@ h1 {
   justify-content: center;
   align-content: center;
   flex-direction: column;
+  min-height: 70vh;
+}
+
+.favorite-grid-items {
+  margin-bottom: 40px;
 }
 </style>

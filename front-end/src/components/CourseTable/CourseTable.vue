@@ -66,7 +66,7 @@ onBeforeRouteUpdate(recordLastVisitPath);
       <FavoriteThisPageButton/>
 
       <n-badge v-if="unreadNotices.length" :value="unreadNotices.length" :max="99">
-        <n-button :dashed="true" color="#32647d" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
+        <n-button :dashed="true" type="error" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
       </n-badge>
     </template>
 

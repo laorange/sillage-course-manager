@@ -16,7 +16,7 @@ const languageOptions = computed(() => ["中文"].concat(store.config.content.la
 <template>
   <div class="language-selector" v-if="store.config.content.languages.length">
     <n-popselect v-model:value="store.localConfig.language" :options="languageOptions" trigger="click">
-      <n-button color="#fff" text-color="#000" style="flex: 1">
+      <n-button color="#fff" :round="true" text-color="#000" style="flex: 1">
         {{ store.localConfig.language }}
         <template #icon>
           <Language/>
