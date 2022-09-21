@@ -56,8 +56,10 @@ const initiators = {
 
     localConfig = {...store.localConfig, ...localConfig} ?? store.localConfig;
 
-    // TODO: v0.8跨版本升级需要 —— 如果不是最新的版本，向localstorage中存入新的默认数据。完成迁移后请删除本段代码。
-    if (!isLatestVersion(localConfig.version, version)) {
+    //  // 如果不是最新的版本，向localstorage中存入新的默认数据  // !isLatestVersion(localConfig.version, version)
+
+    // 如果本地缓存中没有版本号，则是v0.8以前/第一次进入，则使用默认配置
+    if (localConfig.version === "0.0.0") {
       store.localConfig = {...store.localConfig, version: version}; // 向localstorage中存入新的默认数据
     } else {
       store.localConfig = {...localConfig, version: version};
