@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Course, GradeGroupArray, Notice} from "../../../assets/ts/types";
-import {computed, nextTick, ref, watch} from "vue";
+import {computed, nextTick, onBeforeUnmount, ref, watch} from "vue";
 import {CoursesHandler, parseCourseRoute} from "../../../assets/ts/courseToolkit";
 import {useRoute, useRouter} from "vue-router";
 import {useStore} from "../../../pinia/useStore";
@@ -24,6 +24,9 @@ const showFilterDialog = ref<boolean>(false);
 
 const courseRouteData = computed(() => parseCourseRoute(route));
 const title = computed<string>(() => courseRouteData.value.title);
+watch(() => title.value, (newTitle) => document.title = `${store.translate(store.config.content.tableName)}-${newTitle}`, {immediate: true});
+onBeforeUnmount(() => document.title = store.translate(store.config.content.tableName));
+
 let sources = computed(() => {
   const {grades, gradeGroups, rooms, methods, teachers, courseNames} = courseRouteData.value;
 

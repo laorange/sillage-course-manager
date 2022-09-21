@@ -28,7 +28,7 @@ function isLatestVersion(localVersion: string, latestVersion: string): boolean {
 
 const initiators = {
   pageTitle() {
-    document.title = store.config.content.tableName;
+    document.title = store.translate(store.config.content.tableName);
   },
   async api() {
     store.isLoading = true;
