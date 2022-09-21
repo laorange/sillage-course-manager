@@ -40,7 +40,7 @@ const typeName = computed<TypeName>(() => {
       <BulletinCard :content="`${notice.content}`"/>
     </template>
     <template #icon>
-      <n-icon size="30">
+      <n-icon size="20">
         <AlertCircleOutline v-if="typeName==='info'"/>
         <AddCircleOutline v-if="typeName==='success'"/>
         <CreateOutline v-if="typeName==='warning'"/>
@@ -61,17 +61,19 @@ const typeName = computed<TypeName>(() => {
 
         <!--更新课程-->
         <template v-if="!!notice.to && !!notice.from">
-          <n-grid cols="21">
-            <n-gi span="10">
-              <CourseCard :course="notice.from" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
-            </n-gi>
-            <n-gi span="1">
-              <div style="display: flex; justify-content: center; align-items: center; height: 100%">→</div>
-            </n-gi>
-            <n-gi span="10">
-              <CourseCard :course="notice.to" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
-            </n-gi>
-          </n-grid>
+          <div class="update-notice">
+            <n-grid cols="21" x-gap="0" y-gap="0">
+              <n-gi span="10">
+                <CourseCard :course="notice.from" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
+              </n-gi>
+              <n-gi span="1">
+                <div style="display: flex; justify-content: center; align-items: center; height: 100%">→</div>
+              </n-gi>
+              <n-gi span="10">
+                <CourseCard :course="notice.to" :show-grade="true" :show-what-day="true" :show-lesson-time="true"/>
+              </n-gi>
+            </n-grid>
+          </div>
         </template>
       </div>
     </template>
@@ -80,6 +82,14 @@ const typeName = computed<TypeName>(() => {
 
 <style scoped>
 .notice-card-content {
-  overflow-x: auto;
+
+}
+
+.update-notice {
+  height: calc(100% - 20px);
+}
+
+.course-card {
+  border: 1px var(--border-color) solid;
 }
 </style>

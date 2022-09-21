@@ -9,7 +9,6 @@ import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
 import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
 import WeeklyCourseTable from "./CourseTable/WeeklyCourseTable.vue";
-import {NoticesHandler} from "../../assets/ts/noticeToolkit";
 import ThinkTwiceSwitch from "./CourseTable/ThinkTwiceSwitch.vue";
 import VerticalCardSwitch from "./CourseTable/VerticalCardSwitch.vue";
 import DisplayModeSelector from "./CourseTable/DisplayModeSelector.vue";
@@ -23,8 +22,6 @@ const routeFilter = ref<typeof RouteFilter>();
 const grades = computed<string[]>(() => routeFilter.value?.sources?.grades ?? []);
 const filteredCourses = computed<Course[]>(() => routeFilter.value?.courses ?? []);
 const filteredNotices = computed<Notice[]>(() => routeFilter.value?.notices ?? []);
-const recentNotices = computed<Notice[]>(() => (new NoticesHandler(filteredNotices.value)).inThePastFewDays(7).value); // 7天内的公告
-const unreadNotices = computed(() => recentNotices.value.filter(n => store.localConfig.readNotices.indexOf(n.id) === -1));  // 未读的公告
 provide("routeFilter", routeFilter);
 
 const displayModeSelector = ref<typeof DisplayModeSelector>();
@@ -32,26 +29,6 @@ const displayColumnNum = computed<number>(() => displayModeSelector.value?.displ
 
 const editable = ref<boolean>(store.editor.authenticated);
 watch(() => store.editor.authenticated, newStatus => editable.value = newStatus);
-
-const handlers = {
-  moveToNoticeDisplay() {
-    let noticeDisplayNode = document.getElementById("notice-display");
-    if (noticeDisplayNode) {
-      window.scrollTo({
-        behavior: "smooth",
-        top: noticeDisplayNode.offsetTop,
-      });
-    }
-    handlers.markRecentNoticeHasBeenRead();
-  },
-  markRecentNoticeHasBeenRead() {
-    // 更新本地缓存中的已读公告，删除已失效的公告id
-    store.localConfig.readNotices = store.localConfig.readNotices.filter(rnId => store.notices.map(n => n.id).indexOf(rnId) > -1);
-
-    // 将当前页面的公告加入到本地缓存的已读公告中
-    store.localConfig.readNotices = Array.from(new Set(store.localConfig.readNotices.concat(recentNotices.value.map(n => n.id))));
-  },
-};
 
 onBeforeRouteUpdate(recordLastVisitPath);
 </script>
@@ -65,9 +42,7 @@ onBeforeRouteUpdate(recordLastVisitPath);
     <template #button>
       <FavoriteThisPageButton/>
 
-      <n-badge v-if="unreadNotices.length" :value="unreadNotices.length" :max="99">
-        <n-button :dashed="true" type="error" @click="handlers.moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
-      </n-badge>
+      <NoticeDisplay :notices="filteredNotices"/>
     </template>
 
     <template #formTop>
@@ -109,8 +84,6 @@ onBeforeRouteUpdate(recordLastVisitPath);
                         :query-date="formatDate(dayjs().add(dailyCourseTableNum-1, 'day'))"/>
     </n-gi>
   </n-grid>
-
-  <NoticeDisplay v-if="recentNotices.length" :notices="recentNotices"/>
 </template>
 
 <style scoped>

@@ -2,15 +2,20 @@
 import {Notice} from "../../../assets/ts/types";
 import NoticeCard from "./NoticeCard.vue";
 import {useStore} from "../../../pinia/useStore";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import dayjs from "dayjs";
+import {NoticesHandler} from "../../../assets/ts/noticeToolkit";
 
 const props = defineProps<{ notices: Notice[] }>();
 
 const store = useStore();
+const showNotice = ref<boolean>(false);
+
+const recentNotices = computed<Notice[]>(() => (new NoticesHandler(props.notices)).inThePastFewDays(7).value); // 7天内的公告
+const unreadNotices = computed(() => recentNotices.value.filter(n => store.localConfig.readNotices.indexOf(n.id) === -1));  // 未读的公告
 
 const noticeWithBulletinFirst = computed<Notice[]>(() => {
-  return props.notices.slice().sort((n1, n2) => {
+  return recentNotices.value.slice().sort((n1, n2) => {
     // 将有内容的公告放置在前面
     if (!!n2.content && !n1.content) {
       return 1;
@@ -21,22 +26,40 @@ const noticeWithBulletinFirst = computed<Notice[]>(() => {
     }
   });
 });
+
+function markRecentNoticeHasBeenRead() {
+  // 更新本地缓存中的已读公告，删除已失效的公告id
+  store.localConfig.readNotices = store.localConfig.readNotices.filter(rnId => store.notices.map(n => n.id).indexOf(rnId) > -1);
+
+  // 将当前页面的公告加入到本地缓存的已读公告中
+  store.localConfig.readNotices = Array.from(new Set(store.localConfig.readNotices.concat(recentNotices.value.map(n => n.id))));
+}
+
+function moveToNoticeDisplay() {
+  showNotice.value = true;
+  markRecentNoticeHasBeenRead();
+}
 </script>
 
 <template>
-  <div id="notice-display">
-    <n-divider/>
+  <n-badge v-if="recentNotices.length" :value="unreadNotices.length" :max="99">
+    <n-button :dashed="true" color="#32647d" @click="moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
+  </n-badge>
 
-    <h2 style="text-align: center">{{ store.translate(`公告`) }}</h2>
-
-    <n-timeline>
-      <NoticeCard v-for="notice of noticeWithBulletinFirst" :key="`notice${notice.id}`" :notice="notice"/>
-    </n-timeline>
-  </div>
+  <n-drawer v-model:show="showNotice" height="100%" placement="top">
+    <n-drawer-content :title="store.translate(`公告`)" :closable="true"
+                      :body-content-style="{padding:'0', margin:'10px 5px 10px -5px'}">
+      <div class="notice-display">
+        <n-timeline>
+          <NoticeCard v-for="notice of noticeWithBulletinFirst" :key="`notice${notice.id}`" :notice="notice"/>
+        </n-timeline>
+      </div>
+    </n-drawer-content>
+  </n-drawer>
 </template>
 
 <style scoped>
-#notice-display {
+.notice-display {
   text-align: left;
   max-width: 100vw;
   margin-left: 10px;
