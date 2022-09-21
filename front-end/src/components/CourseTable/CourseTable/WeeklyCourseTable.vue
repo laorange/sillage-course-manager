@@ -8,6 +8,7 @@ import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
 import AdaptiveContainerWithFixedPixel from "../../common/AdaptiveContainerWithFixedPixel.vue";
+import WeeklyCourseTableHeader from "./WeeklyCourseTableHeader.vue";
 
 const props = defineProps<{ courses: Course[], editable?: boolean, queryDate?: string, showGrade?: boolean }>();
 
@@ -32,17 +33,9 @@ const courseDecoratorOfThisWeeklyTable = computed<CoursesHandler>(() => {
 
   <div class="weekly-course-table">
     <AdaptiveContainerWithFixedPixel :width="1200">
+      <WeeklyCourseTableHeader :query-day="queryDayLocal" :is-date-mode="isDateMode"/>
+
       <n-grid cols="22" x-gap="2" y-gap="2">
-        <n-gi span="1"></n-gi>
-        <n-gi span="3" v-for="whatDayStr in [...`一二三四五六天`]" :key="`星期${whatDayStr}`">{{ store.translate(`星期${whatDayStr}`) }}</n-gi>
-
-        <template v-if="isDateMode">
-          <n-gi span="1">{{ store.translate(`日期`) }}</n-gi>
-          <n-gi span="3" v-for="whatDay in 7" :key="`whatDay-date-${whatDay}`">
-            {{ formatDate(queryDayLocal.add(whatDay - queryWhatDayLocal, "day")) }}
-          </n-gi>
-        </template>
-
         <template v-for="(lessonConfig, lessonIndex) of store.config.content.lessonConfigs" :key="`weeklyLesson${lessonIndex}`">
           <n-gi span="1">
             <div class="lesson-start-end-time">
@@ -78,7 +71,7 @@ const courseDecoratorOfThisWeeklyTable = computed<CoursesHandler>(() => {
   justify-content: space-between;
 }
 
-.n-grid > div {
-  border: 1px solid var(--border-color);
+.n-grid > * {
+  border: 2px solid var(--border-color);
 }
 </style>
