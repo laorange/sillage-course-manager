@@ -15,6 +15,7 @@ import DisplayModeSelector from "./CourseTable/DisplayModeSelector.vue";
 import {onBeforeRouteUpdate} from "vue-router";
 import {recordLastVisitPath} from "../../router/router";
 import FavoriteThisPageButton from "./CourseTable/FavoriteThisPageButton.vue";
+import CopyrightDiv from "../AboutPage/CopyrightDiv.vue";
 
 const store = useStore();
 
@@ -84,6 +85,8 @@ onBeforeRouteUpdate(recordLastVisitPath);
                         :query-date="formatDate(dayjs().add(dailyCourseTableNum-1, 'day'))"/>
     </n-gi>
   </n-grid>
+
+  <copyright-div project-url="https://github.com/laorange/sillage-course-manager"/>
 </template>
 
 <style scoped>
