@@ -60,8 +60,8 @@ export default function useEmptyCourseCard() {
                             await store.api.course.update(store.editor.courseEditing, courseUpdate, async () => {
                                 store.courses = store.courses.filter(c => c.id !== store.editor.courseEditing.id).concat(courseUpdate);
                                 // 创建新的
-                                await store.api.course.create(newCourse, () => {
-                                    store.courses.push(newCourse);
+                                await store.api.course.create(newCourse, (courseInDb) => {
+                                    store.courses.push(courseInDb);
 
                                     store.editor.show = false;
                                     store.editor.mode = "none";
