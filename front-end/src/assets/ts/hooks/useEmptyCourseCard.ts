@@ -118,7 +118,10 @@ export default function useEmptyCourseCard() {
                         ...store.editor.courseEditing,
                         lessonNum: lessonNum,
                         grade: grade,
-                        dates: [queryDate],
+                        dates: store.editor.fromDates.length > 1 ? store.editor.fromDates.map((d: string) => {
+                            const preDate = dayjs(d);
+                            return formatDate(preDate.add(queryWhatDay - getIsoWeekDay(preDate), "day"));
+                        }) : [queryDate],
                     };
                 },
                 cut(grade: string) {
