@@ -10,6 +10,7 @@ import {getArrayWithUniqueItem} from "../assets/ts/useCommonUtils";
 
 type State = {
     isLoading: boolean
+    loadingDescription: string
 
     api: ApiHandler
 
@@ -33,6 +34,7 @@ export const useStore = defineStore("store", {
     state: (): State => {
         return {
             isLoading: false,
+            loadingDescription: "",
 
             api: new ApiHandler(new PocketBase(import.meta.env.VITE_BACKEND_URL)),
 
@@ -262,6 +264,13 @@ export const useStore = defineStore("store", {
         filterCurrentSemesterCourses(courseDecorator: CoursesHandler): CoursesHandler {
             return courseDecorator.isSameOrAfter(this.semesterStartDay)
                 .before(this.semesterStartDay.add(this.config.content.maxWeekNum, "week"));
+        },
+        async withLoading(asyncFunc: Promise<any>, description: string = "") {
+            this.isLoading = true;
+            this.loadingDescription = description;
+            await asyncFunc;
+            this.isLoading = false;
+            this.loadingDescription = "";
         },
     },
 });

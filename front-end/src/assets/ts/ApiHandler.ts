@@ -3,6 +3,7 @@ import {Config, Course, Notice, PocketBaseModel, RawPocketBaseData} from "./type
 import axios, {AxiosPromise} from "axios";
 import dayjs from "dayjs";
 import {CoursesHandler} from "./courseToolkit";
+import {useStore} from "../../pinia/useStore";
 
 
 class Collection<T extends PocketBaseModel> {
@@ -17,39 +18,59 @@ class Collection<T extends PocketBaseModel> {
     }
 
     public async create(newRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
-        try {
-            let result = await this.client.records.create(this.collectionName, {...newRecord, id: ""}) as unknown as T;
-            if (successHook) successHook(result);
-        } catch (e) {
-            if (errorHook) errorHook(e as Error);
-        }
+        const exeFunc = async () => {
+            try {
+                let result = await this.client.records.create(this.collectionName, {...newRecord, id: ""}) as unknown as T;
+                if (successHook) successHook(result);
+            } catch (e) {
+                if (errorHook) errorHook(e as Error);
+            }
+        };
+
+        const store = useStore();
+        await store.withLoading(exeFunc());
     }
 
     async list(successHook?: (results: T[]) => any, errorHook?: (e: Error) => any) {
-        try {
-            let results = await this.client.records.getFullList(this.collectionName, this.maxPerPage, {sort: "-updated"}) as unknown as T[];
-            if (successHook) successHook(results);
-        } catch (e) {
-            if (errorHook) errorHook(e as Error);
+        const exeFunc = async () =>  {
+            try {
+                let results = await this.client.records.getFullList(this.collectionName, this.maxPerPage, {sort: "-updated"}) as unknown as T[];
+                if (successHook) successHook(results);
+            } catch (e) {
+                if (errorHook) errorHook(e as Error);
+            }
         }
+
+        const store = useStore();
+        await store.withLoading(exeFunc());
     }
 
     async update(oldRecord: T, newRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
-        try {
-            let result = await this.client.records.update(this.collectionName, oldRecord.id, newRecord) as unknown as T;
-            if (successHook) successHook(result);
-        } catch (e) {
-            if (errorHook) errorHook(e as Error);
+        const exeFunc = async () => {
+            try {
+                let result = await this.client.records.update(this.collectionName, oldRecord.id, newRecord) as unknown as T;
+                if (successHook) successHook(result);
+            } catch (e) {
+                if (errorHook) errorHook(e as Error);
+            }
         }
+
+        const store = useStore();
+        await store.withLoading(exeFunc());
     }
 
     async delete(oldRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
-        try {
-            let result = await this.client.records.delete(this.collectionName, oldRecord.id) as unknown as T;
-            if (successHook) successHook(result);
-        } catch (e) {
-            if (errorHook) errorHook(e as Error);
+        const exeFunc = async () => {
+            try {
+                let result = await this.client.records.delete(this.collectionName, oldRecord.id) as unknown as T;
+                if (successHook) successHook(result);
+            } catch (e) {
+                if (errorHook) errorHook(e as Error);
+            }
         }
+
+        const store = useStore();
+        await store.withLoading(exeFunc());
     }
 
 }
@@ -77,36 +98,41 @@ class CourseCollection extends Collection<Course> {
     }
 
     async list(successHook?: (results: Course[]) => any, errorHook?: (e: Error) => any, pioneer?: RawPocketBaseData<Course>) {
-        try {
-            pioneer = pioneer ?? (await axios(this.client.baseUrl + "/api/collections/course/records", {
-                params: {
-                    page: 1,
-                    perPage: 1,
-                    sort: "-updated",
-                },
-            })).data as RawPocketBaseData<Course>;
-
-            let courses: Course[] = [];
-
-            let promises: AxiosPromise<RawPocketBaseData<Course>>[] = [];
-            for (let page = 1; page <= Math.ceil(pioneer.totalItems / this.maxPerPage); page++) {
-                promises.push(axios(this.client.baseUrl + "/api/collections/course/records", {
+        const exeFunc = async () => {
+            try {
+                pioneer = pioneer ?? (await axios(this.client.baseUrl + "/api/collections/course/records", {
                     params: {
-                        page,
-                        perPage: this.maxPerPage,
+                        page: 1,
+                        perPage: 1,
                         sort: "-updated",
                     },
-                }));
-            }
-            let results = await Promise.all(promises);
-            for (const result of results) {
-                courses = courses.concat(result.data.items);
-            }
+                })).data as RawPocketBaseData<Course>;
 
-            if (successHook) successHook(courses);
-        } catch (e) {
-            if (errorHook) errorHook(e as Error);
+                let courses: Course[] = [];
+
+                let promises: AxiosPromise<RawPocketBaseData<Course>>[] = [];
+                for (let page = 1; page <= Math.ceil(pioneer.totalItems / this.maxPerPage); page++) {
+                    promises.push(axios(this.client.baseUrl + "/api/collections/course/records", {
+                        params: {
+                            page,
+                            perPage: this.maxPerPage,
+                            sort: "-updated",
+                        },
+                    }));
+                }
+                let results = await Promise.all(promises);
+                for (const result of results) {
+                    courses = courses.concat(result.data.items);
+                }
+
+                if (successHook) successHook(courses);
+            } catch (e) {
+                if (errorHook) errorHook(e as Error);
+            }
         }
+
+        const store = useStore();
+        await store.withLoading(exeFunc());
     }
 
     async create(newRecord: Course, successHook?: (result: Course) => any, errorHook?: (e: Error) => any) {
@@ -163,20 +189,25 @@ class NoticeCollection extends Collection<Notice> {
     }
 
     async list(successHook?: (results: Notice[]) => any, errorHook?: (e: Error) => any) {
-        try {
-            // 最多只请求{{ maxPerPage }}条公告(一页)
-            let results: Notice[] = (await axios(this.client.baseUrl + "/api/collections/notice/records", {
-                params: {
-                    page: 1,
-                    perPage: this.maxPerPage,
-                    sort: "-updated",
-                },
-            })).data.items;
-            if (successHook) successHook(results);
+        const exeFunc = async () => {
+            try {
+                // 最多只请求{{ maxPerPage }}条公告(一页)
+                let results: Notice[] = (await axios(this.client.baseUrl + "/api/collections/notice/records", {
+                    params: {
+                        page: 1,
+                        perPage: this.maxPerPage,
+                        sort: "-updated",
+                    },
+                })).data.items;
+                if (successHook) successHook(results);
 
-        } catch (e) {
-            if (errorHook) errorHook(e as Error);
+            } catch (e) {
+                if (errorHook) errorHook(e as Error);
+            }
         }
+
+        const store = useStore();
+        await store.withLoading(exeFunc());
     }
 }
 

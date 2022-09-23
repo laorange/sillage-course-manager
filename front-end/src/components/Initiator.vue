@@ -35,7 +35,6 @@ const initiators = {
       console.log("课程有更新，重新请求全部课程");
       await store.api.course.list(courses => {
             store.courses = courses;
-            store.isLoading = false;
             store.localConfig.database.courses = courses;
             store.localConfig.database.recordTime = coursePioneer.items[0]?.updated ?? formatDatetime(dayjs("1970-01-01"));
           },
@@ -45,13 +44,11 @@ const initiators = {
       // 课程没有更新，那就用本地缓存
       console.log("课程没有更新，已加载本地缓存");
       store.courses = store.localConfig.database.courses;
-      store.isLoading = false;
     }
   },
   async api() {
-    store.isLoading = true;
-
-    await Promise.all([
+    const store = useStore();
+    await store.withLoading(Promise.all([
       store.api.config.list(configs => {
         if (configs.length) store.config = configs[0];
       }, () => message.error("系统设置加载失败")),
@@ -59,7 +56,7 @@ const initiators = {
       store.api.notice.list(notices => store.notices = notices, () => message.error("公告加载失败")),
 
       initiators.getCourseFromApi(),
-    ]);
+    ]));
   },
   loginStatus() {
     store.validateAuthStatus();

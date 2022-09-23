@@ -12,6 +12,9 @@ const store = useStore();
       <n-spin :show="store.isLoading">
         <router-view/>
         <Initiator/>
+        <template v-if="store.loadingDescription" #description>
+          {{ store.loadingDescription }}
+        </template>
       </n-spin>
     </n-message-provider>
   </n-dialog-provider>
