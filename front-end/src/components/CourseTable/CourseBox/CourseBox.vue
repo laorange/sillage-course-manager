@@ -18,7 +18,25 @@ const verticalLocal = computed<boolean>(() => store.localConfig.verticalCard);
 
 const coursesSorted = computed(() => {
   return props.courses.slice().sort((a, b) => {
-    return dayjs(a.dates[0]).isAfter(dayjs(b.dates[0]), "day") ? 1 : -1;
+    if (a.grade > b.grade) return 1;
+    if (a.grade < b.grade) return -1;
+
+    if (dayjs(a.dates[0]).isAfter(dayjs(b.dates[0]), "day")) return 1;
+    if (dayjs(a.dates[0]).isBefore(dayjs(b.dates[0]), "day")) return -1;
+
+    let aGroup = a.situations[0]?.groups?.join() ?? "";
+    let bGroup = b.situations[0]?.groups?.join() ?? "";
+    if (!!aGroup && !!bGroup) {
+      return aGroup > bGroup ? 1 : -1;
+    }
+
+    let aRoom = a.situations[0]?.rooms?.join() ?? "";
+    let bRoom = b.situations[0]?.rooms?.join() ?? "";
+    if (!!aRoom && !!bRoom) {
+      return aRoom > bRoom ? 1 : -1;
+    }
+
+    return 0;
   });
 });
 </script>
