@@ -16,10 +16,12 @@ function getGradeGroupArrayOfCourse(course: Course | Course[]): GradeGroupArray[
 class Collection<T extends PocketBaseModel> {
     client: PocketBase;
     collectionName: string;
+    maxPerPage: number;
 
-    constructor(client: PocketBase, collectionName: string) {
+    constructor(client: PocketBase, collectionName: string, maxPerPage: number = 200) {
         this.client = client;
         this.collectionName = collectionName;
+        this.maxPerPage = maxPerPage;
     }
 
     public async create(newRecord: T, successHook?: (results: T) => any, errorHook?: (e: Error) => any) {
@@ -33,7 +35,7 @@ class Collection<T extends PocketBaseModel> {
 
     async list(successHook?: (results: T[]) => any, errorHook?: (e: Error) => any) {
         try {
-            let results = await this.client.records.getFullList(this.collectionName, 200, {sort: "-updated"}) as unknown as T[];
+            let results = await this.client.records.getFullList(this.collectionName, this.maxPerPage, {sort: "-updated"}) as unknown as T[];
             if (successHook) successHook(results);
         } catch (e) {
             if (errorHook) errorHook(e as Error);
@@ -94,14 +96,12 @@ class CourseCollection extends Collection<Course> {
 
             let courses: Course[] = [];
 
-            const MAX_PER_PAGE = 200;
-
             let promises: AxiosPromise<RawPocketBaseData<Course>>[] = [];
-            for (let page = 1; page <= Math.ceil(pioneer.totalItems / MAX_PER_PAGE); page++) {
+            for (let page = 1; page <= Math.ceil(pioneer.totalItems / this.maxPerPage); page++) {
                 promises.push(axios(this.client.baseUrl + "/api/collections/course/records", {
                     params: {
                         page,
-                        perPage: MAX_PER_PAGE,
+                        perPage: this.maxPerPage,
                         sort: "-updated",
                     },
                 }));
@@ -166,17 +166,17 @@ class CourseCollection extends Collection<Course> {
 }
 
 class NoticeCollection extends Collection<Notice> {
-    constructor(client: PocketBase) {
-        super(client, "notice");
+    constructor(client: PocketBase, maxPerPage?: number) {
+        super(client, "notice", maxPerPage);
     }
 
     async list(successHook?: (results: Notice[]) => any, errorHook?: (e: Error) => any) {
         try {
-            // 最多只请求200条公告
+            // 最多只请求{{ maxPerPage }}条公告(一页)
             let results: Notice[] = (await axios(this.client.baseUrl + "/api/collections/notice/records", {
                 params: {
                     page: 1,
-                    perPage: 200,
+                    perPage: this.maxPerPage,
                     sort: "-updated",
                 },
             })).data.items;
@@ -196,8 +196,8 @@ export class ApiHandler {
 
     constructor(client: PocketBase) {
         this.client = client;
-        this.config = new Collection<Config>(client, "config");
-        this.notice = new NoticeCollection(client);
+        this.config = new Collection<Config>(client, "config", 1);
+        this.notice = new NoticeCollection(client, 100);
         this.course = new CourseCollection(client, this.notice);
     }
 }
