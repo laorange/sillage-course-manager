@@ -16,14 +16,23 @@ import useClipboard from "vue-clipboard3";
 
 const props = withDefaults(defineProps<{
   course: Course, isDateMode?: boolean,
-  showWeeks?: boolean, showGrade?: boolean, showWhatDay?: boolean, showLessonTime?: boolean,
+  showWeeks?: boolean | "auto", showGrade?: boolean, showWhatDay?: boolean, showLessonTime?: boolean,
   editData?: { coursesExisting: Course[], queryDate: string, lessonNum: number }
-}>(), {showWeeks: true, showGrade: false, showWhatDay: false, showLessonTime: false});
+}>(), {showWeeks: "auto", showGrade: false, showWhatDay: false, showLessonTime: false});
 
 const store = useStore();
 const message = useMessage();
 const dialog = useDialog();
 const {toClipboard} = useClipboard();
+
+const showWeeksLocal = computed<boolean>(() => {
+  if (props.showWeeks === true || props.showWeeks === false) {
+    return props.showWeeks;
+  } else {
+    // 如果没有指定是否显示周数，则在课程有多个上课日期时显示
+    return props.course.dates.length > 1;
+  }
+});
 
 const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
 const {getContextMenuItems} = useEmptyCourseCard();
@@ -263,7 +272,7 @@ const lessonTimeStr = computed<string>(() => {
     <div>{{ store.translate(course.info.name) }}</div>
     <div v-if="course.method">{{ store.translate(course.method) }}</div>
     <div v-if="showGrade">{{ store.translate(course.grade) }}</div>
-    <div v-if="showWeeks">{{ getWeekStrWithUnit }}</div>
+    <div v-if="showWeeksLocal">{{ getWeekStrWithUnit }}</div>
     <div v-if="showWhatDay">{{ whatDayStr }}</div>
     <div v-if="showLessonTime && lessonTimeStr">{{ lessonTimeStr }}</div>
 

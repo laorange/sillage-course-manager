@@ -50,7 +50,6 @@ const courseDecoratorOfThisWeeklyTable = computed<CoursesHandler>(() => {
                        :lesson-num="lessonIndex+1"
                        :editable="editable"
                        :show-grade="showGrade"
-                       :show-weeks="!isDateMode"
                        :courses="courseDecoratorOfThisWeeklyTable.ofWhatDay(whatDay).ofLessonNum(lessonIndex+1).value"/>
           </n-gi>
         </template>

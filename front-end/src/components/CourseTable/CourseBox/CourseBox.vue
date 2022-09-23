@@ -6,10 +6,10 @@ import {computed} from "vue";
 import dayjs from "dayjs";
 import {useStore} from "../../../pinia/useStore";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   courses: Course[], queryDate: string, isDateMode: boolean, lessonNum: number,
-  editable?: boolean, showWeeks?: boolean, showGrade?: boolean
-}>();
+  editable?: boolean, showWeeks?: boolean | "auto", showGrade?: boolean
+}>(), {showWeeks: "auto"});
 
 // region 以 store.localConfig.verticalCard 来判断是否垂直显示课程。
 const store = useStore();
