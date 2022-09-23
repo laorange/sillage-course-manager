@@ -3,7 +3,7 @@ import {Config, Course, CourseInfo, LocalConfig, Notice} from "../assets/ts/type
 import dayjs from "dayjs";
 import {CoursesHandler, getEmptyCourse} from "../assets/ts/courseToolkit";
 import PocketBase from "pocketbase";
-import {formatDate, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
+import {formatDate, formatDatetime, getIsoWeekDay, getWeekAmountBetweenTwoDay} from "../assets/ts/datetimeUtils";
 import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/ts/usePreset";
 import {ApiHandler} from "../assets/ts/ApiHandler";
 import {getArrayWithUniqueItem} from "../assets/ts/useCommonUtils";
@@ -66,6 +66,10 @@ export const useStore = defineStore("store", {
                 readNotices: [],
                 lastVisitPath: null,
                 favorites: [],
+                database: {
+                    recordTime: formatDatetime(dayjs("1970-01-01")),
+                    courses: [],
+                },
             },
 
             editor: {

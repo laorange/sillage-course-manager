@@ -3,10 +3,13 @@ import {onBeforeMount, watch} from "vue";
 import {useStore} from "../pinia/useStore";
 
 import {useStorage} from "vue3-storage";
-import {Course, LocalConfig} from "../assets/ts/types";
+import {Course, LocalConfig, RawPocketBaseData} from "../assets/ts/types";
 import {useMessage} from "naive-ui";
 
 import {version} from "../../package.json";
+import axios from "axios";
+import dayjs from "dayjs";
+import {formatDatetime} from "../assets/ts/datetimeUtils";
 
 const store = useStore();
 const storage = useStorage();
@@ -14,24 +17,40 @@ const message = useMessage();
 const LOCAL_CONFIG_STORAGE_KEY = "local_config";
 
 
-function isLatestVersion(localVersion: string, latestVersion: string): boolean {
-  // 版本号格式：x.y.z
-  const localVersionMatchResult = localVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
-  const latestVersionMatchResult = latestVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
-  for (let i = 1; i <= 3; i++) {
-    // x, y, z 任何一个比现有版本的低，则不是最新版本
-    if (localVersionMatchResult[i] < latestVersionMatchResult[i]) return false;
-  }
-  return true;
-}
-
-
 const initiators = {
   pageTitle() {
     document.title = store.translate(store.config.content.tableName);
   },
+  async getCourseFromApi() {
+    let coursePioneer = (await axios(store.api.client.baseUrl + "/api/collections/course/records", {
+      params: {
+        page: 1,
+        perPage: 1,
+        sort: "-updated",
+      },
+    })).data as RawPocketBaseData<Course>;
+
+    if (coursePioneer.items[0]?.updated && dayjs(coursePioneer.items[0]?.updated).isAfter(dayjs(store.localConfig.database.recordTime))) {
+      // 课程有更新，重新请求全部课程
+      console.log("课程有更新，重新请求全部课程");
+      await store.api.course.list(courses => {
+            store.courses = courses;
+            store.isLoading = false;
+            store.localConfig.database.courses = courses;
+            store.localConfig.database.recordTime = coursePioneer.items[0]?.updated ?? formatDatetime(dayjs("1970-01-01"));
+          },
+          () => message.error("课程加载失败"),
+          coursePioneer);
+    } else {
+      // 课程没有更新，那就用本地缓存
+      console.log("课程没有更新，已加载本地缓存");
+      store.courses = store.localConfig.database.courses;
+      store.isLoading = false;
+    }
+  },
   async api() {
     store.isLoading = true;
+
     await Promise.all([
       store.api.config.list(configs => {
         if (configs.length) store.config = configs[0];
@@ -39,16 +58,24 @@ const initiators = {
 
       store.api.notice.list(notices => store.notices = notices, () => message.error("公告加载失败")),
 
-      store.api.course.list(courses => {
-        store.courses = courses;
-        store.isLoading = false;
-      }, () => message.error("课程加载失败")),
+      initiators.getCourseFromApi(),
     ]);
   },
   loginStatus() {
     store.validateAuthStatus();
   },
   localStorage() {
+    function isLatestVersion(localVersion: string, latestVersion: string): boolean {
+      // 版本号格式：x.y.z
+      const localVersionMatchResult = localVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
+      const latestVersionMatchResult = latestVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
+      for (let i = 1; i <= 3; i++) {
+        // x, y, z 任何一个比现有版本的低，则不是最新版本
+        if (localVersionMatchResult[i] < latestVersionMatchResult[i]) return false;
+      }
+      return true;
+    }
+
     // 从 localStorage 读取本地设置
     let localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY);
 
@@ -117,10 +144,7 @@ onBeforeMount(async () => {
   initiators.loginStatus();
   await initiators.api();
   initiators.pageTitle();
-  // await initiators.migrate07_08();
 });
-
-// onMounted(() => initiators.test());
 
 watch(() => store.localConfig, (to) => {
   // 向 localStorage 存入本地设置

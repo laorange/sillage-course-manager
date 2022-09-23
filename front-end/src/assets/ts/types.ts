@@ -106,6 +106,10 @@ export interface LocalConfig {
     readNotices: string[];
     lastVisitPath: null | MinimalRoute;
     favorites: MinimalRoute[];
+    database: {
+        recordTime: string;
+        courses: Course[];
+    };
 }
 
 export type GradeGroupArray = [string, string]

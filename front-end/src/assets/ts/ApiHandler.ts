@@ -82,9 +82,9 @@ class CourseCollection extends Collection<Course> {
         };
     }
 
-    async list(successHook?: (results: Course[]) => any, errorHook?: (e: Error) => any) {
+    async list(successHook?: (results: Course[]) => any, errorHook?: (e: Error) => any, pioneer?: RawPocketBaseData<Course>) {
         try {
-            let pioneer = (await axios(this.client.baseUrl + "/api/collections/course/records", {
+            pioneer = pioneer ?? (await axios(this.client.baseUrl + "/api/collections/course/records", {
                 params: {
                     page: 1,
                     perPage: 1,
