@@ -164,14 +164,21 @@ export class CoursesHandler {
 
         let teachers: string[] = [];
         let groups: string[] = [];
+        let gradeGroups: GradeGroupArray[] = [];
         let rooms: string[] = [];
 
         for (const course of this.value) {
             for (const situation of course.situations) {
                 // 空数组的话，就补个空字符串（例如判断年级/分组的时候，兴许有用）
                 teachers = teachers.concat(decorate(situation?.teachers, course));
-                groups = groups.concat(decorate(situation?.groups, course));
                 rooms = rooms.concat(decorate(situation?.rooms, course));
+
+                let groupsOfThisSituation: string[] = decorate(situation?.groups, course);
+                groups = groups.concat(groupsOfThisSituation);
+                gradeGroups = gradeGroups.concat(groupsOfThisSituation.filter(g =>
+                    // gradeGroups 在添加时，跳过重复元素
+                    gradeGroups.filter(gg => gg[0] === course.grade && gg[1] === g).length === 0)
+                    .map(group => [course.grade, group]));
             }
         }
 
@@ -179,7 +186,12 @@ export class CoursesHandler {
             teachers: getArrayWithUniqueItem<string>(teachers).filter(item => !!item),
             groups: getArrayWithUniqueItem<string>(groups).filter(item => !!item),
             rooms: getArrayWithUniqueItem<string>(rooms).filter(item => !!item),
+            gradeGroups,
         };
+    }
+
+    getGradeGroupArray(): GradeGroupArray[] {
+        return this.getSituItems().gradeGroups;
     }
 
     hasConflictTeachers(dates: string[], lessonNum: number, teachers: string[]): boolean {

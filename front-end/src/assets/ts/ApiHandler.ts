@@ -1,17 +1,9 @@
 import PocketBase from "pocketbase";
-import {Config, Course, GradeGroupArray, Notice, PocketBaseModel, RawPocketBaseData} from "./types";
+import {Config, Course, Notice, PocketBaseModel, RawPocketBaseData} from "./types";
 import axios, {AxiosPromise} from "axios";
 import dayjs from "dayjs";
+import {CoursesHandler} from "./courseToolkit";
 
-
-function getGradeGroupArrayOfCourse(course: Course | Course[]): GradeGroupArray[] {
-    if (course instanceof Array) {
-        return Array.from(new Set(course.reduce((r: GradeGroupArray[], c) => r.concat(getGradeGroupArrayOfCourse(c)), []))).sort();
-    }
-
-    let groups = course.situations.reduce((r: string[], s) => r.concat(s.groups ?? []), []);
-    return Array.from(new Set(groups.length ? groups.map(g => [course.grade, g]) : [[course.grade, ""]])).sort() as GradeGroupArray[];
-}
 
 class Collection<T extends PocketBaseModel> {
     client: PocketBase;
@@ -125,7 +117,7 @@ class CourseCollection extends Collection<Course> {
                 id: "",
                 type: "course",
                 to: newRecord,
-                groups: getGradeGroupArrayOfCourse(newRecord),
+                groups: (new CoursesHandler(newRecord)).getGradeGroupArray(),
             });
 
             if (successHook) successHook(result);
@@ -142,7 +134,7 @@ class CourseCollection extends Collection<Course> {
                 type: "course",
                 to: newRecord,
                 from: oldRecord,
-                groups: getGradeGroupArrayOfCourse([newRecord, oldRecord]),
+                groups: (new CoursesHandler([newRecord, oldRecord])).getGradeGroupArray(),
             });
 
             if (successHook) successHook(result);
@@ -156,7 +148,7 @@ class CourseCollection extends Collection<Course> {
                 id: "",
                 type: "course",
                 from: oldRecord,
-                groups: getGradeGroupArrayOfCourse(oldRecord),
+                groups: (new CoursesHandler(oldRecord)).getGradeGroupArray(),
             });
 
             if (successHook) successHook(result);
