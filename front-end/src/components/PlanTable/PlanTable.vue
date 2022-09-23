@@ -6,6 +6,7 @@ import RouteFilter from "../CourseTable/RouteFilter/RouteFilter.vue";
 import PlanTableBody from "./PlanTableBody.vue";
 import {ShareOutline} from "@vicons/ionicons5";
 import AdaptiveContainerWithFixedPixel from "../common/AdaptiveContainerWithFixedPixel.vue";
+import GoToCourseButton from "./GoToCourseButton.vue";
 
 const store = useStore();
 
@@ -33,6 +34,8 @@ provide("adaptiveContainerWithFixedPixel", adaptiveContainerWithFixedPixel);
   <RouteFilter ref="routeFilter">
     <template #button>
       <n-space justify="center" align="center">
+        <GoToCourseButton/>
+
         <n-button :dashed="true" color="#32647d" @click="handlers.downloadDataAsCSV()">
           csv
           <template #icon>
@@ -41,6 +44,7 @@ provide("adaptiveContainerWithFixedPixel", adaptiveContainerWithFixedPixel);
             </n-icon>
           </template>
         </n-button>
+
         <n-button :dashed="true" color="#32647d" @click="handlers.downloadDataAsJSON()">
           json
           <template #icon>

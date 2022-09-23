@@ -16,6 +16,7 @@ import {onBeforeRouteUpdate} from "vue-router";
 import {recordLastVisitPath} from "../../router/router";
 import FavoriteThisPageButton from "./CourseTable/FavoriteThisPageButton.vue";
 import CopyrightDiv from "../AboutPage/CopyrightDiv.vue";
+import GoToPlanButton from "./CourseTable/GoToPlanButton.vue";
 
 const store = useStore();
 
@@ -41,6 +42,8 @@ onBeforeRouteUpdate(recordLastVisitPath);
 
   <RouteFilter ref="routeFilter">
     <template #button>
+      <GoToPlanButton/>
+
       <FavoriteThisPageButton/>
 
       <NoticeDisplay :notices="filteredNotices"/>
