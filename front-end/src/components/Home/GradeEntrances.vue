@@ -15,7 +15,7 @@ const handlers = {
 };
 </script>
 <template>
-  <div class="grade-entrances-container">
+  <div class="grade-entrances-container" v-if="store.courses.length">
     <div class="grade-entrances">
       <template v-for="grade in store.grades" :key="`grade${grade}`">
         <n-button type="success" class="grade-entrance" :round="true"
