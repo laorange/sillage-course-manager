@@ -9,10 +9,30 @@
         html, body {
             margin: 0;
         }
+
+        #wait {
+            font-size: 32px;
+            height: 100vh;
+            width: 100vw;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            background-image: linear-gradient(rgba(100, 200, 250, 30%) 10%, rgba(100, 200, 250, 10%), rgba(100, 200, 250, 30%));
+        }
+
+        #wait[v-cloak] {
+            display: flex;
+        }
     </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+    <div id="wait" v-cloak>Loading...</div>
+</div>
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
