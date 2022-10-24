@@ -56,7 +56,8 @@ provide("adaptiveContainerWithFixedPixel", adaptiveContainerWithFixedPixel);
       </n-space>
     </template>
   </RouteFilter>
-  <AdaptiveContainerWithFixedPixel :width="1200" ref="adaptiveContainerWithFixedPixel">
+  <AdaptiveContainerWithFixedPixel :width="1200" ref="adaptiveContainerWithFixedPixel"
+                                   :refresh-refer="filteredCourses" :deep-watch="false">
     <PlanTableBody ref="planTableBody" :courses="filteredCourses"/>
   </AdaptiveContainerWithFixedPixel>
 </template>
