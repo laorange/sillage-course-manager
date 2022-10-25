@@ -85,12 +85,12 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
         <n-popselect v-model:value="dateMode" :options="dateModeOption" trigger="click">
           <n-button :dashed="true" color="#32647d">{{ store.translate(dateMode) || "弹出选择" }}</n-button>
         </n-popselect>
+      </n-space>
 
-        <n-space justify="center" align="center">
-          <n-button type="info" size="small" @click="handlers.lastWeek()" v-if="dateMode === `日期模式`">{{ store.translate(`上一周`) }}</n-button>
-          <div v-if="weekStr">{{ weekStr }}</div>
-          <n-button type="info" size="small" @click="handlers.nextWeek()" v-if="dateMode === `日期模式`">{{ store.translate(`下一周`) }}</n-button>
-        </n-space>
+      <n-space justify="center" align="center">
+        <n-button type="info" size="large" @click="handlers.lastWeek()" v-if="dateMode === `日期模式`">🢐&nbsp;&nbsp;{{ store.translate(`上一周`) }}</n-button>
+        <div v-if="weekStr">{{ weekStr }}</div>
+        <n-button type="info" size="large" @click="handlers.nextWeek()" v-if="dateMode === `日期模式`">{{ store.translate(`下一周`) }}&nbsp;&nbsp;🢒</n-button>
       </n-space>
     </n-space>
   </div>

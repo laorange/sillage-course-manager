@@ -3,7 +3,7 @@ import {useStore} from "../../pinia/useStore";
 import {useRouter} from "vue-router";
 import {parseCourseRoute} from "../../assets/ts/courseToolkit";
 import {useDialog} from "naive-ui";
-import {AdsClickSharp} from "@vicons/material";
+import {TouchAppOutlined} from "@vicons/material";
 import {MinimalRoute} from "../../assets/ts/types";
 
 const store = useStore();
@@ -45,7 +45,7 @@ const handler = {
                 <div style="display: flex; justify-content: center; align-content: center">
                   <div style="display:flex; height: 18px; justify-content: center; align-content: center; margin-right: 10px">
                     <n-icon>
-                      <AdsClickSharp/>
+                      <TouchAppOutlined/>
                     </n-icon>
                   </div>
                   <n-ellipsis style="max-width: 60vw; font-size: 12px">{{ parseCourseRoute(favoriteRoute).title }}</n-ellipsis>

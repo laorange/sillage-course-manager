@@ -7,14 +7,14 @@ import {useStore} from "../../../pinia/useStore";
 import RouteFilterSelect from "./RouteFilterSelect.vue";
 import {useMessage} from "naive-ui";
 import GradeGroupSelect from "./GradeGroupSelect.vue";
-import useClipboard from "vue-clipboard3";
 import {NoticesHandler} from "../../../assets/ts/noticeToolkit";
+import {Settings} from "@vicons/ionicons5";
+import CopyUrlButton from "./CopyUrlButton.vue";
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const message = useMessage();
-const {toClipboard} = useClipboard();
 
 const courses = ref<Course[]>([]);
 const showGrade = ref<boolean>(false);
@@ -74,32 +74,22 @@ watch(() => sources.value, (src) => {
 }, {deep: true, immediate: true});
 
 
-const handlers = {
-  pushWithNewFilter() {
-    nextTick(() => message.success(title.value ? title.value : store.translate(`全部课程`)));
-    showFilterDialog.value = false;
+function pushWithNewFilter() {
+  nextTick(() => message.success(title.value ? title.value : store.translate(`全部课程`)));
+  showFilterDialog.value = false;
 
-    router.push({
-      ...route,
-      query: {
-        grade: formModel.value.grades.length ? formModel.value.grades : undefined,
-        room: formModel.value.rooms.length ? formModel.value.rooms : undefined,
-        method: formModel.value.methods.length ? formModel.value.methods : undefined,
-        teacher: formModel.value.teachers.length ? formModel.value.teachers : undefined,
-        group: formModel.value.groups.length ? formModel.value.groups.map(g => JSON.stringify(g)) : undefined,
-        subject: formModel.value.courseNames.length ? formModel.value.courseNames : undefined,
-      },
-    });
-  },
-  async copyUrl() {
-    try {
-      await toClipboard(window.location.href);
-      message.success(`${store.translate("复制网址")}: ${store.translate("完成")}`);
-    } catch (e) {
-      message.error(`Error: ${e}`);
-    }
-  },
-};
+  router.push({
+    ...route,
+    query: {
+      grade: formModel.value.grades.length ? formModel.value.grades : undefined,
+      room: formModel.value.rooms.length ? formModel.value.rooms : undefined,
+      method: formModel.value.methods.length ? formModel.value.methods : undefined,
+      teacher: formModel.value.teachers.length ? formModel.value.teachers : undefined,
+      group: formModel.value.groups.length ? formModel.value.groups.map(g => JSON.stringify(g)) : undefined,
+      subject: formModel.value.courseNames.length ? formModel.value.courseNames : undefined,
+    },
+  });
+}
 
 defineExpose({
   sources,
@@ -112,14 +102,19 @@ defineExpose({
 <template>
   <div class="route-filter">
     <n-space :vertical="true" :size="15">
-      <n-ellipsis style="max-width: 80vw" v-if="title">{{ title }}</n-ellipsis>
+      <n-space justify="center" align="center">
+        <n-ellipsis style="max-width: 75vw" v-if="title">{{ title }}</n-ellipsis>
+        <CopyUrlButton/>
+      </n-space>
 
       <n-space justify="center" align="center" wrap="wrap">
-        <n-button type="info" :dashed="true" @click="showFilterDialog=true">
-          {{ store.translate(`偏好设置`) }}
+        <n-button color="#32647d" :dashed="true" @click="showFilterDialog=true">
+          <template #icon>
+            <n-icon>
+              <Settings/>
+            </n-icon>
+          </template>
         </n-button>
-
-        <n-button :dashed="true" color="#32647d" @click="handlers.copyUrl()">{{ store.translate(`复制网址`) }}</n-button>
 
         <slot name="button"/>
       </n-space>
@@ -152,7 +147,7 @@ defineExpose({
 
       <template #footer>
         <n-space>
-          <n-button size="large" @click="handlers.pushWithNewFilter" type="success">{{ store.translate(`确定`) }}</n-button>
+          <n-button size="large" @click="pushWithNewFilter" type="success">{{ store.translate(`确定`) }}</n-button>
           <n-button size="large" @click="showFilterDialog=false" type="info">{{ store.translate(`取消`) }}</n-button>
         </n-space>
       </template>

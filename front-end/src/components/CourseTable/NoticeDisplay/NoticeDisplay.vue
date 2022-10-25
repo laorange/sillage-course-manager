@@ -5,6 +5,7 @@ import {useStore} from "../../../pinia/useStore";
 import {computed, ref} from "vue";
 import dayjs from "dayjs";
 import {NoticesHandler} from "../../../assets/ts/noticeToolkit";
+import {MessageOutlined} from "@vicons/material"
 
 const props = defineProps<{ notices: Notice[] }>();
 
@@ -43,7 +44,13 @@ function moveToNoticeDisplay() {
 
 <template>
   <n-badge v-if="recentNotices.length" :value="unreadNotices.length" :max="99">
-    <n-button :dashed="true" color="#32647d" @click="moveToNoticeDisplay">{{ store.translate(`公告`) }}</n-button>
+    <n-button :dashed="true" color="#32647d" @click="moveToNoticeDisplay">
+      <template #icon>
+        <n-icon>
+          <MessageOutlined/>
+        </n-icon>
+      </template>
+    </n-button>
   </n-badge>
 
   <n-drawer v-model:show="showNotice" height="100%" placement="top">
