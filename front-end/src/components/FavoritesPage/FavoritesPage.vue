@@ -44,7 +44,9 @@ const handler = {
               <template #header>
                 <div style="display: flex; justify-content: center; align-content: center">
                   <div style="display:flex; height: 18px; justify-content: center; align-content: center; margin-right: 10px">
-                    <AdsClickSharp/>
+                    <n-icon>
+                      <AdsClickSharp/>
+                    </n-icon>
                   </div>
                   <n-ellipsis style="max-width: 60vw; font-size: 12px">{{ parseCourseRoute(favoriteRoute).title }}</n-ellipsis>
                 </div>

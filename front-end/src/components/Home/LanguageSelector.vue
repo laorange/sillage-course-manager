@@ -19,7 +19,9 @@ const languageOptions = computed(() => ["中文"].concat(store.config.content.la
       <n-button color="#fff" :round="true" text-color="#000" style="flex: 1">
         {{ store.localConfig.language }}
         <template #icon>
-          <Language/>
+          <n-icon>
+            <Language/>
+          </n-icon>
         </template>
       </n-button>
     </n-popselect>
