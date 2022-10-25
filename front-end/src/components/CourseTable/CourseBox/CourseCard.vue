@@ -28,6 +28,9 @@ const {toClipboard} = useClipboard();
 const showWeeksLocal = computed<boolean>(() => {
   if (props.showWeeks === true || props.showWeeks === false) {
     return props.showWeeks;
+  } else if (!props.isDateMode) {
+    // 如果是星期模式，或未指定`isDateMode` 那就一定要显示周数
+    return true;
   } else {
     // 如果没有指定是否显示周数，则在课程有多个上课日期时显示
     return props.course.dates.length > 1;
