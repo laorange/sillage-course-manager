@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Course} from "../../../assets/ts/types";
 import {useStore} from "../../../pinia/useStore";
-import {computed, ref, watch} from "vue";
+import {computed, inject, Ref, ref, watch} from "vue";
 import CourseBox from "../CourseBox/CourseBox.vue";
 import {CoursesHandler} from "../../../assets/ts/courseToolkit";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
 import AdaptiveContainerWithFixedPixel from "../../common/AdaptiveContainerWithFixedPixel.vue";
 import WeeklyCourseTableHeader from "./WeeklyCourseTableHeader.vue";
+import RouteFilter from "../RouteFilter/RouteFilter.vue";
 
 const props = defineProps<{ courses: Course[], editable?: boolean, queryDate?: string, showGrade?: boolean }>();
 
@@ -16,6 +17,9 @@ const store = useStore();
 const queryDateLocal = ref<string>(props.queryDate ?? formatDate(dayjs()));
 const queryDayLocal = computed(() => dayjs(queryDateLocal.value));
 const queryWhatDayLocal = computed<number>(() => getIsoWeekDay(queryDayLocal.value));
+
+const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
+const lockPage = computed(() => routeFilter?.value?.showFilterDialog);
 
 const isDateMode = ref<boolean>(store.localConfig.isDateMode);
 watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
@@ -29,7 +33,7 @@ const courseDecoratorOfThisWeeklyTable = computed<CoursesHandler>(() => {
 </script>
 
 <template>
-  <QueryDatePicker v-model:is-date-mode="isDateMode" v-model:query-date="queryDateLocal"/>
+  <QueryDatePicker v-model:is-date-mode="isDateMode" v-model:query-date="queryDateLocal" :lock-page="lockPage"/>
 
   <div class="weekly-course-table">
     <AdaptiveContainerWithFixedPixel :width="1200" :refresh-refer="courseDecoratorOfThisWeeklyTable.value" :deep-watch="true">

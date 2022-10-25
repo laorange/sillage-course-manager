@@ -2,18 +2,15 @@
 import dayjs from "dayjs";
 import {zhCN, dateZhCN, SelectOption, useMessage} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
-import {computed, inject, onMounted, onUnmounted, Ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, watch} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
-import RouteFilter from "../RouteFilter/RouteFilter.vue";
 import {ArrowRedoOutline, ArrowBackCircleOutline, ArrowForwardCircleOutline} from "@vicons/ionicons5";
 
 const store = useStore();
 const message = useMessage();
 
-const props = defineProps<{ queryDate: string, isDateMode: boolean }>();
+const props = withDefaults(defineProps<{ queryDate: string, isDateMode: boolean, allowChangeDateMode?: boolean, lockPage?: boolean }>(), {allowChangeDateMode: true});
 const emits = defineEmits(["update:queryDate", "update:isDateMode"]);
-
-const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
 
 const dateModeOption: SelectOption[] = ["日期模式", "星期模式"].map(mode => {
   return {label: store.translate(mode), value: mode};
@@ -55,7 +52,7 @@ const handlers = {
   },
   keyUpHandler(event: KeyboardEvent) {
     // 在日期模式 && 没有打开"课程编辑器" && 没有打开"偏好设置"
-    if (props.isDateMode && !store.editor.show && !routeFilter?.value?.showFilterDialog) {
+    if (props.isDateMode && !store.editor.show && !props.lockPage) {
       if (event.key === "ArrowLeft") {
         event.preventDefault();
         handlers.lastWeek();
@@ -86,13 +83,15 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
           </n-config-provider>
         </template>
 
-        <n-popselect v-model:value="dateMode" :options="dateModeOption" trigger="click">
+        <n-popselect v-model:value="dateMode" :options="dateModeOption" trigger="click" v-if="allowChangeDateMode">
           <n-button :dashed="true" color="#32647d">{{ store.translate(dateMode) || "弹出选择" }}</n-button>
         </n-popselect>
+
+        <div v-if="!props.isDateMode">{{ store.translate(`今天`) }}: {{ weekStr }}</div>
       </n-space>
 
-      <n-space justify="center" align="center" :size="20">
-        <n-button type="info" size="large" @click="handlers.lastWeek()" v-if="dateMode === `日期模式`">
+      <n-space justify="center" align="center" :size="20" v-if="dateMode === `日期模式`">
+        <n-button type="info" size="large" @click="handlers.lastWeek()">
           <n-space justify="center" align="center" :size="5">
             <n-icon :size="20">
               <ArrowBackCircleOutline/>
@@ -111,7 +110,7 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
             </template>
           </n-button>
         </n-space>
-        <n-button type="info" size="large" @click="handlers.nextWeek()" v-if="dateMode === `日期模式`">
+        <n-button type="info" size="large" @click="handlers.nextWeek()">
           <n-space justify="center" align="center" :size="5">
             <div>{{ store.translate(`下一周`) }}</div>
             <n-icon :size="20">

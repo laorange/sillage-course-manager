@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import {Course} from "../../../assets/ts/types";
 import {useStore} from "../../../pinia/useStore";
-import {computed, ref, watch} from "vue";
+import {computed, inject, Ref, ref, watch} from "vue";
 import CourseBox from "../CourseBox/CourseBox.vue";
 import {CoursesHandler} from "../../../assets/ts/courseToolkit";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
 import WhatDaySelector from "../CourseBox/WhatDaySelector.vue";
+import RouteFilter from "../RouteFilter/RouteFilter.vue";
 
 const props = withDefaults(defineProps<{
   courses: Course[], editable?: boolean, queryDate?: string,
@@ -19,6 +20,9 @@ const store = useStore();
 const queryDate = ref<string>(props.queryDate ?? formatDate(dayjs()));
 const isDateMode = ref<boolean>(store.localConfig.isDateMode);
 watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
+
+const routeFilter = inject("routeFilter") as Ref<typeof RouteFilter>;
+const lockPage = computed(() => routeFilter?.value?.showFilterDialog);
 
 const coursesOfWhatDay = computed<CoursesHandler>(() => {
   let coursesFilteredByWhatDay = (new CoursesHandler(props.courses).ofWhatDay(getIsoWeekDay(dayjs(queryDate.value))));
@@ -33,7 +37,7 @@ const coursesOfWhatDay = computed<CoursesHandler>(() => {
 </script>
 
 <template>
-  <QueryDatePicker v-if="showDateSelector" v-model:is-date-mode="isDateMode" v-model:query-date="queryDate"/>
+  <QueryDatePicker v-if="showDateSelector" v-model:is-date-mode="isDateMode" v-model:query-date="queryDate" :lock-page="lockPage"/>
 
   <WhatDaySelector v-if="showWhatDaySelector" v-model:date="queryDate"/>
 
