@@ -119,7 +119,6 @@ watch(() => courseLocal.value.situations, () => {
   let ecsOfThisLessonNum = (new CoursesHandler(store.courses)).ofLessonNum(courseLocal.value.lessonNum).ofWhatDay(store.editorFromWhatDay);
 
   let situItems = (new CoursesHandler(courseLocal.value)).getSituItems();
-  console.log(situItems);
   let coursesWithConflictTeacher: Course[] = situItems.teachers.length > 0 ? ecsOfThisLessonNum.ofTeachers(situItems.teachers).value : [];
   let coursesWithConflictGroup: Course[] = situItems.groups.length > 0 ? ecsOfThisLessonNum.ofGradeGroups(situItems.gradeGroups).value : [];
   let coursesWithConflictRoom: Course[] = situItems.rooms.length > 0 ? ecsOfThisLessonNum.ofRooms(situItems.rooms).value : [];
