@@ -5,7 +5,7 @@ import {useStore} from "../../../pinia/useStore";
 import {computed, inject, onMounted, onUnmounted, Ref, watch} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
-import {ArrowRedoOutline} from "@vicons/ionicons5";
+import {ArrowRedoOutline, ArrowBackCircleOutline, ArrowForwardCircleOutline} from "@vicons/ionicons5";
 
 const store = useStore();
 const message = useMessage();
@@ -92,7 +92,14 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
       </n-space>
 
       <n-space justify="center" align="center" :size="20">
-        <n-button type="info" size="large" @click="handlers.lastWeek()" v-if="dateMode === `日期模式`">🢐&nbsp;&nbsp;{{ store.translate(`上一周`) }}</n-button>
+        <n-button type="info" size="large" @click="handlers.lastWeek()" v-if="dateMode === `日期模式`">
+          <n-space justify="center" align="center" :size="5">
+            <n-icon :size="20">
+              <ArrowBackCircleOutline/>
+            </n-icon>
+            <div>{{ store.translate(`上一周`) }}</div>
+          </n-space>
+        </n-button>
         <n-space :vertical="true" :size="1">
           <div v-if="weekStr">{{ weekStr }}</div>
           <n-button v-if="queryDateLocal!==formatDate(dayjs())" @click="handlers.backToToday()" size="tiny" :dashed="true" color="#32647d">
@@ -104,7 +111,14 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
             </template>
           </n-button>
         </n-space>
-        <n-button type="info" size="large" @click="handlers.nextWeek()" v-if="dateMode === `日期模式`">{{ store.translate(`下一周`) }}&nbsp;&nbsp;🢒</n-button>
+        <n-button type="info" size="large" @click="handlers.nextWeek()" v-if="dateMode === `日期模式`">
+          <n-space justify="center" align="center" :size="5">
+            <div>{{ store.translate(`下一周`) }}</div>
+            <n-icon :size="20">
+              <ArrowForwardCircleOutline/>
+            </n-icon>
+          </n-space>
+        </n-button>
       </n-space>
     </n-space>
   </div>
