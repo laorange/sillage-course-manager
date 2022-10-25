@@ -5,6 +5,7 @@ import {useStore} from "../../../pinia/useStore";
 import {computed, inject, onMounted, onUnmounted, Ref, watch} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
+import {ArrowRedoOutline} from "@vicons/ionicons5";
 
 const store = useStore();
 const message = useMessage();
@@ -64,6 +65,9 @@ const handlers = {
       }
     }
   },
+  backToToday() {
+    queryDateLocal.value = formatDate(dayjs());
+  },
 };
 
 onMounted(() => document.addEventListener("keyup", handlers.keyUpHandler));
@@ -72,7 +76,7 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
 
 <template>
   <div class="query-date-picker" aria-label="日期选择">
-    <n-space :vertical="true">
+    <n-space :vertical="true" :size="10">
       <n-space justify="center" align="center" wrap="wrap">
         <template v-if="props.isDateMode">
           <n-config-provider :locale="store.localConfig.language===`中文`?zhCN:undefined"
@@ -87,9 +91,19 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
         </n-popselect>
       </n-space>
 
-      <n-space justify="center" align="center">
+      <n-space justify="center" align="center" :size="20">
         <n-button type="info" size="large" @click="handlers.lastWeek()" v-if="dateMode === `日期模式`">🢐&nbsp;&nbsp;{{ store.translate(`上一周`) }}</n-button>
-        <div v-if="weekStr">{{ weekStr }}</div>
+        <n-space :vertical="true" :size="1">
+          <div v-if="weekStr">{{ weekStr }}</div>
+          <n-button v-if="queryDateLocal!==formatDate(dayjs())" @click="handlers.backToToday()" size="tiny" :dashed="true" color="#32647d">
+            {{ store.translate(`今天`) }}
+            <template #icon>
+              <n-icon>
+                <ArrowRedoOutline/>
+              </n-icon>
+            </template>
+          </n-button>
+        </n-space>
         <n-button type="info" size="large" @click="handlers.nextWeek()" v-if="dateMode === `日期模式`">{{ store.translate(`下一周`) }}&nbsp;&nbsp;🢒</n-button>
       </n-space>
     </n-space>
