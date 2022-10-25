@@ -27,6 +27,7 @@ function parseWeekNeighbors(weekNeighbor: number[]): string {
 }
 
 function getWeeksString(weeks: number[]): string {
+    weeks.sort();
     if (weeks.length === 0) return "";
     else if (weeks.length === 1) return `${weeks[0]}`;
     else return `${splitWeekNeighbors(weeks).map(parseWeekNeighbors).join("、")}`;

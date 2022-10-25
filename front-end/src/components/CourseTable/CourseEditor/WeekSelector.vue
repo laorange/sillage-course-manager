@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {zhCN, dateZhCN, SelectOption} from "naive-ui";
+import {zhCN, dateZhCN, SelectOption, useMessage} from "naive-ui";
 import dayjs from "dayjs";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import getWeeksString from "../../../assets/ts/getWeeksString";
@@ -8,16 +8,29 @@ import {useStore} from "../../../pinia/useStore";
 
 const props = withDefaults(defineProps<{
   dates: string[], semesterStartDay: dayjs.Dayjs, whatDay: number,
-  maxWeekNum?: number, disabledWeeks?: number[]
+  maxWeekNum?: number, disabledWeeks?: number[], disabledDates?: string[]
 }>(), {maxWeekNum: 20});
 const emits = defineEmits(["update:dates"]);
 
 const store = useStore();
+const message = useMessage();
 
 const weeks = computed<number[]>({
   get: () => props.dates.map(d => store.getWeekNumOfSomeDate(d)),
-  set: (newWeeks) => emits("update:dates",
-      Array.from(new Set(newWeeks)).sort().map(w => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorFromWhatDay - 1, "day")))),
+  set: (newWeeks) => {
+    let weeks = Array.from(new Set(newWeeks)).sort();
+    let invalidWeeks = weeks.filter(w => (props.disabledWeeks ?? []).includes(w));
+    let validWeeks = weeks.filter(w => !(props.disabledWeeks ?? []).includes(w));
+
+    const getDateOfWeek = (w: number) => formatDate(store.semesterStartDay.add(w - 1, "week").add(store.editorFromWhatDay - 1, "day"));
+    let dates = validWeeks.map(w => getDateOfWeek(w));
+    let validDates = dates.filter(date => !(props.disabledDates ?? []).includes(date));
+    let invalidDates = dates.filter(date => (props.disabledDates ?? []).includes(date));
+    invalidWeeks = Array.from(new Set(invalidWeeks.concat(invalidDates.map(d => store.getWeekNumOfSomeDate(d)))));
+
+    message.warning(`第${getWeeksString(invalidWeeks)}周 现有课程与本课程存在冲突`);
+    emits("update:dates", validDates);
+  },
 });
 
 const weekOptions = computed<SelectOption[]>(() => {
@@ -28,10 +41,11 @@ const weekOptions = computed<SelectOption[]>(() => {
 
   let _options: SelectOption[] = [];
   for (let w = minWeekNum; w <= maxWeekNum; w++) {
+    let dateOfThisWeek = formatDate(props.semesterStartDay.add(w - 1, "week").add(props.whatDay - 1, "day"));
     _options.push({
-      label: (w >= 1 ? `第${w}周` : `开学前${1 - w}周`) + `(${formatDate(props.semesterStartDay.add(w - 1, "week").add(props.whatDay - 1, "day"))})`,
+      label: (w >= 1 ? `第${w}周` : `开学前${1 - w}周`) + `(${dateOfThisWeek})`,
       value: w,
-      disabled: (props.disabledWeeks ?? []).indexOf(w) !== -1,
+      disabled: (props.disabledWeeks ?? []).includes(w) || (props.disabledDates ?? []).includes(dateOfThisWeek),
     });
   }
   return _options;
@@ -96,6 +110,8 @@ const newDateStr = ref<string>(store.editor.fromDates[0]);
     <span v-if="weeks.length">第{{ getWeeksString(weeks) }}周</span>
     <span v-else style="color: red">请在下方的穿梭框中选择</span>
   </n-divider>
+
+  <div>disabledDates: {{ disabledDates }}</div>
 
   <div class="week-selector">
     <n-space :vertical="true">

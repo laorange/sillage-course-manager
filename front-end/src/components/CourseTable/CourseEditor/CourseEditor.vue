@@ -6,11 +6,9 @@ import SituationEditor from "./SituationEditor.vue";
 import {zhCN, dateZhCN, SelectOption, useMessage, useDialog} from "naive-ui";
 import {useStore} from "../../../pinia/useStore";
 import {CoursesHandler, isValidCourse} from "../../../assets/ts/courseToolkit";
-import {useRoute} from "vue-router";
 import {whetherTwoObjNotEqual} from "../../../assets/ts/whetherTwoObjNotEqual";
 
 const store = useStore();
-const route = useRoute();
 const message = useMessage();
 const dialog = useDialog();
 
@@ -113,10 +111,31 @@ watch(() => courseLocal.value.info.name, (name) => {
 });
 
 
+const disabledDates = ref<string[]>([]);
+// 监视课程的教学计划，对不可选的周数进行过滤
+watch(() => courseLocal.value.situations, () => {
+  disabledDates.value = [];
+
+  let ecsOfThisLessonNum = (new CoursesHandler(store.courses)).ofLessonNum(courseLocal.value.lessonNum).ofWhatDay(store.editorFromWhatDay);
+
+  let situItems = (new CoursesHandler(courseLocal.value)).getSituItems();
+  console.log(situItems);
+  let coursesWithConflictTeacher: Course[] = situItems.teachers.length > 0 ? ecsOfThisLessonNum.ofTeachers(situItems.teachers).value : [];
+  let coursesWithConflictGroup: Course[] = situItems.groups.length > 0 ? ecsOfThisLessonNum.ofGradeGroups(situItems.gradeGroups).value : [];
+  let coursesWithConflictRoom: Course[] = situItems.rooms.length > 0 ? ecsOfThisLessonNum.ofRooms(situItems.rooms).value : [];
+
+  disabledDates.value = Array.from(new Set([
+    ...(coursesWithConflictTeacher.map(c => c.dates).reduce((r, x) => r.concat(x), [])),
+    ...(coursesWithConflictGroup.map(c => c.dates).reduce((r, x) => r.concat(x), [])),
+    ...(coursesWithConflictRoom.map(c => c.dates).reduce((r, x) => r.concat(x), [])),
+  ]));
+}, {deep: true, immediate: true});
+
+
 // 在打开编辑栏时，检查当前课程是否有冲突，有的话自动去掉冲突项
 watch(() => store.editor.show, (show) => {
   if (show) {
-    let ecs = store.getExistingCoursesOfCourse(courseLocal.value);
+    let ecs = existingCoursesHandler.value;
 
     for (const s of courseLocal.value.situations) {
       for (const group of s.groups) {
@@ -164,7 +183,7 @@ const whetherCourseIsValid = computed<boolean>(() => isValidCourse(courseLocal.v
         </n-space>
       </div>
 
-      <WeekSelector v-model:dates="courseLocal.dates" :semester-start-day="store.semesterStartDay" :what-day="store.editorFromWhatDay"/>
+      <WeekSelector v-model:dates="courseLocal.dates" :semester-start-day="store.semesterStartDay" :what-day="store.editorFromWhatDay" :disabled-dates="disabledDates"/>
     </div>
 
     <div class="responsive-middle-divider"/>
