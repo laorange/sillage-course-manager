@@ -5,18 +5,23 @@ import {useStore} from "../../../pinia/useStore";
 import {computed, ref} from "vue";
 import dayjs from "dayjs";
 import {NoticesHandler} from "../../../assets/ts/noticeToolkit";
-import {MessageOutlined} from "@vicons/material"
+import {MessageOutlined} from "@vicons/material";
 
 const props = defineProps<{ notices: Notice[] }>();
 
 const store = useStore();
 const showNotice = ref<boolean>(false);
 
-const recentNotices = computed<Notice[]>(() => (new NoticesHandler(props.notices)).inThePastFewDays(7).value); // 7天内的公告
-const unreadNotices = computed(() => recentNotices.value.filter(n => store.localConfig.readNotices.indexOf(n.id) === -1));  // 未读的公告
+const textContentNotices = computed<Notice[]>(() => (new NoticesHandler(props.notices).hasTextContent().value));
+const displayedNotices = computed<Notice[]>(() => {
+  // 7天内的公告 + 有文字内容的公告
+  let recentNotices = (new NoticesHandler(props.notices)).inThePastFewDays(7).value;
+  return recentNotices.concat(textContentNotices.value.filter(n => !recentNotices.map(_ => _.id).includes(n.id)));  // 加上7天以外的有文字内容的公告
+});
+const unreadNotices = computed(() => displayedNotices.value.filter(n => store.localConfig.readNotices.indexOf(n.id) === -1));  // 未读的公告
 
 const noticeWithBulletinFirst = computed<Notice[]>(() => {
-  return recentNotices.value.slice().sort((n1, n2) => {
+  return displayedNotices.value.slice().sort((n1, n2) => {
     // 将有内容的公告放置在前面
     if (!!n2.content && !n1.content) {
       return 1;
@@ -33,7 +38,7 @@ function markRecentNoticeHasBeenRead() {
   store.localConfig.readNotices = store.localConfig.readNotices.filter(rnId => store.notices.map(n => n.id).indexOf(rnId) > -1);
 
   // 将当前页面的公告加入到本地缓存的已读公告中
-  store.localConfig.readNotices = Array.from(new Set(store.localConfig.readNotices.concat(recentNotices.value.map(n => n.id))));
+  store.localConfig.readNotices = Array.from(new Set(store.localConfig.readNotices.concat(displayedNotices.value.map(n => n.id))));
 }
 
 function moveToNoticeDisplay() {
@@ -43,7 +48,7 @@ function moveToNoticeDisplay() {
 </script>
 
 <template>
-  <n-badge v-if="recentNotices.length" :value="unreadNotices.length" :max="99">
+  <n-badge v-if="displayedNotices.length" :value="unreadNotices.length" :max="99">
     <n-button :dashed="true" color="#32647d" @click="moveToNoticeDisplay">
       <template #icon>
         <n-icon>

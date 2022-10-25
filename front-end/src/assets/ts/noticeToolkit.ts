@@ -14,9 +14,14 @@ export class NoticesHandler {
         return new NoticesHandler(this.value.filter(filterFunc));
     }
 
+    hasTextContent() {
+        const filterFunc: NoticeFilter = n => !!n.content;
+        return this.filter(filterFunc);
+    }
+
     inThePastFewDays(dayNum: number) {
         const filterFunc: NoticeFilter = n => {
-            return dayjs(n.updated).isAfter(dayjs().add(-dayNum, "day"), "minute")
+            return dayjs(n.updated).isAfter(dayjs().add(-dayNum, "day"), "minute");
         };
         return this.filter(filterFunc);
     }

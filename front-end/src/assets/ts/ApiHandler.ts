@@ -196,7 +196,7 @@ class NoticeCollection extends Collection<Notice> {
                     params: {
                         page: 1,
                         perPage: this.maxPerPage,
-                        sort: "-updated",
+                        sort: "-content,-updated",
                     },
                 })).data.items;
                 if (successHook) successHook(results);
@@ -220,7 +220,7 @@ export class ApiHandler {
     constructor(client: PocketBase) {
         this.client = client;
         this.config = new Collection<Config>(client, "config", 1);
-        this.notice = new NoticeCollection(client, 100);
+        this.notice = new NoticeCollection(client, 200);
         this.course = new CourseCollection(client, this.notice);
     }
 }
