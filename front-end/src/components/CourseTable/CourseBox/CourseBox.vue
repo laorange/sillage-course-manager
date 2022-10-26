@@ -5,10 +5,11 @@ import EmptyCourseCard from "./EmptyCourseCard.vue";
 import {computed} from "vue";
 import dayjs from "dayjs";
 import {useStore} from "../../../pinia/useStore";
+import EditableCourseCard from "./EditableCourseCard.vue";
 
 const props = withDefaults(defineProps<{
   courses: Course[], queryDate: string, isDateMode: boolean, lessonNum: number,
-  editable?: boolean, showWeeks?: boolean | "auto", showGrade?: boolean
+  editable?: boolean, showWeeks?: boolean | "auto", showGrade?: boolean, showLessonTime?: boolean,
 }>(), {showWeeks: "auto"});
 
 // region 以 store.localConfig.verticalCard 来判断是否垂直显示课程。
@@ -51,9 +52,10 @@ const coursesSorted = computed(() => {
 
   <div class="course-box" :class="{'course-box-vertical': verticalLocal, 'course-box-horizontal': !verticalLocal}" v-else>
     <div class="course-card-container" v-for="course in coursesSorted" :key="course.id">
-      <CourseCard v-if="editable" :course="course" :show-grade="showGrade" :show-weeks="showWeeks" :is-date-mode="isDateMode"
-                  :edit-data="{coursesExisting:coursesSorted, lessonNum:lessonNum, queryDate:queryDate}"/>
-      <CourseCard v-else :course="course" :show-grade="showGrade" :show-weeks="showWeeks" :is-date-mode="isDateMode"/>
+      <EditableCourseCard v-if="editable" :course="course" :show-grade="showGrade"
+                          :show-weeks="showWeeks" :is-date-mode="isDateMode" :show-lesson-time="showLessonTime"
+                          :edit-data="{coursesExisting:coursesSorted, lessonNum:lessonNum, queryDate:queryDate}"/>
+      <CourseCard v-else :course="course" :show-grade="showGrade" :show-weeks="showWeeks" :is-date-mode="isDateMode" :show-lesson-time="showLessonTime"/>
     </div>
     <div class="empty-course-card" v-if="editable && false">
       <EmptyCourseCard :query-date="queryDate" :is-date-mode="isDateMode" :lesson-num="lessonNum" :courses-existing="courses"/>
