@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
   showWeeks?: boolean | "auto", showGrade?: boolean, showWhatDay?: boolean, showLessonTime?: boolean,
 }>(), {showWeeks: "auto", showGrade: false, showWhatDay: false, showLessonTime: false});
 
-const emits = defineEmits(["contextmenu"]);
+const emits = defineEmits<{ (emit: "contextmenu", event: MouseEvent): void }>();
 
 const store = useStore();
 const message = useMessage();
@@ -63,7 +63,7 @@ function getSituationStr(situation: Situation) {
 </script>
 
 <template>
-  <div class="course-card" @contextmenu="emits(`contextmenu`)"
+  <div class="course-card" @contextmenu="emits(`contextmenu`, $event)"
        :style="{backgroundColor: course.info.bgc, color: parseFontColor(course.info.bgc)}">
     <div v-if="course.info.code">{{ store.translate(course.info.code) }}</div>
     <div>{{ store.translate(course.info.name) }}</div>
