@@ -118,6 +118,12 @@ watch(() => courseLocal.value.situations, () => {
 
   let ecsOfThisLessonNum = (new CoursesHandler(store.courses)).ofLessonNum(courseLocal.value.lessonNum).ofWhatDay(store.editorFromWhatDay);
 
+  if (store.editor.mode !== "copy" && store.editor.mode !== "cut" && store.editor.mode !== "add") {
+    // 复制、剪切 的时候 需要考虑 当前正在编辑课程带来的影响。新增时，id为空，无影响
+    // 编辑(更新) 时 不需要考虑 当前正在编辑课程带来的影响
+    ecsOfThisLessonNum = ecsOfThisLessonNum.filter((c: Course) => c.id !== courseLocal.value.id);
+  }
+
   let situItems = (new CoursesHandler(courseLocal.value)).getSituItems();
   let coursesWithConflictTeacher: Course[] = situItems.teachers.length > 0 ? ecsOfThisLessonNum.ofTeachers(situItems.teachers).value : [];
   let coursesWithConflictGroup: Course[] = situItems.groups.length > 0 ? ecsOfThisLessonNum.ofGradeGroups(situItems.gradeGroups).value : [];
