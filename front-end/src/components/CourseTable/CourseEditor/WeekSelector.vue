@@ -28,7 +28,9 @@ const weeks = computed<number[]>({
     let invalidDates = dates.filter(date => (props.disabledDates ?? []).includes(date));
     invalidWeeks = Array.from(new Set(invalidWeeks.concat(invalidDates.map(d => store.getWeekNumOfSomeDate(d)))));
 
-    message.warning(`第${getWeeksString(invalidWeeks)}周 现有课程与本课程存在冲突`);
+    if (invalidWeeks.length) {
+      message.warning(`第${getWeeksString(invalidWeeks)}周 现有课程与本课程存在冲突`);
+    }
     emits("update:dates", validDates);
   },
 });
@@ -110,8 +112,6 @@ const newDateStr = ref<string>(store.editor.fromDates[0]);
     <span v-if="weeks.length">第{{ getWeeksString(weeks) }}周</span>
     <span v-else style="color: red">请在下方的穿梭框中选择</span>
   </n-divider>
-
-  <div>disabledDates: {{ disabledDates }}</div>
 
   <div class="week-selector">
     <n-space :vertical="true">
