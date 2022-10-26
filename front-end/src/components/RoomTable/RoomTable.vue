@@ -8,7 +8,6 @@ import {formatDate} from "../../assets/ts/datetimeUtils";
 import {CoursesHandler} from "../../assets/ts/courseToolkit";
 import RoomInfoRow from "./RoomInfoRow.vue";
 import AdaptiveContainerWithFixedPixel from "../common/AdaptiveContainerWithFixedPixel.vue";
-import CopyrightDiv from "../AboutPage/CopyrightDiv.vue";
 
 const store = useStore();
 
@@ -42,8 +41,6 @@ const coursesOfThisWeek = computed<CoursesHandler>(() =>
       </n-space>
     </AdaptiveContainerWithFixedPixel>
   </div>
-
-  <CopyrightDiv project-url="https://github.com/laorange/sillage-course-manager"/>
 </template>
 
 <style scoped>

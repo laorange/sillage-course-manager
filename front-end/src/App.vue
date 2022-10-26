@@ -2,6 +2,7 @@
 import TabBar from "./components/TabBar.vue";
 import Initiator from "./components/Initiator.vue";
 import {useStore} from "./pinia/useStore";
+import CopyrightDiv from "./components/AboutPage/CopyrightDiv.vue";
 
 const store = useStore();
 </script>
@@ -18,6 +19,8 @@ const store = useStore();
       </n-spin>
     </n-message-provider>
   </n-dialog-provider>
+
+  <CopyrightDiv/>
 
   <TabBar/>
 </template>

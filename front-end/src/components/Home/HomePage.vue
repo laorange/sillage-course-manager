@@ -2,7 +2,6 @@
 import {useStore} from "../../pinia/useStore";
 import {useRouter} from "vue-router";
 import config from "../../../package.json";
-import CopyrightDiv from "../AboutPage/CopyrightDiv.vue";
 import LanguageSelector from "./LanguageSelector.vue";
 import GradeEntrances from "./GradeEntrances.vue";
 
@@ -50,8 +49,6 @@ const handlers = {
       </template>
 
       <n-button type="warning" :round="true" v-if="store.editor.authenticated" @click="handlers.toLogout">退出登录</n-button>
-
-      <copyright-div project-url="https://github.com/laorange/sillage-course-manager"/>
     </div>
   </main>
 </template>
@@ -59,7 +56,7 @@ const handlers = {
 <style scoped>
 main {
   display: flex;
-  min-height: 90vh;
+  min-height: 75vh;
   flex-direction: column;
   justify-content: center;
   flex-wrap: wrap;
