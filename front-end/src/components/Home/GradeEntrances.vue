@@ -12,6 +12,9 @@ const handlers = {
   toToFavoritesPage() {
     router.push({name: "favorites"});
   },
+  toToRoomTable() {
+    router.push({name: "room"});
+  },
 };
 </script>
 <template>
@@ -25,6 +28,8 @@ const handlers = {
       </template>
 
       <n-button class="grade-entrance" :round="true" type="success" @click="router.push({name:`course`})" v-if="store.courses.length">{{ store.translate(`全部课程`) }}</n-button>
+
+      <n-button class="grade-entrance" :round="true" type="success" @click="handlers.toToRoomTable()">{{ store.translate(`教室`) }}</n-button>
 
       <n-button class="grade-entrance" :round="true" type="success"
                 @click="handlers.toLastVisitPage" v-if="store.localConfig.lastVisitPath">{{ store.translate(`上次访问`) }}

@@ -34,6 +34,7 @@ onBeforeUnmount(() => window.removeEventListener("resize", respondToScreenResize
 
 defineExpose({
   containerWidth,
+  containerHeight,
   containerScaleNum,
 });
 </script>
