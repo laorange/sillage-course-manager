@@ -33,10 +33,14 @@ function goToCoursePage(room: string) {
 
 .n-grid > * {
   border: 2px solid var(--border-color);
+  height: 40px;
 }
 
 .room-label {
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .room-label:hover {

@@ -8,6 +8,7 @@ import {formatDate} from "../../assets/ts/datetimeUtils";
 import {CoursesHandler} from "../../assets/ts/courseToolkit";
 import RoomInfoRow from "./RoomInfoRow.vue";
 import AdaptiveContainerWithFixedPixel from "../common/AdaptiveContainerWithFixedPixel.vue";
+import CopyrightDiv from "../AboutPage/CopyrightDiv.vue";
 
 const store = useStore();
 
@@ -31,7 +32,7 @@ const coursesOfThisWeek = computed<CoursesHandler>(() =>
     <h1>{{ store.translate(`教室`) }}</h1>
     <QueryDatePicker :is-date-mode="true" :allow-change-date-mode="false" v-model:query-date="roomQueryDate"/>
 
-    <AdaptiveContainerWithFixedPixel ref="adaptiveContainerWithFixedPixel" :width="1200" :refresh-refer="coursesOfThisWeek" :deep-watch="false">
+    <AdaptiveContainerWithFixedPixel ref="adaptiveContainerWithFixedPixel" :width="1440" :refresh-refer="coursesOfThisWeek" :deep-watch="false">
       <n-space :vertical="true" :size="3">
         <WeeklyCourseTableHeader :is-date-mode="true" :query-day="roomQueryDay"/>
 
@@ -41,6 +42,8 @@ const coursesOfThisWeek = computed<CoursesHandler>(() =>
       </n-space>
     </AdaptiveContainerWithFixedPixel>
   </div>
+
+  <CopyrightDiv project-url="https://github.com/laorange/sillage-course-manager"/>
 </template>
 
 <style scoped>
