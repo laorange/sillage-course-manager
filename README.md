@@ -1,18 +1,16 @@
-<p align="center">
+<div align="center">
  <img src="https://raw.githubusercontent.com/laorange/sillage-docs/master/docs/.vuepress/public/images/sillage.png" width="200" height="200" alt="sillage">
-</p>
-<div align="center" style="font-size: xx-large">迹云课表</>
-<div align="center" style="color: #8080aa; font-size:large">单文件课程管理系统</div>
+</div>
+
+<h1 align="center">迹云课表</h1>
 
 <p align="center">
   <a href="http://docs.siae.top">使用说明</a>丨<a href="https://www.yuque.com/laorange/sillage-docs/introduction-en">English Docs</a>
 </p>
 
+项目名为"迹云"，灵感来源于法语单词 **Sillage**【sijaʒ】，可译为"**飞机划过天空后留下的尾迹云**" 。
+
 # 简介
-
-> 项目名为"迹云"，灵感来源于法语单词 **Sillage**【sijaʒ】，可译为"**飞机划过天空后留下的尾迹云**" 。
-
-
 
 由于学院有英语和法语外教，由学院教务科统一排课，分班复杂，常规的教务管理系统难以满足需求。当前是使用Excel编辑课表，更新过程繁琐，且容易出错：截至本文档撰写时，不同年级"撞教室"的现象仍时有发生。
 
@@ -51,6 +49,12 @@
 
 
 
+## 国际化
+
+用户端中的**每个词语**，都可以在"**系统配置页**"中设置它的外语翻译，以不同的语言展示课程！
+
+
+
 ## 可拓展
 
 1. 课表名称、每节课时间、每学期开始时间等都可以在"**系统配置页**"中自定义，可满足多方需求。
@@ -72,10 +76,4 @@
 同时，使用了性能十分优秀的基于GO语言的`Pocketbase`框架，即使在一个1核1G的轻量服务器上也可以轻松支持8000以上的并发量。
 
 <div align="center"><a href="https://github.com/pocketbase/pocketbase"><img alt="Readme Card" src="https://github-readme-stats.vercel.app/api/pin/?username=pocketbase&repo=pocketbase"/></a></div>
-
-
-
-## 国际化
-
-用户端中的**每个词语**，都可以在"**系统配置页**"中设置它的外语翻译，以不同的语言展示课程！
 
