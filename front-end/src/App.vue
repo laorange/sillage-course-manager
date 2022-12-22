@@ -3,6 +3,7 @@ import TabBar from "./components/TabBar.vue";
 import Initiator from "./components/Initiator.vue";
 import {useStore} from "./pinia/useStore";
 import CopyrightFooter from "./components/AboutPage/CopyrightFooter.vue";
+import packageJson from "../package.json";
 
 const store = useStore();
 </script>
@@ -20,7 +21,7 @@ const store = useStore();
     </n-message-provider>
   </n-dialog-provider>
 
-  <CopyrightFooter project-url="https://github.com/laorange/sillage-course-manager" docs-url="https://www.yuque.com/laorange/sillage-docs/"/>
+  <CopyrightFooter :version="packageJson.version" project-url="https://github.com/laorange/sillage-course-manager" docs-url="https://www.yuque.com/laorange/sillage-docs/"/>
 
   <TabBar/>
 </template>
