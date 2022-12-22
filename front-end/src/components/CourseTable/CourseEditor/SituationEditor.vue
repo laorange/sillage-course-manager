@@ -50,7 +50,7 @@ const roomOptions = computed<SelectOption[]>(() => store.rooms.map(room => {
 
 <template>
   <div class="situation-editor">
-    <n-dynamic-input v-model:value="situationsLocal" :on-create="createSituation">
+    <n-dynamic-input v-model:value="situationsLocal" :on-create="createSituation" show-sort-button>
       <template #create-button-default>
         <div>添加教学计划</div>
       </template>
