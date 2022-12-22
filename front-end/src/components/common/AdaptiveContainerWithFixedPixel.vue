@@ -43,7 +43,7 @@ defineExpose({
 <template>
   <div :style="{
     width: `${containerWidth-1}px`,
-    height: `${containerHeight}px`,
+    height: containerScaleNum<1 ? `${containerHeight}px` : `auto`,
     transform: `scale(${containerScaleNum})`,
     transformOrigin: `top left`,
   }" ref="adaptiveContainerWithFixedPixel"
