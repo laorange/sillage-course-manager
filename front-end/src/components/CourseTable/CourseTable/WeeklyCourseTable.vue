@@ -36,7 +36,7 @@ const courseDecoratorOfThisWeeklyTable = computed<CoursesHandler>(() => {
   <QueryDatePicker v-model:is-date-mode="isDateMode" v-model:query-date="queryDateLocal" :lock-page="lockPage"/>
 
   <div class="weekly-course-table">
-    <AdaptiveContainerWithFixedPixel :width="1200" :refresh-refer="courseDecoratorOfThisWeeklyTable.value" :deep-watch="true">
+    <AdaptiveContainerWithFixedPixel :width="1200">
       <WeeklyCourseTableHeader :query-day="queryDayLocal" :is-date-mode="isDateMode"/>
 
       <n-grid cols="22" x-gap="2" y-gap="2">

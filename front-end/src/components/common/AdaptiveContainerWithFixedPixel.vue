@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 
-const props = withDefaults(defineProps<{ width?: number, refreshRefer?: any, deepWatch?: boolean }>(), {width: 1440});
+const props = withDefaults(defineProps<{ width?: number }>(), {width: 1440});
 
 const reactiveClientWidth = ref<number>(document.body.clientWidth);
 
@@ -16,21 +16,22 @@ const containerScaleNum = computed<number>(() => document.body.clientWidth / con
 const adaptiveContainerWithFixedPixel = ref();
 
 function respondToScreenResize() {
-  nextTick(() => {
-    reactiveClientWidth.value = document.body.clientWidth;
-    containerHeight.value = (adaptiveContainerWithFixedPixel?.value ?? document.body)?.scrollHeight * containerScaleNum.value;
-  });
+  reactiveClientWidth.value = document.body.clientWidth;
 }
 
-watch(() => props.refreshRefer, () => respondToScreenResize(), {deep: !!props.deepWatch});
-
+let intervalId: number;
 onMounted(() => {
-  nextTick(() => {
-    window.addEventListener("resize", respondToScreenResize);
-    respondToScreenResize();
-  });
+  intervalId = Number(setInterval(() => {
+    let heightNow = (adaptiveContainerWithFixedPixel?.value ?? document.body)?.scrollHeight * containerScaleNum.value;
+    if (heightNow !== containerHeight.value) containerHeight.value = heightNow;
+  }, 200));
+  window.addEventListener("resize", respondToScreenResize);
+  respondToScreenResize();
 });
-onBeforeUnmount(() => window.removeEventListener("resize", respondToScreenResize));
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", respondToScreenResize);
+  clearInterval(intervalId);
+});
 
 defineExpose({
   containerWidth,

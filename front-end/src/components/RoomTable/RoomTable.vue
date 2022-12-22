@@ -31,7 +31,7 @@ const coursesOfThisWeek = computed<CoursesHandler>(() =>
     <h1>{{ store.translate(`教室`) }}</h1>
     <QueryDatePicker :is-date-mode="true" :allow-change-date-mode="false" v-model:query-date="roomQueryDate"/>
 
-    <AdaptiveContainerWithFixedPixel ref="adaptiveContainerWithFixedPixel" :width="1440" :refresh-refer="coursesOfThisWeek" :deep-watch="false">
+    <AdaptiveContainerWithFixedPixel ref="adaptiveContainerWithFixedPixel" :width="1440">
       <n-space :vertical="true" :size="3">
         <WeeklyCourseTableHeader :is-date-mode="true" :query-day="roomQueryDay"/>
 
