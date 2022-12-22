@@ -11,9 +11,6 @@ const router = useRouter();
 const inDevelopMode: boolean = import.meta.env.MODE === "development";
 
 const handlers = {
-  toDocs() {
-    window.open("http://docs.siae.top");
-  },
   toPlan() {
     router.push({name: "plan"});
   },
@@ -35,8 +32,6 @@ const handlers = {
     <div class="home-page">
       <h1>{{ store.translate(store.config.content.tableName) }}</h1>
       <LanguageSelector/>
-
-      <n-button type="info" :round="true" @click="handlers.toDocs">{{ store.translate(`使用说明`) }}</n-button>
 
       <GradeEntrances/>
 

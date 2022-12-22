@@ -20,7 +20,7 @@ const store = useStore();
     </n-message-provider>
   </n-dialog-provider>
 
-  <CopyrightDiv/>
+  <CopyrightDiv project-url="https://github.com/laorange/sillage-course-manager" docs-url="https://www.yuque.com/laorange/sillage-docs/"/>
 
   <TabBar/>
 </template>
