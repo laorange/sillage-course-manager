@@ -2,7 +2,7 @@
 import TabBar from "./components/TabBar.vue";
 import Initiator from "./components/Initiator.vue";
 import {useStore} from "./pinia/useStore";
-import CopyrightDiv from "./components/AboutPage/CopyrightDiv.vue";
+import CopyrightFooter from "./components/AboutPage/CopyrightFooter.vue";
 
 const store = useStore();
 </script>
@@ -20,7 +20,7 @@ const store = useStore();
     </n-message-provider>
   </n-dialog-provider>
 
-  <CopyrightDiv project-url="https://github.com/laorange/sillage-course-manager" docs-url="https://www.yuque.com/laorange/sillage-docs/"/>
+  <CopyrightFooter project-url="https://github.com/laorange/sillage-course-manager" docs-url="https://www.yuque.com/laorange/sillage-docs/"/>
 
   <TabBar/>
 </template>
