@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {useStore} from "../../pinia/useStore";
-import QueryDatePicker from "../CourseTable/QueryDatePicker/QueryDatePicker.vue";
+import QueryDatePicker from "../course/QueryDatePicker/QueryDatePicker.vue";
 import {computed, provide, ref} from "vue";
-import WeeklyCourseTableHeader from "../CourseTable/CourseTable/WeeklyCourseTableHeader.vue";
+import WeeklyCourseTableHeader from "../course/CourseTable/WeeklyCourseTableHeader.vue";
 import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
 import {CoursesHandler} from "../../assets/ts/courseToolkit";
 import RoomInfoRow from "./RoomInfoRow.vue";
-import AdaptiveContainerWithFixedPixel from "../common/AdaptiveContainerWithFixedPixel.vue";
+import AdaptiveContainerWithFixedPixel from "../../components/AdaptiveContainerWithFixedPixel.vue";
 
 const store = useStore();
 

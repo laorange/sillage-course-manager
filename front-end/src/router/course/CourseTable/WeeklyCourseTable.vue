@@ -7,7 +7,7 @@ import {CoursesHandler} from "../../../assets/ts/courseToolkit";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
 import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
-import AdaptiveContainerWithFixedPixel from "../../common/AdaptiveContainerWithFixedPixel.vue";
+import AdaptiveContainerWithFixedPixel from "../../../components/AdaptiveContainerWithFixedPixel.vue";
 import WeeklyCourseTableHeader from "./WeeklyCourseTableHeader.vue";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
 

@@ -13,7 +13,7 @@ import ThinkTwiceSwitch from "./CourseTable/ThinkTwiceSwitch.vue";
 import VerticalCardSwitch from "./CourseTable/VerticalCardSwitch.vue";
 import DisplayModeSelector from "./CourseTable/DisplayModeSelector.vue";
 import {onBeforeRouteUpdate} from "vue-router";
-import {recordLastVisitPath} from "../../router/router";
+import {recordLastVisitPath} from "../router";
 import FavoriteThisPageButton from "./CourseTable/FavoriteThisPageButton.vue";
 import GoToPlanButton from "./CourseTable/GoToPlanButton.vue";
 

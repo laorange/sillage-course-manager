@@ -3,7 +3,7 @@ import {CoursesHandler} from "../../assets/ts/courseToolkit";
 import {useStore} from "../../pinia/useStore";
 import RoomInfoCard from "./RoomInfoCard.vue";
 import {inject, ref, Ref, watch} from "vue";
-import CourseBox from "../CourseTable/CourseBox/CourseBox.vue";
+import CourseBox from "../course/CourseBox/CourseBox.vue";
 
 const props = defineProps<{ room: string, coursesHandler: CoursesHandler }>();
 

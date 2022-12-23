@@ -2,7 +2,7 @@
 import {Course} from "../../../assets/ts/types";
 import {inject, Ref} from "vue";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
-import useEmptyCourseCard from "../../../assets/ts/hooks/useEmptyCourseCard";
+import useEmptyCourseCard from "../../../assets/ts/useEmptyCourseCard";
 import ContextMenu, {MenuItem} from "@imengyu/vue3-context-menu";
 import {useStore} from "../../../pinia/useStore";
 import {useDialog, useMessage} from "naive-ui";

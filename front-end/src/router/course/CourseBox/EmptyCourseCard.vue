@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {inject, Ref} from "vue";
-import useEmptyCourseCard from "../../../assets/ts/hooks/useEmptyCourseCard";
+import useEmptyCourseCard from "../../../assets/ts/useEmptyCourseCard";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
 import ContextMenu from "@imengyu/vue3-context-menu";
 import {useStore} from "../../../pinia/useStore";

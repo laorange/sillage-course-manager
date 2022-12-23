@@ -2,10 +2,10 @@
 import {useStore} from "../../pinia/useStore";
 import {computed, provide, ref} from "vue";
 import {Course} from "../../assets/ts/types";
-import RouteFilter from "../CourseTable/RouteFilter/RouteFilter.vue";
+import RouteFilter from "../course/RouteFilter/RouteFilter.vue";
 import PlanTableBody from "./PlanTableBody.vue";
 import {ShareOutline} from "@vicons/ionicons5";
-import AdaptiveContainerWithFixedPixel from "../common/AdaptiveContainerWithFixedPixel.vue";
+import AdaptiveContainerWithFixedPixel from "../../components/AdaptiveContainerWithFixedPixel.vue";
 import GoToCourseButton from "./GoToCourseButton.vue";
 
 const store = useStore();

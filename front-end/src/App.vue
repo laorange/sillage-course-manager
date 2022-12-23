@@ -2,7 +2,7 @@
 import TabBar from "./components/TabBar.vue";
 import Initiator from "./components/Initiator.vue";
 import {useStore} from "./pinia/useStore";
-import CopyrightFooter from "./components/AboutPage/CopyrightFooter.vue";
+import CopyrightFooter from "./router/about/CopyrightFooter.vue";
 import packageJson from "../package.json";
 
 const store = useStore();

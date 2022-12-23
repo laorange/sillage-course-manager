@@ -1,10 +1,10 @@
-import {useStore} from "../../../pinia/useStore";
+import {useStore} from "../../pinia/useStore";
 import {MenuItem} from "@imengyu/vue3-context-menu";
 import {useDialog, useMessage} from "naive-ui";
 import dayjs from "dayjs";
-import {Course} from "../types";
-import {formatDate, getIsoWeekDay} from "../datetimeUtils";
-import {getEmptyCourse} from "../courseToolkit";
+import {Course} from "./types";
+import {formatDate, getIsoWeekDay} from "./datetimeUtils";
+import {getEmptyCourse} from "./courseToolkit";
 
 export default function useEmptyCourseCard() {
     const store = useStore();
