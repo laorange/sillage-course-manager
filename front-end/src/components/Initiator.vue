@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onBeforeMount, watch} from "vue";
+import {onMounted, watch} from "vue";
 import {useStore} from "../pinia/useStore";
 
 import {useStorage} from "vue3-storage";
@@ -22,7 +22,7 @@ const initiators = {
     document.title = store.translate(store.config.content.tableName);
   },
   async getCourseFromApi() {
-    let coursePioneer = (await axios(store.api.client.baseUrl + "/api/collections/course/records", {
+    let latestNotice = (await axios(store.api.client.baseUrl + "/api/collections/notice/records", {
       params: {
         page: 1,
         perPage: 1,
@@ -30,16 +30,15 @@ const initiators = {
       },
     })).data as RawPocketBaseData<Course>;
 
-    if (coursePioneer.items[0]?.updated && dayjs(coursePioneer.items[0]?.updated).isAfter(dayjs(store.localConfig.database.recordTime))) {
+    if (dayjs(latestNotice.items[0]?.updated).isAfter(dayjs(store.localConfig.database.recordTime))) {
       // 课程有更新，重新请求全部课程
       console.log("课程有更新，重新请求全部课程");
       await store.api.course.list(courses => {
             store.courses = courses;
             store.localConfig.database.courses = courses;
-            store.localConfig.database.recordTime = coursePioneer.items[0]?.updated ?? formatDatetime(dayjs("1970-01-01"));
+            store.localConfig.database.recordTime = latestNotice.items[0]?.updated ?? formatDatetime(dayjs("1970-01-01"));
           },
-          () => message.error("课程加载失败"),
-          coursePioneer);
+          () => message.error("课程加载失败"));
     } else {
       // 课程没有更新，那就用本地缓存
       console.log("课程没有更新，已加载本地缓存");
@@ -136,7 +135,7 @@ const initiators = {
 };
 
 
-onBeforeMount(async () => {
+onMounted(async () => {
   initiators.localStorage();
   initiators.loginStatus();
   await initiators.api();
