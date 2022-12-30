@@ -55,7 +55,7 @@
 
 3. 采用`SQLITE`数据库，方便备份和迁移。
 
-4. 数据库具有**符合RESTFUL规范**的应用程序接口，可以基于该项目进行拓展。目前已有"[钉钉课程推送](https://github.com/laorange/sillage-dingtalk)"项目可供参考：
+4. 数据库具有**符合RESTFUL规范**的应用程序接口，可以基于该项目进行拓展。目前已有以下项目可供参考：
 	+ [迹云课表 - 钉钉课程推送](https://github.com/laorange/sillage-dingtalk)
 	+ [迹云课表 - 导出Excel](https://github.com/laorange/sillage-excel)
 
