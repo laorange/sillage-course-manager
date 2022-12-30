@@ -9,6 +9,7 @@ const store = useStore();
 const router = useRouter();
 
 const inDevelopMode: boolean = import.meta.env.MODE === "development";
+const href = location.href;
 
 const handlers = {
   toPlan() {
@@ -37,7 +38,12 @@ const handlers = {
 
       <n-button type="info" :round="true" @click="handlers.toPlan" v-if="store.courseOfCurrentSemester.value.length">{{ store.translate(`教学计划`) }}</n-button>
 
-      <n-button type="warning" :round="true" v-if="!store.editor.authenticated && inDevelopMode" @click="handlers.toLogin">{{ store.translate(`管理员入口`) }}</n-button>
+      <n-space vertical v-if="!store.editor.authenticated && store.courses.length === 0">
+        <n-button type="warning" :round="true" @click="handlers.toLogin">
+          {{ store.translate(`管理员入口`) }}
+        </n-button>
+        <div style="color: red">添加课程后，该按钮将不再显示。<strong>管理员入口</strong>的网址为：<code style="color: blue">{{ href }}login/</code></div>
+      </n-space>
 
       <template v-if="store.editor.authenticated">
         <n-button type="error" :round="true" @click="handlers.toConfig">{{ store.translate(`系统配置`) }}</n-button>
