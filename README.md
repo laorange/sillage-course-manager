@@ -16,8 +16,6 @@
 
 因此，本项目的初衷正是为了改善现状，开发一套**现代化的、方便易用的课程管理系统**。
 
-
-
 虽然是针对笔者所在学院的实际需求设计的，但项目的**可拓展性强**，但**如果有以下需求，也推荐您使用"迹云课表"**：
 
 + （⚠必要条件）有明确的学期划分，换言之：每个教学阶段有明确的开始和结束日期。
@@ -38,8 +36,6 @@
 - 当课程发生变动时，**自动生成公告；**
 - 包含各个课程的课时统计的**教学计划**无需手动计算，系统自动生成。
 
-
-
 ## 查询方便
 
 - 用户可以自行选择教室、课程名、日期、年级与分组等筛选条件，减少无关信息；
@@ -47,13 +43,9 @@
 - 当课程调整时，会自动在课表上方以红点提示，且能在查看公告后消除红点；
 - 教学楼管理员可将本系统链接生成二维码的张贴在教室门口，便于同学们查看教室的占用情况。
 
-
-
 ## 国际化
 
 用户端中的**每个词语**，都可以在"**系统配置页**"中设置它的外语翻译，以不同的语言展示课程！
-
-
 
 ## 可拓展
 
@@ -64,10 +56,8 @@
 3. 采用`SQLITE`数据库，方便备份和迁移。
 
 4. 数据库具有**符合RESTFUL规范**的应用程序接口，可以基于该项目进行拓展。目前已有"[钉钉课程推送](https://github.com/laorange/sillage-dingtalk)"项目可供参考：
-
-<div align="center"><a href="https://github.com/laorange/sillage-dingtalk"><img alt="Readme Card" src="https://github-readme-stats.vercel.app/api/pin/?username=laorange&repo=sillage-dingtalk"/></a></div>
-
-
+	+ [迹云课表 - 钉钉课程推送](https://github.com/laorange/sillage-dingtalk)
+	+ [迹云课表 - 导出Excel](https://github.com/laorange/sillage-excel)
 
 ## 高并发
 
@@ -77,3 +67,63 @@
 
 <div align="center"><a href="https://github.com/pocketbase/pocketbase"><img alt="Readme Card" src="https://github-readme-stats.vercel.app/api/pin/?username=pocketbase&repo=pocketbase"/></a></div>
 
+
+
+# 安装说明
+
+1. 若在 windows/linux 平台上使用，前往 [Release 页面](https://github.com/laorange/sillage-course-manager/releases)下载安装包；Mac 平台可通过源码，利用 `golang` 语言的跨平台特性进行编译。
+
+2. 解压安装包，文件目录如下：
+
+   ```
+   /* ------Windows------ */
+   └─sillage-course-manager_windows
+       │  sillage-course-manager.exe
+       │  ...
+       └─ pb_data
+               data.db
+               logs.db
+               ...
+               
+   /* -------linux------- */
+   └─sillage-course-manager_linux
+       │  sillage-course-manager
+       │  ...
+       └─ pb_data
+               data.db
+               logs.db
+               ...
+   ```
+
+3. `sillage-course-manager.exe` 即是项目可执行文件，`pb_data` 是数据库文件。
+
+4. 在命令行中，运行 `.\sillage-course-manager.exe serve`，程序将运行在 `8090` 端口。
+
+   ```
+   .\sillage-course-manager.exe serve
+   > Server started at: http://127.0.0.1:8090
+   	- Home page: http://127.0.0.1:8090
+     - REST API: http://127.0.0.1:8090/api/
+     - Admin UI: http://127.0.0.1:8090/_/
+   ```
+
+5. 其他指令与 [`Pocketbase`](https://github.com/pocketbase/pocketbase) 一致：
+
+   ```
+   Available Commands:
+     help        Help about any command
+     migrate     Executes DB migration scripts
+     serve       Starts the web server (default to 127.0.0.1:8090)
+   
+   Flags:
+         --debug                  enable debug mode, aka. showing more detailed logs
+         --dir string             the PocketBase data directory (default "pb_data")
+         --encryptionEnv string   the env variable whose value of 32 chars will be used
+                                  as encryption key for the app settings (default none)
+     -h, --help                   help for pocketbase
+     -v, --version                version for pocketbase
+   ```
+
+6. 可访问 `http://127.0.0.1:8090`。初始账号：`admin@admin.com`，密码：`adminadmin`
+
+7. 部署到生成环境？请参考：[Docs - PocketBase - Going to production](https://pocketbase.io/docs/going-to-production/)
