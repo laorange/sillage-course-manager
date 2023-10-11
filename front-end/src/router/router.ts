@@ -1,13 +1,13 @@
 import {createRouter, createWebHashHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from "vue-router";
 import {useStore} from "../pinia/useStore";
 
-const HomePage = () => import("./home/HomePage.vue");
-const ConfigEditor = () => import("./config/ConfigEditor.vue");
-const CourseTable = () => import("./course/CourseTable.vue");
-const LoginPage = () => import("./login/LoginPage.vue");
-const PlanTable = () => import("./plan/PlanTable.vue");
-const FavoritesPage = () => import("./favorites/FavoritesPage.vue");
-const RoomTable = () => import("./room/RoomTable.vue");
+import HomePage from "./home/HomePage.vue";
+import ConfigEditor from "./config/ConfigEditor.vue";
+import CourseTable from "./course/CourseTable.vue";
+import LoginPage from "./login/LoginPage.vue";
+import PlanTable from "./plan/PlanTable.vue";
+import FavoritesPage from "./favorites/FavoritesPage.vue";
+import RoomTable from "./room/RoomTable.vue";
 
 function noGradeToAllGrades(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     const store = useStore();
