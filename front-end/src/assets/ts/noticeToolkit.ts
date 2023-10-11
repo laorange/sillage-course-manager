@@ -1,5 +1,6 @@
 import {GradeGroupArray, Notice} from "./types";
 import dayjs from "dayjs";
+import getTodayX from "./getToday";
 
 type NoticeFilter = (n: Notice) => boolean
 
@@ -21,7 +22,7 @@ export class NoticesHandler {
 
     inThePastFewDays(dayNum: number) {
         const filterFunc: NoticeFilter = n => {
-            return dayjs(n.updated).isAfter(dayjs().add(-dayNum, "day"), "minute");
+            return dayjs(n.updated).isAfter(getTodayX().add(-dayNum, "day"), "minute");
         };
         return this.filter(filterFunc);
     }

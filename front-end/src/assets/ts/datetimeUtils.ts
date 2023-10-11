@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import getTodayX from "./getToday";
 
 export function formatDate(d: dayjs.Dayjs) {
     return d.format("YYYY-MM-DD");
@@ -17,6 +18,6 @@ export function getIsoWeekDay(d: dayjs.Dayjs) {
     return day === 0 ? 7 : day;
 }
 
-export function getWeekAmountBetweenTwoDay(from: dayjs.Dayjs = dayjs(), to: dayjs.Dayjs = dayjs()) {
+export function getWeekAmountBetweenTwoDay(from: dayjs.Dayjs = getTodayX(), to: dayjs.Dayjs = getTodayX()) {
     return Math.floor(to.diff(from) / (60 * 60 * 24 * 7 * 1000));
 }

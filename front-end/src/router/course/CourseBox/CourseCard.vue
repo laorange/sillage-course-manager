@@ -7,6 +7,8 @@ import {parseFontColor} from "../../../assets/ts/useColorParser";
 import {useMessage} from "naive-ui";
 import {getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import dayjs from "dayjs";
+import getToday from "../../../assets/ts/getToday";
+import getTodayX from "../../../assets/ts/getToday";
 
 const props = withDefaults(defineProps<{
   course: Course, isDateMode?: boolean,
@@ -47,7 +49,7 @@ const getWeekStrWithUnit = computed<string>(() => {
   return invalidDates.concat([weekStr]).filter(_ => !!_).join(",");
 });
 
-const whatDayStr = computed<string>(() => store.translate(store.getWhatDayStr(getIsoWeekDay(dayjs(props.course.dates[0]) ?? dayjs()))));
+const whatDayStr = computed<string>(() => store.translate(store.getWhatDayStr(getIsoWeekDay(dayjs(props.course.dates[0]) ?? getTodayX()))));
 const lessonTimeStr = computed<string>(() => {
   let lessonConfig = store.config.content.lessonConfigs[props.course.lessonNum - 1];
   return [`${lessonConfig.start}`, `${lessonConfig.end}`].filter(_ => !!_).join("~");
