@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
 import WhatDaySelector from "../CourseBox/WhatDaySelector.vue";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
+import getTodayX from "../../../assets/ts/getToday";
 
 const props = withDefaults(defineProps<{
   courses: Course[], editable?: boolean, queryDate?: string,
@@ -17,7 +18,7 @@ const props = withDefaults(defineProps<{
 
 const store = useStore();
 
-const queryDate = ref<string>(props.queryDate ?? formatDate(dayjs()));
+const queryDate = ref<string>(props.queryDate ?? formatDate(getTodayX()));
 const isDateMode = ref<boolean>(store.localConfig.isDateMode);
 watch(() => isDateMode.value, newMode => store.localConfig.isDateMode = newMode);
 

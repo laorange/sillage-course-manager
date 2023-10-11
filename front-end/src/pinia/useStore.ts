@@ -8,6 +8,9 @@ import {courseInfoArray, teacherArray, roomArray, methodArray} from "../assets/t
 import {ApiHandler} from "../assets/ts/ApiHandler";
 import {getArrayWithUniqueItem} from "../assets/ts/useCommonUtils";
 
+import storeData from "../assets/back_up_data/storeData.json"
+import getTodayX from "../assets/ts/getToday";
+
 type State = {
     isLoading: boolean
     loadingDescription: string
@@ -38,56 +41,18 @@ export const useStore = defineStore("store", {
 
             api: new ApiHandler(new PocketBase(import.meta.env.VITE_BACKEND_URL)),
 
-            courses: [],
-            config: {
-                id: "",
-                content: {
-                    tableName: "迹云课表",
-                    semesterStartDate: "2022-08-29",
-                    maxWeekNum: 20,
-                    lessonConfigs: [
-                        {"start": "08:00", "end": "09:35"},
-                        {"start": "10:05", "end": "11:40"},
-                        {"start": "13:30", "end": "15:05"},
-                        {"start": "15:35", "end": "17:10"},
-                        {"start": "18:30", "end": "20:05"},
-                    ],
-                    "languages": [],
-                    "dictionary": {},
-                },
-            },
-            notices: [],
+            courses: (storeData as unknown as State).localConfig.database.courses,
+            config: (storeData as unknown as State).config,
+            notices: (storeData as unknown as State).notices,
 
-            localConfig: {
-                language: "中文",
-                isDateMode: true,
-                verticalCard: true,
-                displayMode: "一周",
-                thinkTwice: true,
-                version: "0.0.0",
-                readNotices: [],
-                lastVisitPath: null,
-                favorites: [],
-                database: {
-                    recordTime: formatDatetime(dayjs("1970-01-01")),
-                    courses: [],
-                },
-            },
+            localConfig: (storeData as unknown as State).localConfig,
 
-            editor: {
-                show: false,
-                mode: "none",
-                fromDates: [],
-                lessonNum: 1,
-                courseEditing: getEmptyCourse(),
-                courseAdding: getEmptyCourse(),
-                authenticated: false,
-            },
+            editor: (storeData as unknown as State).editor,
         };
     },
     getters: {
         todayDate(): string {
-            return formatDate(dayjs());
+            return formatDate(getTodayX());
         },
         semesterStartDay(): dayjs.Dayjs {
             return dayjs(this.config.content.semesterStartDate);
@@ -247,11 +212,11 @@ export const useStore = defineStore("store", {
             return this.getExistingCoursesOfCourse(targetCourse).hasConflictCourse(targetCourse.dates, targetCourse.lessonNum, targetCourse);
         },
         validateAuthStatus() {
-            if (localStorage.getItem("pocketbase_auth")) {
-                this.api.client.Admins.refresh().then(() => {
-                    this.editor.authenticated = true;
-                }).catch(() => localStorage.removeItem("pocketbase_auth"));
-            }
+            // if (localStorage.getItem("pocketbase_auth")) {
+            //     this.api.client.Admins.refresh().then(() => {
+            //         this.editor.authenticated = true;
+            //     }).catch(() => localStorage.removeItem("pocketbase_auth"));
+            // }
         },
         getWeekNumOfSomeDate(someDate: string | dayjs.Dayjs): number {
             if (typeof someDate === "string") {

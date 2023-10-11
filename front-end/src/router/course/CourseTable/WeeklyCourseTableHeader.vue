@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import {formatDate, getIsoWeekDay} from "../../../assets/ts/datetimeUtils";
 import {useStore} from "../../../pinia/useStore";
 import {computed} from "vue";
+import getTodayX from "../../../assets/ts/getToday";
 
 const props = defineProps<{ queryDay: dayjs.Dayjs, isDateMode: boolean }>();
 
@@ -11,7 +12,7 @@ const store = useStore();
 const queryWhatDay = computed<number>(() => getIsoWeekDay(props.queryDay));
 
 function isToday(whatDay: number): boolean {
-  return props.queryDay.add(whatDay - queryWhatDay.value, "day").isSame(dayjs(), "day");
+  return props.queryDay.add(whatDay - queryWhatDay.value, "day").isSame(getTodayX(), "day");
 }
 
 function isQueryDate(whatDay: number): boolean {

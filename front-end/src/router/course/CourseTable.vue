@@ -6,7 +6,6 @@ import DailyCourseTable from "./CourseTable/DailyCourseTable.vue";
 import {Course, Notice} from "../../assets/ts/types";
 import RouteFilter from "./RouteFilter/RouteFilter.vue";
 import NoticeDisplay from "./NoticeDisplay/NoticeDisplay.vue";
-import dayjs from "dayjs";
 import {formatDate} from "../../assets/ts/datetimeUtils";
 import WeeklyCourseTable from "./CourseTable/WeeklyCourseTable.vue";
 import ThinkTwiceSwitch from "./CourseTable/ThinkTwiceSwitch.vue";
@@ -16,6 +15,7 @@ import {onBeforeRouteUpdate} from "vue-router";
 import {recordLastVisitPath} from "../router";
 import FavoriteThisPageButton from "./CourseTable/FavoriteThisPageButton.vue";
 import GoToPlanButton from "./CourseTable/GoToPlanButton.vue";
+import getTodayX from "../../assets/ts/getToday";
 
 const store = useStore();
 
@@ -84,7 +84,7 @@ onBeforeRouteUpdate(recordLastVisitPath);
   <n-grid v-else :cols="displayColumnNum" :x-gap="5">
     <n-gi v-for="dailyCourseTableNum of displayColumnNum" :key="`DailyCourseTable${dailyCourseTableNum}`">
       <DailyCourseTable :courses="filteredCourses" :editable="editable" :show-grade="grades.length !== 1"
-                        :query-date="formatDate(dayjs().add(dailyCourseTableNum-1, 'day'))"/>
+                        :query-date="formatDate(getTodayX().add(dailyCourseTableNum-1, 'day'))"/>
     </n-gi>
   </n-grid>
 </template>

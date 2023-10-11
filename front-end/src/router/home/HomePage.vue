@@ -4,6 +4,8 @@ import {useRouter} from "vue-router";
 import config from "../../../package.json";
 import LanguageSelector from "./LanguageSelector.vue";
 import GradeEntrances from "./GradeEntrances.vue";
+import {useMessage} from "naive-ui";
+import {onMounted} from "vue";
 
 const store = useStore();
 const router = useRouter();
@@ -26,6 +28,12 @@ const handlers = {
     store.editor.authenticated = false;
   },
 };
+
+const message = useMessage();
+
+onMounted(() => {
+  message.warning("当前页面仅用于预览，数据均为虚构")
+})
 </script>
 
 <template>
@@ -65,6 +73,7 @@ main {
 
 .home-page {
   display: flex;
+  padding-top: 20px;
   flex-direction: column;
   justify-content: center;
   flex-wrap: wrap;

@@ -5,6 +5,7 @@ import {useStore} from "../../../pinia/useStore";
 import {computed, onMounted, onUnmounted, watch} from "vue";
 import {formatDate} from "../../../assets/ts/datetimeUtils";
 import {ArrowRedoOutline, ArrowBackCircleOutline, ArrowForwardCircleOutline} from "@vicons/ionicons5";
+import getTodayX from "../../../assets/ts/getToday";
 
 const store = useStore();
 const message = useMessage();
@@ -33,7 +34,7 @@ const weekStr = computed<string>(() => {
     week = store.getWeekNumOfSomeDate(queryDateLocal.value);
   } else {
     // 星期模式下，显示当天是第几周
-    week = store.getWeekNumOfSomeDate(dayjs());
+    week = store.getWeekNumOfSomeDate(getTodayX());
   }
   if (week > store.config.content.maxWeekNum || week <= 0) return "";
   let _weekUnitStr = store.translate("星期");
@@ -63,7 +64,7 @@ const handlers = {
     }
   },
   backToToday() {
-    queryDateLocal.value = formatDate(dayjs());
+    queryDateLocal.value = formatDate(getTodayX());
   },
 };
 
@@ -76,8 +77,8 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
     <n-space :vertical="true" :size="10">
       <n-space justify="center" align="center" wrap="wrap">
         <template v-if="props.isDateMode">
-          <n-config-provider :locale="store.localConfig.language===`中文`?zhCN:undefined"
-                             :date-locale="store.localConfig.language===`中文`?dateZhCN:undefined">
+          <n-config-provider :locale="store.localConfig.language===`中文`?zhCN:''"
+                             :date-locale="store.localConfig.language===`中文`?dateZhCN:''">
             <n-date-picker v-model:formatted-value="queryDateLocal" value-format="yyyy-MM-dd" type="date"
                            placement="bottom" :input-readonly="true" :first-day-of-week="0" :disabled="dateMode!==`日期模式`"/>
           </n-config-provider>
@@ -101,7 +102,7 @@ onUnmounted(() => document.removeEventListener("keyup", handlers.keyUpHandler));
         </n-button>
         <n-space :vertical="true" :size="1">
           <div v-if="weekStr">{{ weekStr }}</div>
-          <n-button v-if="queryDateLocal!==formatDate(dayjs())" @click="handlers.backToToday()" size="tiny" :dashed="true" color="#32647d">
+          <n-button v-if="queryDateLocal!==formatDate(getTodayX())" @click="handlers.backToToday()" size="tiny" :dashed="true" color="#32647d">
             {{ store.translate(`今天`) }}
             <template #icon>
               <n-icon>

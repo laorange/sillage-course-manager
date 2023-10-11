@@ -10,11 +10,12 @@ import QueryDatePicker from "../QueryDatePicker/QueryDatePicker.vue";
 import AdaptiveContainerWithFixedPixel from "../../../components/AdaptiveContainerWithFixedPixel.vue";
 import WeeklyCourseTableHeader from "./WeeklyCourseTableHeader.vue";
 import RouteFilter from "../RouteFilter/RouteFilter.vue";
+import getTodayX from "../../../assets/ts/getToday";
 
 const props = defineProps<{ courses: Course[], editable?: boolean, queryDate?: string, showGrade?: boolean }>();
 
 const store = useStore();
-const queryDateLocal = ref<string>(props.queryDate ?? formatDate(dayjs()));
+const queryDateLocal = ref<string>(props.queryDate ?? formatDate(getTodayX()));
 const queryDayLocal = computed(() => dayjs(queryDateLocal.value));
 const queryWhatDayLocal = computed<number>(() => getIsoWeekDay(queryDayLocal.value));
 

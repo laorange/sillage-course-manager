@@ -42,51 +42,52 @@ const initiators = {
     } else {
       // 课程没有更新，那就用本地缓存
       console.log("课程没有更新，已加载本地缓存");
-      store.courses = store.localConfig.database.courses;
     }
   },
   async api() {
     const store = useStore();
     await store.withLoading(Promise.all([
-      store.api.config.list(configs => {
-        if (configs.length) store.config = configs[0];
-      }, () => message.error("系统设置加载失败")),
+      // store.api.config.list(configs => {
+      //   if (configs.length) store.config = configs[0];
+      // }, () => message.error("系统设置加载失败")),
+      //
+      // store.api.notice.list(notices => store.notices = notices, () => message.error("公告加载失败")),
 
-      store.api.notice.list(notices => store.notices = notices, () => message.error("公告加载失败")),
-
-      initiators.getCourseFromApi(),
+      // initiators.getCourseFromApi(),
     ]));
+
+    console.log(store)
   },
   loginStatus() {
     store.validateAuthStatus();
   },
   localStorage() {
-    function isLatestVersion(localVersion: string, latestVersion: string): boolean {
-      // 版本号格式：x.y.z
-      const localVersionMatchResult = localVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
-      const latestVersionMatchResult = latestVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
-      for (let i = 1; i <= 3; i++) {
-        // x, y, z 任何一个比现有版本的低，则不是最新版本
-        if (localVersionMatchResult[i] < latestVersionMatchResult[i]) return false;
-      }
-      return true;
-    }
-
-    // 从 localStorage 读取本地设置
-    let localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY);
-
-    // // let isNewComer: boolean = !!localConfig;  // 如果需要判断是否是第一次来到迹云课表时可用此判断
-
-    localConfig = {...store.localConfig, ...localConfig} ?? store.localConfig;
-
-    //  // 如果不是最新的版本，向localstorage中存入新的默认数据  // !isLatestVersion(localConfig.version, version)
-
-    // 如果本地缓存中没有版本号，则是v0.8以前/第一次进入，则使用默认配置
-    if (localConfig.version === "0.0.0") {
-      store.localConfig = {...store.localConfig, version: version}; // 向localstorage中存入新的默认数据
-    } else {
-      store.localConfig = {...localConfig, version: version};
-    }
+    // function isLatestVersion(localVersion: string, latestVersion: string): boolean {
+    //   // 版本号格式：x.y.z
+    //   const localVersionMatchResult = localVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
+    //   const latestVersionMatchResult = latestVersion.match(/(\d+)\.(\d+)\.(\d+)/) ?? ["", "0", "0", "0"];
+    //   for (let i = 1; i <= 3; i++) {
+    //     // x, y, z 任何一个比现有版本的低，则不是最新版本
+    //     if (localVersionMatchResult[i] < latestVersionMatchResult[i]) return false;
+    //   }
+    //   return true;
+    // }
+    //
+    // // 从 localStorage 读取本地设置
+    // let localConfig = storage.getStorageSync<LocalConfig>(LOCAL_CONFIG_STORAGE_KEY);
+    //
+    // // // let isNewComer: boolean = !!localConfig;  // 如果需要判断是否是第一次来到迹云课表时可用此判断
+    //
+    // localConfig = {...store.localConfig, ...localConfig} ?? store.localConfig;
+    //
+    // //  // 如果不是最新的版本，向localstorage中存入新的默认数据  // !isLatestVersion(localConfig.version, version)
+    //
+    // // 如果本地缓存中没有版本号，则是v0.8以前/第一次进入，则使用默认配置
+    // if (localConfig.version === "0.0.0") {
+    //   store.localConfig = {...store.localConfig, version: version}; // 向localstorage中存入新的默认数据
+    // } else {
+    //   store.localConfig = {...localConfig, version: version};
+    // }
   },
   async addTextData() {
     let newCourse: Course = {
@@ -137,7 +138,7 @@ const initiators = {
 
 onMounted(async () => {
   initiators.localStorage();
-  initiators.loginStatus();
+  // initiators.loginStatus();
   await initiators.api();
   initiators.pageTitle();
 });
