@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" href="/sillage-course-manager/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>迹云课表-sillage</title>
+    <style>
+        html, body {
+            margin: 0;
+        }
+
+        #wait {
+            font-size: 32px;
+            height: 100vh;
+            width: 100vw;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            background-image: linear-gradient(rgba(100, 200, 250, 30%) 10%, rgba(100, 200, 250, 10%), rgba(100, 200, 250, 30%));
+        }
+
+        #wait[v-cloak] {
+            display: flex;
+        }
+    </style>
+  <script type="module" crossorigin src="/sillage-course-manager/assets/index.dd67a893.js"></script>
+  <link rel="stylesheet" href="/sillage-course-manager/assets/index.db3091b0.css">
+</head>
+<body>
+<div id="app">
+    <div id="wait" v-cloak>Loading...</div>
+</div>
+
+</body>
+</html>
